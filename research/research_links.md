@@ -66,6 +66,12 @@ A good book that explains methods used in SPICE. Especially useful for Newton-Ra
 
 ---
 
+## Nonlinear Device Stamping 
+Lecture slides that explore companion models for nonlinear devices, how to express stem in matrix form and how to use Newton-Raphson to solve them. 
+<http://202.120.46.7/msda/data/courseware/SPICE/lect08_nonlinear_stamp.pdf>
+
+---
+
 ## Companion Models for Basic Non-Linear and Transient Devices
 Very short and easy to understand document that gives different companion models. Included nonlinear companion models = Diode, MOSFET (n-channel and p-channel), BJT (NPN and PNP).
 Also includes a good image outlining the general algorithm for nonlinear transient analysis. 
