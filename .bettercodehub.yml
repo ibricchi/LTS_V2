@@ -1,0 +1,11 @@
+component_depth: 2
+
+languages:
+- cpp
+- script
+
+exclude:
+- /dependancies/*
+- /log_book/*
+- /research/*
+- /Tests/*
