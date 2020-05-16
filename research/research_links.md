@@ -63,3 +63,10 @@ Page 27 (pdf page 37) gives the backward-Euler companion circuit for an inductor
 ## Inside Spice
 A good book that explains methods used in SPICE. Especially useful for Newton-Raphson with non-linear components and for dynamic time step control (could be added in end if want greater accuracy while being fast).
 <https://idoc.pub/download/kielkowski-inside-spice-d2nv6ogoxy4k>
+
+---
+
+## Companion Models for Basic Non-Linear and Transient Devices
+Very short and easy to understand document that gives different companion models. Included nonlinear companion models = Diode, MOSFET (n-channel and p-channel), BJT (NPN and PNP).
+Also includes a good image outlining the general algorithm for nonlinear transient analysis. 
+<http://dev.hypertriton.com/edacious/trunk/doc/lec.pdf>
