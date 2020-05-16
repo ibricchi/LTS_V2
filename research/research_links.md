@@ -76,3 +76,9 @@ Lecture slides that explore companion models for nonlinear devices, how to expre
 Very short and easy to understand document that gives different companion models. Included nonlinear companion models = Diode, MOSFET (n-channel and p-channel), BJT (NPN and PNP).
 Also includes a good image outlining the general algorithm for nonlinear transient analysis. 
 <http://dev.hypertriton.com/edacious/trunk/doc/lec.pdf>
+
+---
+
+## The Newton-Raphson method *(applied to diodes)*
+A good description of the Newton-Raphson method in detail. Applied to simple polynomials. Applied to diodes (includes derivation of companion model). Used in matrix form for multiple nonlinear components. And more.
+<https://matel.p.lodz.pl/wee/i12zet/The%20Newton-Raphson%20method.pdf>
