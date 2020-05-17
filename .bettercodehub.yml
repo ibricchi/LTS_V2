@@ -3,7 +3,6 @@ component_depth: 2
 exclude:
 - /Tests/.*
 - Tests/.*
-- Tests/performanceTests/.*
 
 languages:
 - name: cpp
