@@ -64,5 +64,11 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
             outLine = runLinearTransience(c, t); 
             outputFile << outLine << endl;
         }
+    }else{
+        nonLinearSetup(c);
+        for(float t = 0; t <= simulationTime; t += timeStep){
+            outLine = runNonLinearTransience(c, t);
+            outpuFile << outLine << endl;
+        }
     }
 }

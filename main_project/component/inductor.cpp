@@ -29,6 +29,7 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::vcUpdatable);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 Inductor::Inductor(string _name,float l, int n1, int n2, float timeStep, int order)
@@ -47,6 +48,7 @@ Inductor::Inductor(string _name,float l, int n1, int n2, float timeStep, int ord
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::vcUpdatable);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 float Inductor::getConductance() const{

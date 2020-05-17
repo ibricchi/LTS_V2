@@ -15,6 +15,7 @@ Resistor::Resistor(string name, vector<string> args, vector<float> extraInfo)
     conductance = 1/val;
 
     types.push_back(componentType::conductanceSource);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 Resistor::Resistor(string _name, float r, int n1, int n2)
@@ -37,12 +38,12 @@ vector<int> Resistor::getNodes() const{
 }
 
 // get the IV characteristics of a component given two nodes
-float Resistor::ivAtNode(int n1, int n2, int v) const{
+float Resistor::ivAtNode(int n1, int n2, float v) const{
     return conductance * v;
 };
 
 // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
-float Resistor::divAtNode(int n1, int n2, int dn, int v) const{
+float Resistor::divAtNode(int n1, int n2, int dn, float v) const{
     if(n1 == nodes[0]) return conductance;
     if(n1 == nodes[1]) return conductance;
     if(n2 == nodes[0]) return -conductance;

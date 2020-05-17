@@ -29,6 +29,7 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::vcUpdatable);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 Capacitor::Capacitor(string _name,float c, int n1, int n2, float timeStep, int order)
@@ -47,6 +48,7 @@ Capacitor::Capacitor(string _name,float c, int n1, int n2, float timeStep, int o
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::vcUpdatable);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 float Capacitor::getConductance() const{

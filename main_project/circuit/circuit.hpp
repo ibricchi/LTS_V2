@@ -20,6 +20,7 @@ protected:
     vector<Component*> conductanceSources{};
     vector<Component*> vcUpdatables{};
     vector<Component*> timeUpdatables{};
+    vector<Component*> nonVoltageSources{};
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
     float currentTime;
@@ -31,6 +32,10 @@ protected:
     VectorXf b;
     VectorXf x;
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
+
+    // non-linear analysis vectors;
+    vector<vector<pair<pair<int, int>, Component&>>> nodalFunctions{};
+    vector<vector<vector<pair<pair<int, int>, Component&>>>> jacobian{};
 public:
     // default constructor for initializing empty object
     Circuit();
@@ -95,6 +100,9 @@ public:
                 vcUpdatables.push_back(newComp);
                 break;
             case componentType::timeUpdatable:
+                timeUpdatables.push_back(newComp);
+                break;
+            case componentType::nonVoltageSource:
                 timeUpdatables.push_back(newComp);
                 break;
             default:

@@ -37,6 +37,7 @@ void CurrentSource::setupBasic(int n1, int n2){
     nodes.push_back(n1);
     nodes.push_back(n2);
     types.push_back(componentType::currentSource);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 void CurrentSource::setupDC(float _current){
