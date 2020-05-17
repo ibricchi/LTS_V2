@@ -85,3 +85,10 @@ vector<int> Inductor::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+float Inductor::ivAtNode(int n1, int n2, float v) const{
+	return 1;
+};
+float Inductor::divAtNode(int n1, int n2, int dn, float v) const{
+	return 1;
+};

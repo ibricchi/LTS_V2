@@ -8,6 +8,7 @@
 #include <component/inductor.hpp>
 
 #include "linearAnalysis.hpp"
+#include "nonLinearAnalysis.hpp"
 
 #include "output.hpp"
 
@@ -68,7 +69,7 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         nonLinearSetup(c);
         for(float t = 0; t <= simulationTime; t += timeStep){
             outLine = runNonLinearTransience(c, t);
-            outpuFile << outLine << endl;
+            outputFile << outLine << endl;
         }
     }
 }

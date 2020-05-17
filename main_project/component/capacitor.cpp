@@ -90,3 +90,10 @@ vector<int> Capacitor::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+float Capacitor::ivAtNode(int n1, int n2, float v) const{
+	return 1;
+};
+float Capacitor::divAtNode(int n1, int n2, int dn, float v) const{
+	return 1;
+};

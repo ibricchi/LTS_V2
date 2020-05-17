@@ -25,6 +25,9 @@ public:
 
     void updateVals(float time);
 
+    float ivAtNode(int n1, int n2, float v) const override;
+    float divAtNode(int n1, int n2, int dn, float v) const override;
+
     float getVoltage() const override;
 
     vector<int> getNodes() const override;

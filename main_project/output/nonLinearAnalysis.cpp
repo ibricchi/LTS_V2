@@ -6,3 +6,11 @@
 #include <component/inductor.hpp>
 
 #include "nonLinearAnalysis.hpp"
+
+void nonLinearSetup(Circuit& c){
+
+};
+
+string runNonLinearTransience(Circuit& c, float t){
+    
+};
