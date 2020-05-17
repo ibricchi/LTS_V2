@@ -19,22 +19,53 @@ string runNonlinearTransience(Circuit& c, float t){
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
     vector<Component*> vcUpdatables = c.getVCUpdatablesRef();
     vector<Component*> timeUpdatables = c.getTimeUpdatablesRef();
+    vector<Component*> nonLinears = c.getNonLinearsRef();
+
     int highestNodeNumber = c.getHighestNodeNumber();
 
     string outLine{};
 
     ///Newton-Raphson loop:
 
-    //compute A, b for current iteration
-    c.setupA();
-    c.adjustB();
+    VectorXf x;
 
-    //compute x for the current iteration
-    c.computeA_inv();
-    c.computeX();
-    VectorXf x = c.getX();
+    //variables that are used multiple times in this function
+    vector<int> nodes{};
+    float prevVoltage{-1.0f}, voltage{}, v1{}, v2{};
+    float current{};
 
-    
+    //set maximum Newton-Raphson error
+    float nrError = 0.001;
+
+    bool flag = false;
+    do{
+        //compute A, b for current iteration
+        c.setupA();
+        c.adjustB();
+
+        //compute x for the current iteration
+        c.computeA_inv();
+        c.computeX();
+        VectorXf x = c.getX();
+
+        //update values for non linear components (used in next iteration)
+        for(const auto comp : nonLinears){
+            nodes = comp->getNodes()
+
+            v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
+            v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
+            voltage = v1 - v2;
+
+            //check if one nonlinear component has not converged yet
+            if(prevVoltage != -1.0f && abs(voltage - prevVoltage) > nrError){
+                flag = true;
+            }
+
+            comp->updateVals(voltage);
+
+            prevVoltage = voltage;
+        }
+    }while(flag)
 
 
     ///output results for current timestep:
@@ -49,9 +80,6 @@ string runNonlinearTransience(Circuit& c, float t){
     }
 
     //output current through resistors
-    vector<int> nodes{};
-    float voltage{}, v1{}, v2{};
-    float current{};
     for(const auto &gs : conductanceSources){
         if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor)){
             continue; //don't want to display current through the companion model's resistor
