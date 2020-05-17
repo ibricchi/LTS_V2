@@ -10,6 +10,18 @@
 using namespace std;
 using namespace Eigen;
 
+struct nodeCompPair{
+    int n1;
+    int n2;
+    Component& comp;
+    float IV(float v){
+        return comp.ivAtNode(n1, n2, v);
+    }
+    float DIV(float dn, float v){
+        return comp.divAtNode(n1, n2, dn, v);
+    }
+};
+
 class Circuit
 {
 protected:
