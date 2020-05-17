@@ -6,7 +6,7 @@
 class Diode: public Component{
 private:
 	static constexpr float vt = 25e-3f; //Constants for now. Could determine from netlist later on
-	static constexpr float is = 10e-14f;
+	static constexpr float is = 1e-14f;
 	float compCurrent; //Value of the current source in the companion model
 	// float compVoltage; //value of the voltage across the diode
 	float compConductance; //Conductance of the resistor in the companion model

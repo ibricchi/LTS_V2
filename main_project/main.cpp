@@ -28,8 +28,8 @@ void testCircuit2(stringstream& buffer){
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit3" << endl;
     buffer << "I1 1 0 1" << endl;
-    buffer << "R1 1 2 .5" << endl;
-    buffer << "R2 1 0 1" << endl;
+    buffer << "R1 2 1 .5" << endl;
+    buffer << "R2 0 1 1" << endl;
     buffer << "D2 2 0 1" << endl;
 }
 
