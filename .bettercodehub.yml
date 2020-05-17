@@ -5,7 +5,7 @@ languages:
 - script
 
 exclude:
-- /dependancies/.*
-- /log_book/.*
-- /research/.*
-- /Tests/.*
+- /dependancies/*
+- /log_book/*
+- /research/*
+- /Tests/*
