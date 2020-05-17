@@ -27,6 +27,11 @@ public:
     string getName() const;
     virtual vector<int> getNodes() const = 0;
 
+    // these are used for non linear analysis
+    // get the IV characteristics of a component at a given ndoe
+    virtual vector<pair<int, function<float (float, float)>>> ivAtNode(int node) const =0;
+    // get teh derivative of the IV charateristic of a component given a node and the node of which the prime is being taken <-- not sure if that makes sence. Basically the second one is the bottom of the dIV/dV
+    virtual vector<pair<int, function<float (float, float)>>> divAtNode(int node, int primeNode) const =0;
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(float newVoltage, float newCurrent, int order);
