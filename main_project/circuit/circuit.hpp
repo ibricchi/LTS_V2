@@ -13,7 +13,8 @@ using namespace Eigen;
 struct nodeCompPair{
     int n1;
     int n2;
-    Component& comp;
+    Component* comp;
+
     float IV(float v){
         return comp.ivAtNode(n1, n2, v);
     }
@@ -46,8 +47,7 @@ protected:
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
 
     // non-linear analysis vectors;
-    vector<vector<pair<pair<int, int>, Component&>>> nodalFunctions{};
-    vector<vector<vector<pair<pair<int, int>, Component&>>>> jacobian{};
+    vector<vector<nodeCompPair>> nodalFunctions{};
 public:
     // default constructor for initializing empty object
     Circuit();
@@ -81,9 +81,6 @@ public:
     vector<Component*>& getConductanceSourcesRef();
     vector<Component*>& getVCUpdatablesRef();
     vector<Component*>& getTimeUpdatablesRef();
-
-    // operator overload to add ability to read from iostream to set up circuit
-    void operator<<(istream& input);
 
     // template function to add component, the class must have a constructor with the intputs as in the function bellow
     // template <class comp>
@@ -124,9 +121,15 @@ public:
         components.push_back(newComp);
     }
 
+    // non linear setup
+    void nlSetup();
+
     // operation to create A
     void setupA();
+    // non linear A
+    void nonLinearA();
     MatrixXf getA() const;
+
 
     // compute inverse of A
     void computeA_inv();
@@ -134,6 +137,8 @@ public:
 
     // operation to adjust B
     void adjustB();
+    // non linear b
+    void nonLinearB();
     VectorXf getB() const;
 
     // operation to assign meaning to the result vector x
@@ -143,6 +148,9 @@ public:
     // A_inv must exist for this to work
     void computeX();
     VectorXf getX() const;
+
+    // non linear step
+    void nonLinearStep();
 };
 
 #endif

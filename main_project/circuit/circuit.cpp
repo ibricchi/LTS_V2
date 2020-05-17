@@ -89,6 +89,27 @@ vector<Component*>& Circuit::getTimeUpdatablesRef(){
     return timeUpdatables;
 }
 
+// setup for non linear
+void Circuit::nlSetup(){
+    int nvc = nonVoltageSources.size();
+    int vsc = voltageSources.size();
+    nodalFunctions.resize(nvc+vsc);
+
+    // sets up nodalFunctions vector
+    // very similar to the setup of A in linear analysis
+    for(int i = 0; i < nvc; i++){
+        Component* comp = nonVoltageSources[i];
+        vector<int> nodes = comp->getNodes();
+        for(int n1 : nodes){
+            if(n1 == 0) continue;
+            for(int n2 : nodes){
+                if(n1 == n2 || n2 == 0) continue;
+                nodalFunctions[i].push_back(nodeCompPair{n1, n2, comp});
+            }
+        }            
+    }
+}
+
 // setupA definition
 void Circuit::setupA()
 {
@@ -157,6 +178,10 @@ void Circuit::setupA()
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
         // cout << A.format(CleanFmt) << endl << endl;
     }
+}
+
+void Circuit::nonLinearA(){
+
 }
 
 MatrixXf Circuit::getA() const
