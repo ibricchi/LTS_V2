@@ -14,6 +14,9 @@ public:
     Resistor(string _name, float r, int n1, int n2);
     ~Resistor() = default;
 
+    float ivAtNode(int n1, int n2, int v) const override;
+    float divAtNode(int n1, int n2, int dn, int v) const override;
+
     float getConductance() const override;
     vector<int> getNodes() const override;
 };

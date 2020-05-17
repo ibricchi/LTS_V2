@@ -35,3 +35,17 @@ vector<int> Resistor::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+// get the IV characteristics of a component given two nodes
+float Resistor::ivAtNode(int n1, int n2, int v) const{
+    return conductance * v;
+};
+
+// get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
+float Resistor::divAtNode(int n1, int n2, int dn, int v) const{
+    if(n1 == nodes[0]) return conductance;
+    if(n1 == nodes[1]) return conductance;
+    if(n2 == nodes[0]) return -conductance;
+    if(n2 == nodes[1]) return -conductance;
+    return 0;
+};
