@@ -2,6 +2,7 @@
 #include <string>
 #include <circuit/circuit.hpp>
 #include <component/component.hpp>
+#include <component/resistor.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
 #include <component/diode.hpp>
@@ -59,15 +60,6 @@ string runNonlinearTransience(Circuit& c, float t){
             v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
             v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
             voltage = v1 - v2;
-            
-            // VectorXf b = c.getB();
-            // cout <<endl<<endl;
-            // cout << x;
-            // cout <<endl<<endl;
-            // cout << b;
-            // cout <<endl<<endl;
-            // cout << "Voltage: " << voltage << " I " << v1 << " I " << v2 <<endl;
-
 
             //check if a nonlinear component has not yet converged
             if(prevVoltage == -1.0f || abs(voltage - prevVoltage) > nrError){
@@ -94,7 +86,7 @@ string runNonlinearTransience(Circuit& c, float t){
 
     //output current through resistors
     for(const auto &gs : conductanceSources){
-        if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor) || typeid(*gs) == typeid(Diode)){
+        if(typeid(*gs) != typeid(Resistor)){
             continue; //don't want to display current through the companion model's resistor
         }
         
@@ -143,13 +135,6 @@ string runNonlinearTransience(Circuit& c, float t){
         v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
         v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
-
-        //currentCurrent = currentVoltage * up->getConductance();
-        
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
-        // cout << b.format(CleanFmt) << endl << endl;
-        // cout << x.format(CleanFmt) << endl <<endl;
 
         up->updateVals(currentVoltage, 0, 1);
     }
