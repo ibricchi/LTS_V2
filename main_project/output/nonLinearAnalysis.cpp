@@ -8,7 +8,7 @@
 #include "nonLinearAnalysis.hpp"
 
 void nonLinearSetup(Circuit& c){
-
+    c.nlSetup();
 };
 
 string runNonLinearTransience(Circuit& c, float t){

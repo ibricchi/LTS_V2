@@ -93,18 +93,18 @@ vector<Component*>& Circuit::getTimeUpdatablesRef(){
 void Circuit::nlSetup(){
     int nvc = nonVoltageSources.size();
     int vsc = voltageSources.size();
-    nodalFunctions.resize(nvc+vsc);
+
+    nodalFunctions.resize(highestNodeNumber+vsc);
 
     // sets up nodalFunctions vector
     // very similar to the setup of A in linear analysis
-    for(int i = 0; i < nvc; i++){
-        Component* comp = nonVoltageSources[i];
+    for(Component* comp : nonVoltageSources){
         vector<int> nodes = comp->getNodes();
         for(int n1 : nodes){
             if(n1 == 0) continue;
             for(int n2 : nodes){
-                if(n1 == n2 || n2 == 0) continue;
-                nodalFunctions[i].push_back(nodeCompPair{n1, n2, comp});
+                if(n1 == n2) continue;
+                nodalFunctions[n1-1].push_back(nodeCompPair{n1, n2, comp});
             }
         }            
     }

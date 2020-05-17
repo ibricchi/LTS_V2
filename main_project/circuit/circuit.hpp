@@ -112,7 +112,7 @@ public:
                 timeUpdatables.push_back(newComp);
                 break;
             case componentType::nonVoltageSource:
-                timeUpdatables.push_back(newComp);
+                nonVoltageSources.push_back(newComp);
                 break;
             default:
                 break;
