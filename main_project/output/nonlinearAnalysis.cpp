@@ -4,6 +4,7 @@
 #include <component/component.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
+#include <component/diode.hpp>
 #include <component/currentSource.hpp>
 
 #include "nonlinearAnalysis.hpp"
@@ -49,7 +50,7 @@ string runNonlinearTransience(Circuit& c, float t){
         //compute x for the current iteration
         c.computeA_inv();
         c.computeX();
-        VectorXf x = c.getX();
+        x = c.getX();
 
         //update values for non linear components (used in next iteration)
         for(const auto comp : nonLinears){
@@ -60,7 +61,7 @@ string runNonlinearTransience(Circuit& c, float t){
             voltage = v1 - v2;
 
             //check if a nonlinear component has not yet converged
-            if(prevVoltage != -1.0f && abs(voltage - prevVoltage) > nrError){
+            if(prevVoltage == -1.0f || abs(voltage - prevVoltage) > nrError){
                 flag = true; //do another iteration
             }
 
@@ -84,7 +85,7 @@ string runNonlinearTransience(Circuit& c, float t){
 
     //output current through resistors
     for(const auto &gs : conductanceSources){
-        if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor)){
+        if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor) || typeid(*gs) == typeid(Diode)){
             continue; //don't want to display current through the companion model's resistor
         }
         

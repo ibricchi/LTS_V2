@@ -30,14 +30,14 @@ void testCircuit(stringstream& buffer){
     buffer << "I1 1 0 1" << endl;
     buffer << "R1 1 2 .5" << endl;
     buffer << "R2 1 0 1" << endl;
-    buffer << "D1 2 0 1" << endl;
+    buffer << "D2 2 0 1" << endl;
 }
 
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.0001; //seconds
-    float simulationTime = 0.5; //seconds
+    float timeStep = 0.00001; //seconds
+    float simulationTime = 0.2; //seconds
     if(argc > 1){
         outputFileName = argv[1];
     }
@@ -47,11 +47,6 @@ int main(int argc, char **argv){
     if(argc > 3){
         simulationTime = (float)atof(argv[3]);
     }
-    
-    // // setup circuit
-    // Circuit c{};
-    // setupBasic(c, timeStep);
-    // readSpice(c, cin);
 
     // setup circuit
     Circuit c{};
