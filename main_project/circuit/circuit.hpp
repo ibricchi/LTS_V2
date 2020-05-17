@@ -16,10 +16,10 @@ struct nodeCompPair{
     Component* comp;
 
     float IV(float v){
-        return comp.ivAtNode(n1, n2, v);
+        return comp->ivAtNode(n1, n2, v);
     }
     float DIV(float dn, float v){
-        return comp.divAtNode(n1, n2, dn, v);
+        return comp->divAtNode(n1, n2, dn, v);
     }
 };
 
