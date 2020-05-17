@@ -3,6 +3,7 @@ add_library(component
     resistor.cpp
     capacitor.cpp
     inductor.cpp
+    diode.cpp
     voltageSource.cpp
     currentSource.cpp
     waveform.cpp

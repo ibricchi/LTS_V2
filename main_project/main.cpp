@@ -19,11 +19,18 @@ void testCircuit1(stringstream& buffer){
     buffer << "R3 4 0 10000" << endl;
     buffer << "C1 4 0 .000001" << endl;
 }
-void testCircuit(stringstream& buffer){
-    buffer << "ExampleCircuit1" << endl;
+void testCircuit2(stringstream& buffer){
+    buffer << "ExampleCircuit2" << endl;
     buffer << "V1 1 0 SIN(0 10 10)" << endl;
     buffer << "R1 2 0 1000" << endl;
     buffer << "L1 1 2 .1" << endl;
+}
+void testCircuit(stringstream& buffer){
+    buffer << "ExampleCircuit3" << endl;
+    buffer << "I1 1 0 1" << endl;
+    buffer << "R1 1 2 .5" << endl;
+    buffer << "R2 1 0 1" << endl;
+    buffer << "D1 2 0 1" << endl;
 }
 
 int main(int argc, char **argv){
