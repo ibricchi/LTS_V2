@@ -27,16 +27,24 @@ void testCircuit2(stringstream& buffer){
 }
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit3" << endl;
-    buffer << "I1 1 0 1" << endl;
-    buffer << "R1 2 1 .5" << endl;
-    buffer << "R2 0 1 1" << endl;
-    buffer << "D2 2 0 1" << endl;
+    buffer << "V1 1 0 SIN(0 8 10)" << endl;
+    buffer << "R1 1 2 4000" << endl;
+    buffer << "R2 2 3 1000" << endl;
+    buffer << "D1 3 4" << endl;
+    buffer << "V2 4 0 3" << endl;
+    buffer << "R3 2 0 4000" << endl;
+}
+void testCircuit4(stringstream& buffer){
+    buffer << "ExampleCircuit4" << endl;
+    buffer << "V1 1 0 1" << endl;
+    buffer << "D1 1 2" <<endl;
+    buffer << "R1 2 0 10" << endl;
 }
 
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.00001; //seconds
+    float timeStep = 0.001; //seconds
     float simulationTime = 0.2; //seconds
     if(argc > 1){
         outputFileName = argv[1];
