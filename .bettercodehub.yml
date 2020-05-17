@@ -1,7 +1,10 @@
 component_depth: 2
 
+exclude:
+- /Tests/.*
+- /Tests/*
+- /Tests/.
+- /Tests/*.*
+
 languages:
 - name: cpp
-  production:
-    exclude:
-      - /Tests/.*\.cpp
