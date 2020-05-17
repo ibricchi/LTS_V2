@@ -38,6 +38,10 @@ Diode::Diode(string _name,float c, int n1, int n2, float timeStep, int order)
 	types.push_back(componentType::nonLinear);
 }
 
+float Diode::getConductance() const{
+	return compConductance;
+}
+
 float Diode::getCurrent() const{
 	return -compCurrent; //direction of current source is opposite to direction of diode
 }

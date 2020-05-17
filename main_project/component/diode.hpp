@@ -19,6 +19,7 @@ public:
 	// float getIs() const;
 	// float getVt() const;
 	vector<int> getNodes() const ;
+	float getConductance() const override;
 	float getCurrent() const override;
 	float getTotalCurrent(float voltage, int order = 1) override;
 	

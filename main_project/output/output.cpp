@@ -32,7 +32,7 @@ void outputCSV(Circuit& c, string outputFileName, float timeStep, float simulati
     }
     //conductance sources
     for(const auto &gs : conductanceSources){
-        if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor)){
+        if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor) || typeid(*gs) == typeid(Diode)){
             continue; //don't want to display current through the companion model's resistor
         }
         outputFile << ",i_R" + gs->getName();

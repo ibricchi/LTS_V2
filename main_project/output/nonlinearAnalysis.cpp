@@ -28,7 +28,7 @@ string runNonlinearTransience(Circuit& c, float t){
 
     ///Newton-Raphson loop:
 
-    VectorXf x;
+    VectorXf x = VectorXf::Zero(highestNodeNumber + voltageSources.size());
 
     //variables that are used multiple times in this function
     vector<int> nodes{};
