@@ -2,7 +2,9 @@ component_depth: 2
 
 exclude:
 - /Tests/.*
-- Tests/.*
+- /depenancies/.*
+- /log_book/.*
+- /research/.*
 
 languages:
 - name: cpp
