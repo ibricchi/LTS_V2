@@ -283,7 +283,7 @@ int main(int argc, char **argv){
     //series inductor scaling test
     c = new Circuit{};
 
-    outputFile.open("output/capacitorsTest.csv");
+    outputFile.open("output/inductorsTest.csv");
     outputFile << "Inductor count, Simulation Time (seconds)" << endl;
 
     // how many inductors to use
@@ -298,7 +298,7 @@ int main(int argc, char **argv){
 
         setupBasic(*c, timeStep);
         readSpice(*c, buffer);
-        outputCSV(*c, "output_ignore.txt", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.txt", timeStep, simulationTime);
         
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
@@ -313,23 +313,63 @@ int main(int argc, char **argv){
 
     //series vs scaling test
     c = new Circuit{};
-    outputFile.open("output/seriesVsScaling.csv");
-    
-    ////// didin't really undestand what this one was doing
 
-    delete c;
+    outputFile.open("output/VSTest.csv");
+    outputFile << "VS count, Simulation Time (seconds)" << endl;
+
+    // how many VS to use
+    int minVS = 0;
+    int maxVS = 50;
+    int deltaVS = 1;
+
+    for(int VSCount = minVS; VSCount < maxVS; VSCount += deltaVS){
+        seriesVS(buffer, VSCount);
+        
+        auto start = high_resolution_clock::now();
+
+        setupBasic(*c, timeStep);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.txt", timeStep, simulationTime);
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << VSCount << "," << timeTaken/1000.0f << endl;
+    }
+
     outputFile.close();
+    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series vs scaling test
     c = new Circuit{};
-    outputFile.open("output/seriesVsScalingComplex.csv");
-    
-    ////// didin't really undestand what this one was doing
 
-    delete c;
+    outputFile.open("output/CSTest.csv");
+    outputFile << "CS count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minCS = 0;
+    int maxCS = 50;
+    int deltaCS = 1;
+
+    for(int CSCount = minCS; CSCount < maxCS; CSCount += deltaCS){
+        seriesCS(buffer, CSCount);
+        
+        auto start = high_resolution_clock::now();
+
+        setupBasic(*c, timeStep);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.txt", timeStep, simulationTime);
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << CSCount << "," << timeTaken/1000.0f << endl;
+    }
+
     outputFile.close();
+    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 }
