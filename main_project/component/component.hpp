@@ -30,8 +30,8 @@ public:
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(float newVoltage, float newCurrent, int order);
-    // this should ebe used to update the time of the time dependant components
-    virtual void updateVals(float time);
+    // this should be used to update the time of the time dependant components or update nonlinear components (passing voltage)
+    virtual void updateVals(float time_or_voltage);
 
     float getValue(string val) const;
     vector<componentType> getTypes() const;

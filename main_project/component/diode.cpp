@@ -21,12 +21,11 @@ Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
 	
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
-	types.push_back(componentType::vcUpdatable);
 	types.push_back(componentType::nonLinear);
 }
 
 Diode::Diode(string _name,float c, int n1, int n2, float timeStep, int order)
-	:Component{_name}, capacitance{c}{
+	:Component{_name}{
 	subComponents = 2;	
 	nodes.push_back(n1);
 	nodes.push_back(n2);	
@@ -36,7 +35,6 @@ Diode::Diode(string _name,float c, int n1, int n2, float timeStep, int order)
 
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
-	types.push_back(componentType::vcUpdatable);
 	types.push_back(componentType::nonLinear);
 }
 
@@ -44,15 +42,9 @@ float Diode::getCurrent() const{
 	return -compCurrent; //direction of current source is opposite to direction of diode
 }
 
-// float Diode::getTotalCurrent(float voltage, int order){
-	
-// 	throw unsupportedIntegrationMethodOrderException();
-
-// }
-
-// void Diode::updateVals(float newVoltage, float newCurrent, int order){
-// 	//capacitor/inductor version
-// }
+float Diode::getTotalCurrent(float voltage, int order){
+	return NAN; //not yet implemented
+}
 
 void Diode::updateVals(float time_or_voltage){
 	float vd = time_or_voltage;

@@ -31,7 +31,7 @@ void Component::updateVals(float newVoltage, float newCurrent, int order){
     throw notSupportedByComponentException();
 }
 
-void Component::updateVals(float time){
+void Component::updateVals(float time_or_voltage){
     throw notSupportedByComponentException();
 }
 

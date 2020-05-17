@@ -4,8 +4,9 @@
 #include <component/component.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
+#include <component/currentSource.hpp>
 
-#include "nonlinearAnalysisTest.hpp"
+#include "nonlinearAnalysis.hpp"
 
 // doesn't change during nonlinear analysis
 void nonlinearSetup(Circuit& c){
@@ -37,8 +38,10 @@ string runNonlinearTransience(Circuit& c, float t){
     //set maximum Newton-Raphson error
     float nrError = 0.001;
 
-    bool flag = false;
+    bool flag;
     do{
+        flag = false;
+
         //compute A, b for current iteration
         c.setupA();
         c.adjustB();
@@ -50,22 +53,22 @@ string runNonlinearTransience(Circuit& c, float t){
 
         //update values for non linear components (used in next iteration)
         for(const auto comp : nonLinears){
-            nodes = comp->getNodes()
+            nodes = comp->getNodes();
 
             v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
             v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
             voltage = v1 - v2;
 
-            //check if one nonlinear component has not converged yet
+            //check if a nonlinear component has not yet converged
             if(prevVoltage != -1.0f && abs(voltage - prevVoltage) > nrError){
-                flag = true;
+                flag = true; //do another iteration
             }
 
             comp->updateVals(voltage);
 
             prevVoltage = voltage;
         }
-    }while(flag)
+    }while(flag);
 
 
     ///output results for current timestep:
@@ -105,14 +108,14 @@ string runNonlinearTransience(Circuit& c, float t){
 
     //output current through current sources/other components
     for(const auto &cs : currentSources){
-        if((typeid(*cs) == typeid(Capacitor)) || typeid(*cs) == typeid(Inductor)){ //component = inductor/capacitor
-         	nodes = cs->getNodes();
-		v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
+        if(typeid(*cs) == typeid(CurrentSource)){ //component = currentSource
+         	outLine += "," + to_string(cs->getCurrent());
+        }else{ //component = everything with companion models
+            nodes = cs->getNodes();
+		    v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
         	v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);  
 		
-		outLine += "," + to_string(cs->getTotalCurrent(v1-v2));
-        }else{ //component = currentSource
-            outLine += "," + to_string(cs->getCurrent());
+		    outLine += "," + to_string(cs->getTotalCurrent(v1-v2));
         }
     }
 

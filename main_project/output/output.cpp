@@ -6,8 +6,10 @@
 #include <component/component.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
+#include <component/diode.hpp>
 
 #include "linearAnalysis.hpp"
+#include "../../research/newton_raphson/nonlinearAnalysis.hpp"
 
 #include "output.hpp"
 
@@ -45,6 +47,8 @@ void outputCSV(Circuit& c, string outputFileName, float timeStep, float simulati
             outputFile << ",i_C" + cs->getName();
         }else if(typeid(*cs) == typeid(Inductor)){
             outputFile << ",i_L" + cs->getName();
+        }else if(typeid(*cs) == typeid(Diode)){
+            outputFile << ",i_D" + cs->getName();
         }else{ //component = currentSource
             outputFile << ",i_I" + cs->getName();
         }
@@ -62,6 +66,12 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         linearSetup(c); //compute A, b, A_inv, xMeaning
         for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
             outLine = runLinearTransience(c, t); 
+            outputFile << outLine << endl;
+        }
+    }else{
+        nonlinearSetup(c); //compute xMeaning
+        for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
+            outLine = runNonlinearTransience(c, t); 
             outputFile << outLine << endl;
         }
     }
