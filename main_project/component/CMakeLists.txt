@@ -9,4 +9,5 @@ add_library(component
     waveform.cpp
     controlledSource.cpp
     voltageControlledVoltageSource.cpp
+    currentControlledVoltageSource.cpp
 )
