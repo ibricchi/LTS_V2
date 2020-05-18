@@ -7,6 +7,7 @@
 #include <component/voltageSource.hpp>
 #include <component/currentSource.hpp>
 #include <component/diode.hpp>
+#include <component/voltageControlledVoltageSource.hpp>
 
 #include "input.hpp"
 
@@ -53,6 +54,8 @@ void readSpice(Circuit& c, istream& file){
 			c.addComponent<Capacitor>(name,args);
 		}else if(compTypeC == "D" || compTypeC == "d"){
             c.addComponent<Diode>(name, args);
+        }else if(compTypeC == "E" || compTypeC == "e"){
+            c.addComponent<VoltageControlledVoltageSource>(name, args);
         }else{
             cerr << "Unknown component type" <<endl;
             exit(1); //change to throwing error

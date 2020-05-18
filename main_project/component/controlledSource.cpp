@@ -21,6 +21,8 @@ ControlledSource::ControlledSource(string name, vector<string> args, vector<doub
 //     setupBasic(n1, n2, nc1, nc2);
 // }
 
+ControlledSource::~ControlledSource(){}
+
 void ControlledSource::setupBasic(int n1, int n2, int nc1, int nc2){
     nodes.push_back(n1);
     nodes.push_back(n2);
