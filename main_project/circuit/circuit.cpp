@@ -110,35 +110,6 @@ void Circuit::nlSetup(){
             }
         }            
     }
-
-    // sets up fixed aspects of A
-    // same as in normal A calculation
-    A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
-    vector<int> nodes;
-    for (int i{}; i < voltageSources.size(); i++)
-    {
-        const auto &vs = voltageSources.at(i);
-
-        nodes = vs->getNodes();
-        const int node1 = nodes.at(0);
-        const int node2 = nodes.at(1);
-
-        if (node1 != 0)
-        {
-            A(node1 - 1, highestNodeNumber + i) = 1;
-            A(highestNodeNumber + i, node1 - 1) = 1; //different when dealing with dependent sources
-        }
-
-        if (node2 != 0)
-        {
-            A(node2 - 1, highestNodeNumber + i) = -1;
-            A(highestNodeNumber + i, node2 - 1) = -1; //different when dealing with dependent sources
-        }
-
-        // code for debugging changes in A per itteration
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
-    }
 }
 
 // setupA definition
@@ -211,7 +182,9 @@ void Circuit::setupA()
     }
 }
 
-void Circuit::nonLinearA(){    
+void Circuit::nonLinearA(){
+    A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
+
     // setup currents from non voltage source components
     for(const vector<nodeCompPair> nf : nodalFunctions){
         for(const nodeCompPair ncp : nf){
@@ -219,10 +192,40 @@ void Circuit::nonLinearA(){
             int n2 = ncp.n2;
             float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
             if(n1 != 0){
-                A(n1-1, n1-1) = ncp.DIV(n1, v);
+                A(n1-1, n1-1) += ncp.DIV(n1, v);
                 if(n2 != 0) A(n1-1, n2-1) = ncp.DIV(n2, v);
+                // code for debugging changes in A per itteration
+                IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+                cout << A.format(CleanFmt) << endl << endl;
             }
         }
+    }
+
+    // same as linear for VS
+    vector<int> nodes;
+    for (int i{}; i < voltageSources.size(); i++)
+    {
+        const auto &vs = voltageSources.at(i);
+
+        nodes = vs->getNodes();
+        const int node1 = nodes.at(0);
+        const int node2 = nodes.at(1);
+
+        if (node1 != 0)
+        {
+            A(node1 - 1, highestNodeNumber + i) += 1;
+            A(highestNodeNumber + i, node1 - 1) += 1; //different when dealing with dependent sources
+        }
+
+        if (node2 != 0)
+        {
+            A(node2 - 1, highestNodeNumber + i) += -1;
+            A(highestNodeNumber + i, node2 - 1) += -1; //different when dealing with dependent sources
+        }
+
+        // code for debugging changes in A per itteration
+        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        // cout << A.format(CleanFmt) << endl << endl;
     }
 }
 
