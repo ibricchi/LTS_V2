@@ -5,6 +5,6 @@
 #include <circuit/circuit.hpp>
 
 void linearSetup(Circuit& c);
-string runLinearTransience(Circuit& c, float t);
+string runLinearTransience(Circuit& c, double t);
 
 #endif

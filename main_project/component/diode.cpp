@@ -5,12 +5,12 @@
 
 #include "diode.hpp"
 
-Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
+Diode::Diode(string name, vector<string> args, vector<double> extraInfo)
     :Component{name}
 {
     int n1 = stoi(args[0]);
     int n2 = stoi(args[1]);
-    // float val = getValue(args[2]);
+    // double val = getValue(args[2]);
 
 	subComponents = 2;
 	nodes.push_back(n1);
@@ -24,7 +24,7 @@ Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::nonLinear);
 }
 
-Diode::Diode(string _name,float c, int n1, int n2, float timeStep, int order)
+Diode::Diode(string _name,double c, int n1, int n2, double timeStep, int order)
 	:Component{_name}{
 	subComponents = 2;	
 	nodes.push_back(n1);
@@ -46,12 +46,12 @@ double Diode::getCurrent() const{
 	return -compCurrent; //direction of current source is opposite to direction of diode
 }
 
-double Diode::getTotalCurrent(float voltage, int order){
+double Diode::getTotalCurrent(double voltage, int order){
 	return NAN; //not yet implemented
 }
 
-void Diode::updateVals(float time_or_voltage){
-	float vd = time_or_voltage;
+void Diode::updateVals(double time_or_voltage){
+	double vd = time_or_voltage;
 	double tempExp = exp(vd/vt); //more efficient to only calculate once
 
 	compConductance = is/vt * tempExp;

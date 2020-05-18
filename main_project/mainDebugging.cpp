@@ -34,8 +34,8 @@ void testCircuit(stringstream& buffer){
 int main(){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.02; //seconds
-    float simulationTime = 1; //seconds
+    double timeStep = 0.02; //seconds
+    double simulationTime = 1; //seconds
     
     // setup circuit
     Circuit c{};

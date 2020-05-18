@@ -4,12 +4,12 @@
 
 #include "inductor.hpp"
 
-Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
+Inductor::Inductor(string name, vector<string> args, vector<double> extraInfo)
     :Component{name}
 {
     int n1 = stoi(args[0]);
     int n2 = stoi(args[1]);
-    float val = getValue(args[2]);
+    double val = getValue(args[2]);
 	int order = 1;
 
 	subComponents = 2;
@@ -31,7 +31,7 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::vcUpdatable);
 }
 
-Inductor::Inductor(string _name,float l, int n1, int n2, float timeStep, int order)
+Inductor::Inductor(string _name,double l, int n1, int n2, double timeStep, int order)
 	:Component{_name}, inductance{l}{
 	subComponents = 2;	
 	nodes.push_back(n1);
@@ -57,9 +57,9 @@ double Inductor::getCurrent() const{
 	return -compCurrent; //So it's in the right direction, as current source points towards negative.
 }
 
-double Inductor::getTotalCurrent(float voltage, int order){
+double Inductor::getTotalCurrent(double voltage, int order){
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
-		float res= voltage*compConductance + compConductance*compVoltage +prevTotalCurrent;
+		double res= voltage*compConductance + compConductance*compVoltage +prevTotalCurrent;
 		prevTotalCurrent = res;
 		return res; //negative as current flows from n1 to n2 of inductor
 	}else{
@@ -67,7 +67,7 @@ double Inductor::getTotalCurrent(float voltage, int order){
 	}
 }
 
-void Inductor::updateVals(float newVoltage, float newCurrent, int order){
+void Inductor::updateVals(double newVoltage, double newCurrent, int order){
 	if(order==1){ //using companion model for the trapezoid integration method.
 		//newCurrent = (comp_conductance*newVoltage) + comp_current; //Current into inductor = current through conductance + current source current		
 		compCurrent =(2.0*compConductance*newVoltage)+compCurrent;

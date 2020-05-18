@@ -3,7 +3,7 @@
 #include "component.hpp"
 #include "waveform.hpp"
 
-void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<float> extraInfo){
+void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<double> extraInfo){
     string flow = args[2];
     if(flow.substr(0,4) == "SIN(" || flow.substr(0,4) == "sin("){
         switch (args.size()) // switch statment depending on how many arguments were given as some are not required
@@ -58,7 +58,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
 }
 
 
-void Waveform::setupSin(float startTime, float _offset, float _amplitude, float _frequency, float _timeDelay, float _dampingFactor, float _phase){
+void Waveform::setupSin(double startTime, double _offset, double _amplitude, double _frequency, double _timeDelay, double _dampingFactor, double _phase){
     offset = _offset;
     amplitude = _amplitude;
     frequency = _frequency;
@@ -70,7 +70,7 @@ void Waveform::setupSin(float startTime, float _offset, float _amplitude, float 
     updateSinVals(startTime);
 }
 
-float Waveform::updateVals(float time){
+double Waveform::updateVals(double time){
     switch(sourceType){
         case sourceTypes::SIN:
             return updateSinVals(time);
@@ -80,6 +80,6 @@ float Waveform::updateVals(float time){
     }
 }
 
-float Waveform::updateSinVals(float time){
+double Waveform::updateSinVals(double time){
     return offset + amplitude * exp(-dampingFactor*(time - timeDelay)) * sin(2 * PI * frequency * (time - timeDelay) + (phase/360));
 }

@@ -15,7 +15,7 @@ void nonlinearSetup(Circuit& c){
     c.setupXMeaning();
 }
 
-string runNonlinearTransience(Circuit& c, float t){
+string runNonlinearTransience(Circuit& c, double t){
     //get references to the components stored inside the circuit
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
@@ -34,11 +34,11 @@ string runNonlinearTransience(Circuit& c, float t){
 
     //variables that are used multiple times in this function
     vector<int> nodes{};
-    float prevVoltage{-1.0f}, voltage{}, v1{}, v2{};
-    float current{};
+    double prevVoltage{-1.0f}, voltage{}, v1{}, v2{};
+    double current{};
 
     //set maximum Newton-Raphson error
-    float nrError = 0.0001;
+    double nrError = 0.0001;
 
     bool flag;
     do{
@@ -128,7 +128,7 @@ string runNonlinearTransience(Circuit& c, float t){
     }
     
     //update components based on current voltage/current
-    float currentVoltage{}, currentCurrent{};
+    double currentVoltage{}, currentCurrent{};
     for(const auto &up : vcUpdatables){
         nodes = up->getNodes();
 

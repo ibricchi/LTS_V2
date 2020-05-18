@@ -23,9 +23,9 @@ protected:
     vector<Component*> nonLinears{};
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
-    float currentTime;
-    float simulationTime; //time when simulation ends
-    float timeStep;
+    double currentTime;
+    double simulationTime; //time when simulation ends
+    double timeStep;
     bool hasNonLinear;
     MatrixXd A;
     MatrixXd A_inv;
@@ -47,14 +47,14 @@ public:
     int getHighestNodeNumber() const;
     void setHighestNodeNumber(int _highestNodeNumber);
 
-    float getCurrentTime() const;
-    void setCurrentTime(float _currentTime);
+    double getCurrentTime() const;
+    void setCurrentTime(double _currentTime);
 
-    float getSimulationTime() const;
-    void setSimulationTime(float _simulationTime);
+    double getSimulationTime() const;
+    void setSimulationTime(double _simulationTime);
 
-    float getTimeStep() const;
-    void setTimeStep(float _timeStep);
+    double getTimeStep() const;
+    void setTimeStep(double _timeStep);
 
     bool hasNonLinearComponents() const;
     void setHasNonLinearComponents(bool _hasNonLinearComponents);
@@ -75,7 +75,7 @@ public:
     // void addComponent(string name, vector<string> args);
     template <class comp>
     void addComponent(string name, vector<string> args){
-        vector<float> extraInfo; // extra info will be passed to constructors and used if necessary
+        vector<double> extraInfo; // extra info will be passed to constructors and used if necessary
         // we can change it to a vector of strings if we need non float data later on
         extraInfo.push_back(getTimeStep());//extraInfo[0] is timeStep of circuit
         extraInfo.push_back(getCurrentTime());//extraInfo[1] is current time of circuit

@@ -44,16 +44,16 @@ void testCircuit4(stringstream& buffer){
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.001; //seconds
-    float simulationTime = 0.2; //seconds
+    double timeStep = 0.001; //seconds
+    double simulationTime = 0.2; //seconds
     if(argc > 1){
         outputFileName = argv[1];
     }
     if(argc > 2){
-        timeStep = (float)atof(argv[2]);
+        timeStep = (double)atof(argv[2]);
     }
     if(argc > 3){
-        simulationTime = (float)atof(argv[3]);
+        simulationTime = (double)atof(argv[3]);
     }
 
     // setup circuit

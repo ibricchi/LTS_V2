@@ -3,7 +3,7 @@
 
 #include "voltageSource.hpp"
 
-VoltageSource::VoltageSource(string name, vector<string> args, vector<float> extraInfo)
+VoltageSource::VoltageSource(string name, vector<string> args, vector<double> extraInfo)
     :Component{name}
 {
     int n1 = stoi(args[0]);
@@ -12,7 +12,7 @@ VoltageSource::VoltageSource(string name, vector<string> args, vector<float> ext
     setupBasic(n1, n2);
 
     if(args.size() == 3){
-        float val = getValue(args[2]);
+        double val = getValue(args[2]);
         setupDC(val);
     }else{
         string flow = args[2];
@@ -27,7 +27,7 @@ VoltageSource::VoltageSource(string name, vector<string> args, vector<float> ext
     }
 }
 
-VoltageSource::VoltageSource(string _name, float _voltage, int n1, int n2)
+VoltageSource::VoltageSource(string _name, double _voltage, int n1, int n2)
     :Component{_name}{
     setupBasic(n1, n2);
     setupDC(_voltage);
@@ -39,15 +39,15 @@ void VoltageSource::setupBasic(int n1, int n2){
     types.push_back(componentType::voltageSource);
 }
 
-void VoltageSource::setupDC(float _voltage){
+void VoltageSource::setupDC(double _voltage){
     voltage = _voltage;
 }
 
-float VoltageSource::getVoltage() const{
+double VoltageSource::getVoltage() const{
     return voltage;
 }
 
-void VoltageSource::updateVals(float time){
+void VoltageSource::updateVals(double time){
     voltage = voltageWaveform.updateVals(time);
 }
 

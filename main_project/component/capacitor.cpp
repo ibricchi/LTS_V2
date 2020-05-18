@@ -4,12 +4,12 @@
 
 #include "capacitor.hpp"
 
-Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
+Capacitor::Capacitor(string name, vector<string> args, vector<double> extraInfo)
     :Component{name}
 {
     int n1 = stoi(args[0]);
     int n2 = stoi(args[1]);
-    float val = getValue(args[2]);
+    double val = getValue(args[2]);
 	int order = 1;
 
 	subComponents = 2;
@@ -31,7 +31,7 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::vcUpdatable);
 }
 
-Capacitor::Capacitor(string _name,float c, int n1, int n2, float timeStep, int order)
+Capacitor::Capacitor(string _name,double c, int n1, int n2, double timeStep, int order)
 	:Component{_name}, capacitance{c}{
 	subComponents = 2;	
 	nodes.push_back(n1);
@@ -57,9 +57,9 @@ double Capacitor::getCurrent() const{
 	return compCurrent;
 }
 
-double Capacitor::getTotalCurrent(float voltage, int order){
+double Capacitor::getTotalCurrent(double voltage, int order){
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
-		float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
+		double res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
 		prevTotalCurrent = res;
 		return res;	
 	}else{
@@ -67,7 +67,7 @@ double Capacitor::getTotalCurrent(float voltage, int order){
 	}
 }
 
-void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
+void Capacitor::updateVals(double newVoltage, double newCurrent, int order){
 	if(order==1){ //using companion model for the trapezoid integration method.
 		// newCurrent = (comp_conductance*newVoltage) - comp_current; //Current into capacitor = current through companion conductance - (as current source pointing towards + node) current source current.		
 		// comp_current = -comp_conductance*newVoltage - newCurrent;

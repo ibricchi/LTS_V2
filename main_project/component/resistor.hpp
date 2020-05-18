@@ -8,10 +8,10 @@
 
 class Resistor: public Component{
 private:
-    float conductance;
+    double conductance;
 public:
-    Resistor(string _name, vector<string> args, vector<float> extraInfo);
-    Resistor(string _name, float r, int n1, int n2);
+    Resistor(string _name, vector<string> args, vector<double> extraInfo);
+    Resistor(string _name, double r, int n1, int n2);
     ~Resistor() = default;
 
     double getConductance() const override;

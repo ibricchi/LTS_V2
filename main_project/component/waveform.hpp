@@ -19,15 +19,15 @@ private:
     enum::sourceTypes sourceType;
 
     //used for sin
-    float offset, amplitude, frequency, timeDelay, dampingFactor, phase;
+    double offset, amplitude, frequency, timeDelay, dampingFactor, phase;
     
-    void setupSin(float startTime, float _voltageOffset, float _voltageAmplitude, float _frequency, float _timeDelay, float _dampingFactor, float _phase);
-    float updateSinVals(float time);
+    void setupSin(double startTime, double _voltageOffset, double _voltageAmplitude, double _frequency, double _timeDelay, double _dampingFactor, double _phase);
+    double updateSinVals(double time);
 
 public:
-    void setupWaveform(const Component* comp, vector<string> args, vector<float> extraInfo);
+    void setupWaveform(const Component* comp, vector<string> args, vector<double> extraInfo);
 
-    float updateVals(float time);
+    double updateVals(double time);
 };
 
 #endif

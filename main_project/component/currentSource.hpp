@@ -12,18 +12,18 @@ private:
     int sourceType;
 
     //used for dc
-    float current;
+    double current;
 
     Waveform currentWaveform{};
 public:
-    CurrentSource(string _name, vector<string> args, vector<float> extraInfo);
-    CurrentSource(string _name, float _current, int n1, int n2);
+    CurrentSource(string _name, vector<string> args, vector<double> extraInfo);
+    CurrentSource(string _name, double _current, int n1, int n2);
     ~CurrentSource() = default;
 
     void setupBasic(int n1, int n2);
-    void setupDC(float current);
+    void setupDC(double current);
 
-    void updateVals(float time);
+    void updateVals(double time);
 
     double getCurrent() const override;
 

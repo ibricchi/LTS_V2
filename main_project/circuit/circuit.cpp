@@ -45,24 +45,24 @@ void Circuit::setHighestNodeNumber(int _highestNodeNumber){
     highestNodeNumber = _highestNodeNumber;
 }
 
-float Circuit::getCurrentTime() const{
+double Circuit::getCurrentTime() const{
     return currentTime;
 }
-void Circuit::setCurrentTime(float _currentTime){
+void Circuit::setCurrentTime(double _currentTime){
     currentTime = _currentTime;
 }
 
-float Circuit::getSimulationTime() const{
+double Circuit::getSimulationTime() const{
     return simulationTime;
 }
-void Circuit::setSimulationTime(float _simulationTime){
+void Circuit::setSimulationTime(double _simulationTime){
     simulationTime = _simulationTime;
 }
 
-float Circuit::getTimeStep() const{
+double Circuit::getTimeStep() const{
     return timeStep;
 }
-void Circuit::setTimeStep(float _timeStep){
+void Circuit::setTimeStep(double _timeStep){
     timeStep = _timeStep;
 }
 
@@ -95,13 +95,13 @@ vector<Component*>& Circuit::getNonLinearsRef(){
 // setupA definition
 void Circuit::setupA()
 {
-    A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
+    A = MatrixXd::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
     vector<int> nodes{};
 
     //constructing conductance part
     for (const auto &comp : conductanceSources)
     {
-        const float conductance = comp->getConductance();
+        const double conductance = comp->getConductance();
         nodes = comp->getNodes();
 
         // I had to change the algorithm to allow for node1 to be 0

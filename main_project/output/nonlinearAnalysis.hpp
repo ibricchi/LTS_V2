@@ -5,6 +5,6 @@
 #include <circuit/circuit.hpp>
 
 void nonlinearSetup(Circuit& c);
-string runNonlinearTransience(Circuit& c, float t);
+string runNonlinearTransience(Circuit& c, double t);
 
 #endif

@@ -9,11 +9,11 @@
 #include <component/diode.hpp>
 
 #include "linearAnalysis.hpp"
-#include "../../research/newton_raphson/nonlinearAnalysis.hpp"
+#include "nonlinearAnalysis.hpp"
 
 #include "output.hpp"
 
-void outputCSV(Circuit& c, string outputFileName, float timeStep, float simulationTime){
+void outputCSV(Circuit& c, string outputFileName, double timeStep, double simulationTime){
     //get references to the components stored inside the circuit
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
@@ -60,17 +60,17 @@ void outputCSV(Circuit& c, string outputFileName, float timeStep, float simulati
     outputFile.close();
 }
 
-void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulationTime){
+void runAnalysis(Circuit& c, ofstream& outputFile, double timeStep, double simulationTime){
     string outLine{};
     if(!c.hasNonLinearComponents()){
         linearSetup(c); //compute A, b, A_inv, xMeaning
-        for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
+        for(double t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
             outLine = runLinearTransience(c, t); 
             outputFile << outLine << endl;
         }
     }else{
         nonlinearSetup(c); //compute xMeaning
-        for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
+        for(double t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
             outLine = runNonlinearTransience(c, t); 
             outputFile << outLine << endl;
         }

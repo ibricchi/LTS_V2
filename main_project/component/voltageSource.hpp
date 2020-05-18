@@ -12,20 +12,20 @@ private:
     int sourceType;
 
     //used for dc
-    float voltage;
+    double voltage;
 
     Waveform voltageWaveform{};
 public:
-    VoltageSource(string _name, vector<string> args, vector<float> extraInfo);
-    VoltageSource(string _name, float _voltage, int n1, int n2);
+    VoltageSource(string _name, vector<string> args, vector<double> extraInfo);
+    VoltageSource(string _name, double _voltage, int n1, int n2);
     ~VoltageSource() = default;
 
     void setupBasic(int n1, int n2);
-    void setupDC(float voltage);
+    void setupDC(double voltage);
 
-    void updateVals(float time);
+    void updateVals(double time);
 
-    float getVoltage() const override;
+    double getVoltage() const override;
 
     vector<int> getNodes() const override;
 };

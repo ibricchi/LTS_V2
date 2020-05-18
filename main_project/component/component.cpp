@@ -11,7 +11,7 @@ Component::~Component(){}
 // these functions should by default throw error unless overwritten by another child class down the line
 // this allows to call an error if ever a function that shouldn't be returning a voltage or current or conductance
 // is asked for one
-float Component::getVoltage() const{
+double Component::getVoltage() const{
     throw notSupportedByComponentException();
 }
 
@@ -19,7 +19,7 @@ double Component::getCurrent() const{
    throw notSupportedByComponentException();
 }
 
-double Component::getTotalCurrent(float voltage,int order){
+double Component::getTotalCurrent(double voltage,int order){
 	throw notSupportedByComponentException();
 }
 
@@ -27,11 +27,11 @@ double Component::getConductance() const{
     throw notSupportedByComponentException();
 }
 
-void Component::updateVals(float newVoltage, float newCurrent, int order){
+void Component::updateVals(double newVoltage, double newCurrent, int order){
     throw notSupportedByComponentException();
 }
 
-void Component::updateVals(float time_or_voltage){
+void Component::updateVals(double time_or_voltage){
     throw notSupportedByComponentException();
 }
 
@@ -40,11 +40,11 @@ string Component::getName() const{
 }
 
 
-// helper function to parse string with units into float
-float Component::getValue(string val) const{
+// helper function to parse string with units into double
+double Component::getValue(string val) const{
 	string units{};
-	float base{};//base number
-	float mult{};//what we multiply the number by
+	double base{};//base number
+	double mult{};//what we multiply the number by
 	int ss = -1;//string start
 	for(int i = 0; i < val.size(); i++){
 		if(val[i] > '9'){

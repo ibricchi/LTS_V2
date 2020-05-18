@@ -62,6 +62,6 @@ void readSpice(Circuit& c, istream& file){
     c.setHighestNodeNumber(maxNode);
 }
 
-void setupBasic(Circuit& c, float timeStep){
+void setupBasic(Circuit& c, double timeStep){
     c.setTimeStep(timeStep);
 }

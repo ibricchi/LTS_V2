@@ -15,7 +15,7 @@ void linearSetup(Circuit& c){
     c.setupXMeaning();
 }
 
-string runLinearTransience(Circuit& c, float t){
+string runLinearTransience(Circuit& c, double t){
     //get references to the components stored inside the circuit
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
@@ -27,7 +27,7 @@ string runLinearTransience(Circuit& c, float t){
     string outLine{};
     //compute x for the current timestep
     c.computeX();
-    VectorXf x = c.getX();
+    VectorXd x = c.getX();
 
     //output current time 
     c.setCurrentTime(t);
@@ -40,8 +40,8 @@ string runLinearTransience(Circuit& c, float t){
 
     //output current through resistors
     vector<int> nodes{};
-    float voltage{}, v1{}, v2{};
-    float current{};
+    double voltage{}, v1{}, v2{};
+    double current{};
     for(const auto &gs : conductanceSources){
         if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor)){
             continue; //don't want to display current through the companion model's resistor
@@ -85,7 +85,7 @@ string runLinearTransience(Circuit& c, float t){
     }
     
     //update components based on current voltage/current
-    float currentVoltage{}, currentCurrent{};
+    double currentVoltage{}, currentCurrent{};
     for(const auto &up : vcUpdatables){
         nodes = up->getNodes();
 
