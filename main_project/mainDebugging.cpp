@@ -28,10 +28,12 @@ using namespace std;
 // for debugging only
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
-    buffer << "Is 1 0 1" << endl;
-    buffer << "R2 2 1 2" << endl;
-    buffer << "R3 3 2 3" << endl;
-    buffer << "R4 0 3 4" << endl;
+    buffer << "R2 0 1 1" << endl;
+    buffer << "R1 1 2 1" << endl;
+    buffer << "R3 2 4 1" << endl;
+    buffer << "R4 3 4 1" << endl;
+    buffer << "V1 3 2 1" << endl;
+    // buffer << "I2 4 0 1" << endl;
 }
 
 int main(){
@@ -52,5 +54,3 @@ int main(){
     // run simulation
     outputCSV(c, outputFileName, timeStep, simulationTime);
 }
-
-

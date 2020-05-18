@@ -96,8 +96,6 @@ void Circuit::nlSetup(){
 
     x = VectorXf::Zero(highestNodeNumber + vsc);
 
-    nodalFunctions.resize(highestNodeNumber);
-
     // sets up nodalFunctions vector
     // very similar to the setup of A in linear analysis
     for(Component* comp : nonVoltageSources){
@@ -106,7 +104,7 @@ void Circuit::nlSetup(){
             if(n1 == 0) continue;
             for(int n2 : nodes){
                 if(n1 == n2) continue;
-                nodalFunctions[n1-1].push_back(nodeCompPair{n1, n2, comp});
+                nodalFunctions.push_back(nodeCompPair{n1, n2, comp});
             }
         }            
     }
@@ -186,18 +184,16 @@ void Circuit::nonLinearA(){
     A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
 
     // setup currents from non voltage source components
-    for(const vector<nodeCompPair> nf : nodalFunctions){
-        for(const nodeCompPair ncp : nf){
-            int n1 = ncp.n1;
-            int n2 = ncp.n2;
-            float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
-            if(n1 != 0){
-                A(n1-1, n1-1) += ncp.DIV(n1, v);
-                if(n2 != 0) A(n1-1, n2-1) = ncp.DIV(n2, v);
-                // code for debugging changes in A per itteration
-                // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-                // cout << A.format(CleanFmt) << endl << endl;
-            }
+    for(const nodeCompPair ncp : nodalFunctions){
+        int n1 = ncp.n1;
+        int n2 = ncp.n2;
+        float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
+        if(n1 != 0){
+            A(n1-1, n1-1) += ncp.DIV(n1, v);
+            if(n2 != 0) A(n1-1, n2-1) = ncp.DIV(n2, v);
+            // code for debugging changes in A per itteration
+            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+            // cout << A.format(CleanFmt) << endl << endl;
         }
     }
 
@@ -281,16 +277,14 @@ void Circuit::nonLinearB(){
     b = VectorXf::Zero(highestNodeNumber + voltageSources.size());
 
     // setup currents from non voltage source components
-    for(const vector<nodeCompPair> nf : nodalFunctions){
-        for(const nodeCompPair ncp : nf){
-            int n1 = ncp.n1;
-            int n2 = ncp.n2;
-            float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
-            b(n1-1) += ncp.IV(v);
-            // code for debugging changes in A per itteration
-            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-            // cout << b.format(CleanFmt) << endl << endl;
-        }
+    for(const nodeCompPair ncp : nodalFunctions){
+        int n1 = ncp.n1;
+        int n2 = ncp.n2;
+        float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n2-1]);
+        b(n1-1) += ncp.IV(v);
+        // code for debugging changes in A per itteration
+        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        // cout << b.format(CleanFmt) << endl << endl;
     }
 
     //adding voltages
@@ -320,11 +314,11 @@ vector<string> Circuit::getXMeaning() const{
 }
 
 void Circuit::computeX(){
-    x = A_inv * b;
+    x -= A_inv * b;
 }
 
 void Circuit::computeNLX(){
-    x += A_inv * b;
+    x = A_inv * b;
 }
 
 VectorXf Circuit::getX() const{

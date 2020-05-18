@@ -47,7 +47,7 @@ protected:
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
 
     // non-linear analysis vectors;
-    vector<vector<nodeCompPair>> nodalFunctions{};
+    vector<nodeCompPair> nodalFunctions{};
 public:
     // default constructor for initializing empty object
     Circuit();
