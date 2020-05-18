@@ -12,4 +12,5 @@ add_library(component
     voltageControlledVoltageSource.cpp
     currentControlledVoltageSource.cpp
     voltageControlledCurrentSource.cpp
+    currentControlledCurrentSource.cpp
 )

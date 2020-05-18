@@ -6,12 +6,6 @@
 
 #include "currentControlledSource.hpp"
 
-/*
-    MNA only calculates currents through voltage sources.
-    Hence, controlling current must be the current through one of the voltage sources.
-    If a controlling current that doesn't initially go through a voltage source is required, a zero voltage source must be added to the circuit's netlist
-    (Then current through this source will be calculated).
-*/
 class CurrentControlledVoltageSource: public CurrentControlledSource{
 public:
     CurrentControlledVoltageSource(string _name, vector<string> args, vector<double> extraInfo);

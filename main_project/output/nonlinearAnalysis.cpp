@@ -114,7 +114,7 @@ string runNonlinearTransience(Circuit& c, double t){
         if(typeid(*cs) == typeid(CurrentSource)){ //component = currentSource
          	outLine += "," + to_string(cs->getCurrent());
         }else if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
-            continue; //still need to figure out way to compute current here
+            outLine += ",NotImplemented"; //still need to figure out way to compute current here
         }else{ //component = everything with companion models
             nodes = cs->getNodes();
 		    v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);

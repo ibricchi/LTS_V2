@@ -76,6 +76,8 @@ string runLinearTransience(Circuit& c, double t){
 		outLine += "," + to_string(cs->getTotalCurrent(v1-v2));
         }else if(typeid(*cs) == typeid(CurrentSource)){
             outLine += "," + to_string(cs->getCurrent());
+        }else{
+            outLine += ",NotImplemented";
         }
     }
 

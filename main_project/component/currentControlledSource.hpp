@@ -8,6 +8,11 @@
 
 /*
     Acts as interface for current controlled sources
+    
+    MNA only calculates currents through voltage sources.
+    Hence, controlling current must be the current through one of the voltage sources.
+    If a controlling current that doesn't initially go through a voltage source is required, a zero voltage source must be added to the circuit's netlist
+    (Then current through this source will be calculated).
 */
 class CurrentControlledSource: public Component{
 protected:
