@@ -96,7 +96,7 @@ void Circuit::nlSetup(){
 
     x = VectorXf::Zero(highestNodeNumber + vsc);
 
-    nodalFunctions.resize(highestNodeNumber+vsc);
+    nodalFunctions.resize(highestNodeNumber);
 
     // sets up nodalFunctions vector
     // very similar to the setup of A in linear analysis
@@ -109,6 +109,35 @@ void Circuit::nlSetup(){
                 nodalFunctions[n1-1].push_back(nodeCompPair{n1, n2, comp});
             }
         }            
+    }
+
+    // sets up fixed aspects of A
+    // same as in normal A calculation
+    
+    vector<int> nodes;
+    for (int i{}; i < voltageSources.size(); i++)
+    {
+        const auto &vs = voltageSources.at(i);
+
+        nodes = vs->getNodes();
+        const int node1 = nodes.at(0);
+        const int node2 = nodes.at(1);
+
+        if (node1 != 0)
+        {
+            A(node1 - 1, highestNodeNumber + i) = 1;
+            A(highestNodeNumber + i, node1 - 1) = 1; //different when dealing with dependent sources
+        }
+
+        if (node2 != 0)
+        {
+            A(node2 - 1, highestNodeNumber + i) = -1;
+            A(highestNodeNumber + i, node2 - 1) = -1; //different when dealing with dependent sources
+        }
+
+        // code for debugging changes in A per itteration
+        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        // cout << A.format(CleanFmt) << endl << endl;
     }
 }
 
