@@ -14,7 +14,7 @@
 #include <component/voltageControlledVoltageSource.hpp>
 #include <component/currentControlledVoltageSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
-
+#include <component/currentControlledCurrentSource.hpp>
 
 using namespace std;
 using namespace Eigen;
@@ -170,7 +170,7 @@ void Circuit::setupA()
             }
         }else if(typeid(*vs) == typeid(CurrentControlledVoltageSource)){
             double gain = vs->getGain();
-            int controllingVsIndex = getVoltageSourceIndexByName(vs->getName(), voltageSources);
+            int controllingVsIndex = getVoltageSourceIndexByName(vs->getVsName(), voltageSources);
 
             A(highestNodeNumber + i, highestNodeNumber + controllingVsIndex) -= gain;
         }
@@ -191,6 +191,16 @@ void Circuit::setupA()
             A(node1 - 1, nodeC2 - 1) -= gain;
             A(node2 - 1, nodeC1 - 1) -= gain;
             A(node2 - 1, nodeC2 - 1) += gain;
+        }else if(typeid(*cs) == typeid(CurrentControlledCurrentSource)){
+            nodes = cs->getNodes();
+            int node1 = nodes.at(0);
+            int node2 = nodes.at(1);
+
+            double gain = cs->getGain();
+            int controllingVsIndex = getVoltageSourceIndexByName(cs->getVsName(), voltageSources);
+
+            A(node1 - 1, highestNodeNumber + controllingVsIndex) += gain;
+            A(node2 - 1, highestNodeNumber + controllingVsIndex) -= gain;
         }
     }
 }

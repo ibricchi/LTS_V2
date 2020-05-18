@@ -10,6 +10,7 @@
 #include <component/voltageControlledVoltageSource.hpp>
 #include <component/currentControlledVoltageSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
+#include <component/currentControlledCurrentSource.hpp>
 
 #include "input.hpp"
 
@@ -62,6 +63,8 @@ void readSpice(Circuit& c, istream& file){
             c.addComponent<CurrentControlledVoltageSource>(name, args);
         }else if(compTypeC == "G" || compTypeC == "g"){
             c.addComponent<VoltageControlledCurrentSource>(name, args);
+        }else if(compTypeC == "F" || compTypeC == "f"){
+            c.addComponent<CurrentControlledCurrentSource>(name, args);
         }else{
             cerr << "Unknown component type" <<endl;
             exit(1); //change to throwing error
