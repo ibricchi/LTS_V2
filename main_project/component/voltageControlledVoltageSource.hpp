@@ -4,9 +4,9 @@
 #include <vector>
 #include <string>
 
-#include "controlledSource.hpp"
+#include "voltageControlledSource.hpp"
 
-class VoltageControlledVoltageSource: public ControlledSource{
+class VoltageControlledVoltageSource: public VoltageControlledSource{
 public:
     VoltageControlledVoltageSource(string _name, vector<string> args, vector<double> extraInfo);
     // VoltageControlledVoltageSource(string _name, double _voltage, int n1, int n2, int nc1, int nc2);

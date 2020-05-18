@@ -12,6 +12,7 @@
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
 #include <component/voltageControlledVoltageSource.hpp>
+#include <component/currentControlledVoltageSource.hpp>
 
 using namespace std;
 using namespace Eigen;
@@ -171,14 +172,18 @@ void Circuit::setupA()
             {
                 A(highestNodeNumber + i, nodeC2 - 1) += gain;
             }
-        }
+        }else if(typeid(*vs) == typeid(CurrentControlledVoltageSource)){
+            double gain = vs->getGain();
 
-        //CurrentControlledVoltageSource
-        // A(node1 - 1, nodeC1 - 1) += gain;
-        // A(node1 - 1, nodeC2 - 1) -= gain;
-        // A(node2 - 1, nodeC1 - 1) -= gain;
-        // A(node2 - 1, nodeC2 - 1) += gain;
+            // A(highestNodeNumber + i, ) += gain;
+        }
     }
+
+    //for VoltageControlledCurrentSource
+    // A(node1 - 1, nodeC1 - 1) += gain;
+    // A(node1 - 1, nodeC2 - 1) -= gain;
+    // A(node2 - 1, nodeC1 - 1) -= gain;
+    // A(node2 - 1, nodeC2 - 1) += gain;
 }
 
 MatrixXd Circuit::getA() const
@@ -223,7 +228,7 @@ void Circuit::adjustB()
     {
         auto vs = voltageSources.at(j);
 
-        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource) || typeid(*vs) == typeid(CurrentControlledVoltageSource)){
             continue;
         }else{ // normal/independent voltage sources
             b(i) = vs->getVoltage();

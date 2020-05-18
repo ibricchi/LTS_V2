@@ -31,6 +31,10 @@ double Component::getGain() const{
 	throw notSupportedByComponentException();
 }
 
+string Component::getVsName() const{
+	throw notSupportedByComponentException();
+}
+
 void Component::updateVals(double newVoltage, double newCurrent, int order){
     throw notSupportedByComponentException();
 }

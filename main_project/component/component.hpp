@@ -27,6 +27,7 @@ public:
     virtual double getCurrent() const; //For complex components, this returns the current through the companion model's current source rather than through the whole component
     virtual double getTotalCurrent(double voltage, int order = 1); //For complex components, this return the current through the whole component
     virtual double getGain() const;
+    virtual string getVsName() const;
     
     string getName() const;
     virtual vector<int> getNodes() const = 0;

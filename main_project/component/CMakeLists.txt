@@ -7,7 +7,8 @@ add_library(component
     voltageSource.cpp
     currentSource.cpp
     waveform.cpp
-    controlledSource.cpp
+    voltageControlledSource.cpp
+    currentControlledSource.cpp
     voltageControlledVoltageSource.cpp
     currentControlledVoltageSource.cpp
 )
