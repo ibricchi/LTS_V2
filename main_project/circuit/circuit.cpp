@@ -276,12 +276,20 @@ void Circuit::adjustB()
 void Circuit::nonLinearB(){
     b = VectorXf::Zero(highestNodeNumber + voltageSources.size());
 
+    
+    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+    // cout << x.format(CleanFmt) << endl << endl;
+
+    vector<int> nodes;
+    int n1, n2;
+
     // setup currents from non voltage source components
     for(const nodeCompPair ncp : nodalFunctions){
-        int n1 = ncp.n1;
-        int n2 = ncp.n2;
+        n1 = ncp.n1;
+        n2 = ncp.n2;
         float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n2-1]);
         b(n1-1) += ncp.IV(v);
+
         // code for debugging changes in A per itteration
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
         // cout << b.format(CleanFmt) << endl << endl;
@@ -290,8 +298,20 @@ void Circuit::nonLinearB(){
     //adding voltages
     for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
     {
-        b(i) = voltageSources.at(j)->getVoltage();
+        nodes = voltageSources[j]->getNodes();
+        n1 = nodes[0];
+        n2 = nodes[1];
+        if(n1 != 0) b(n1-1) += x[i];
+        if(n2 != 0) b(n2-1) -= x[i];
+        // move this part into the IV thing later
+        b(i) -= voltageSources.at(j)->getVoltage();
+        b(i) += (n1 == 0? 0 : x[n1-1]);
+        b(i) -= (n2 == 0? 0 : x[n2-1]);
+
+        // cout << b.format(CleanFmt) << endl << endl;
     }
+
+    // cout << b.format(CleanFmt) << endl << endl;
 };
 VectorXf Circuit::getB() const
 {
@@ -314,11 +334,16 @@ vector<string> Circuit::getXMeaning() const{
 }
 
 void Circuit::computeX(){
-    x -= A_inv * b;
+    x = A_inv * b;
 }
 
 void Circuit::computeNLX(){
-    x = A_inv * b;
+    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+    // cout << (A).format(CleanFmt) << endl << endl;
+    // cout << (b).format(CleanFmt) << endl << endl;
+    // cout << x.format(CleanFmt) << endl << endl;
+    // cout << (A_inv*b).format(CleanFmt) << endl << endl;
+    x -= A_inv * b;
 }
 
 VectorXf Circuit::getX() const{

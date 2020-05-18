@@ -28,12 +28,12 @@ using namespace std;
 // for debugging only
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
+    buffer << "V1 3 2 1" << endl;
     buffer << "R2 0 1 1" << endl;
     buffer << "R1 1 2 1" << endl;
     buffer << "R3 2 4 1" << endl;
     buffer << "R4 3 4 1" << endl;
-    buffer << "V1 3 2 1" << endl;
-    // buffer << "I2 4 0 1" << endl;
+    buffer << "I2 4 0 1" << endl;
 }
 
 int main(){
