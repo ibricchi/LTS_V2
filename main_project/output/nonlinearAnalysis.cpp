@@ -7,6 +7,7 @@
 #include <component/inductor.hpp>
 #include <component/diode.hpp>
 #include <component/currentSource.hpp>
+#include <component/voltageControlledCurrentSource.hpp>
 
 #include "nonlinearAnalysis.hpp"
 
@@ -112,6 +113,8 @@ string runNonlinearTransience(Circuit& c, double t){
     for(const auto &cs : currentSources){
         if(typeid(*cs) == typeid(CurrentSource)){ //component = currentSource
          	outLine += "," + to_string(cs->getCurrent());
+        }else if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
+            continue; //still need to figure out way to compute current here
         }else{ //component = everything with companion models
             nodes = cs->getNodes();
 		    v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
@@ -121,7 +124,6 @@ string runNonlinearTransience(Circuit& c, double t){
         }
     }
 
-    
     // update components before next calculation of b
     for(const auto &comp : timeUpdatables){
         comp->updateVals(t+c.getTimeStep());

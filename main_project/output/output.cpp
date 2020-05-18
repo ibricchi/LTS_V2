@@ -10,6 +10,7 @@
 #include <component/diode.hpp>
 #include <component/voltageControlledVoltageSource.hpp>
 #include <component/currentControlledVoltageSource.hpp>
+#include <component/voltageControlledCurrentSource.hpp>
 
 #include "linearAnalysis.hpp"
 #include "nonlinearAnalysis.hpp"
@@ -56,6 +57,8 @@ void outputCSV(Circuit& c, string outputFileName, double timeStep, double simula
             outputFile << ",i_C" + cs->getName();
         }else if(typeid(*cs) == typeid(Inductor)){
             outputFile << ",i_L" + cs->getName();
+        }else if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
+            outputFile << ",i_G" + cs->getName();
         }else if(typeid(*cs) == typeid(Diode)){
             outputFile << ",i_D" + cs->getName();
         }else{ //component = currentSource

@@ -46,7 +46,7 @@ void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit5" << endl;
     buffer << "R1 1 2 1k" << endl;
     buffer << "R2 2 0 1k" << endl;
-    buffer << "H1 3 2 V1 2" <<endl;
+    buffer << "G1 3 2 1 2 2" <<endl;
     buffer << "R3 3 0 1k" <<endl;
     buffer << "V1 1 0 12" << endl;
 }

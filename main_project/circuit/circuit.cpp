@@ -13,6 +13,8 @@
 #include <component/inductor.hpp>
 #include <component/voltageControlledVoltageSource.hpp>
 #include <component/currentControlledVoltageSource.hpp>
+#include <component/voltageControlledCurrentSource.hpp>
+
 
 using namespace std;
 using namespace Eigen;
@@ -136,16 +138,8 @@ void Circuit::setupA()
         const auto &vs = voltageSources.at(i);
 
         nodes = vs->getNodes();
-        const int node1 = nodes.at(0);
-        const int node2 = nodes.at(1);
-        int nodeC1 = -1;
-        int nodeC2 = -1;
-
-        //for controlled sources
-        if(nodes.size() == 4){
-            nodeC1 = nodes.at(2);
-            nodeC2 = nodes.at(3);
-        }
+        int node1 = nodes.at(0);
+        int node2 = nodes.at(1);
 
         if (node1 != 0)
         {
@@ -162,6 +156,8 @@ void Circuit::setupA()
         // need to add additional values when controlled sources
         if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
             double gain = vs->getGain();
+            int nodeC1 = nodes.at(2);
+            int nodeC2 = nodes.at(3);
 
             if (nodeC1 != 0)
             {
@@ -180,11 +176,23 @@ void Circuit::setupA()
         }
     }
 
-    //for VoltageControlledCurrentSource
-    // A(node1 - 1, nodeC1 - 1) += gain;
-    // A(node1 - 1, nodeC2 - 1) -= gain;
-    // A(node2 - 1, nodeC1 - 1) -= gain;
-    // A(node2 - 1, nodeC2 - 1) += gain;
+    //dependent current sources
+    for(const auto& cs : currentSources){
+        if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
+            nodes = cs->getNodes();
+            int node1 = nodes.at(0);
+            int node2 = nodes.at(1);
+            int nodeC1 = nodes.at(2);
+            int nodeC2 = nodes.at(3);
+            
+            double gain = cs->getGain();
+            
+            A(node1 - 1, nodeC1 - 1) += gain;
+            A(node1 - 1, nodeC2 - 1) -= gain;
+            A(node2 - 1, nodeC1 - 1) -= gain;
+            A(node2 - 1, nodeC2 - 1) += gain;
+        }
+    }
 }
 
 MatrixXd Circuit::getA() const
@@ -214,21 +222,23 @@ void Circuit::adjustB()
     b = VectorXd::Zero(highestNodeNumber + voltageSources.size());
 
     //adding currents
-    for (const auto &cSource : currentSources)
+    for (const auto &cs : currentSources)
     {
-        vector<int> nodes = cSource->getNodes();
-        const int node1 = nodes.at(0);
-        const int node2 = nodes.at(1);
+        if(typeid(*cs) == typeid(CurrentSource)){
+            vector<int> nodes = cs->getNodes();
+            const int node1 = nodes.at(0);
+            const int node2 = nodes.at(1);
 
-        // same suggestion as above, would make the whole code base more flexible to new componetns
-        if (node1 != 0)
-        {
-            b(node1 - 1) += cSource->getCurrent();
-        }
+            // same suggestion as above, would make the whole code base more flexible to new componetns
+            if (node1 != 0)
+            {
+                b(node1 - 1) += cs->getCurrent();
+            }
 
-        if (node2 != 0)
-        {
-            b(node2 - 1) -= cSource->getCurrent();
+            if (node2 != 0)
+            {
+                b(node2 - 1) -= cs->getCurrent();
+            }
         }
     }
 

@@ -4,6 +4,7 @@
 #include <component/component.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
+#include <component/currentSource.hpp>
 
 #include "linearAnalysis.hpp"
 
@@ -73,7 +74,7 @@ string runLinearTransience(Circuit& c, double t){
         	v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);  
 		
 		outLine += "," + to_string(cs->getTotalCurrent(v1-v2));
-        }else{ //component = currentSource
+        }else if(typeid(*cs) == typeid(CurrentSource)){
             outLine += "," + to_string(cs->getCurrent());
         }
     }
@@ -92,13 +93,6 @@ string runLinearTransience(Circuit& c, double t){
         v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
         v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
-
-        //currentCurrent = currentVoltage * up->getConductance();
-        
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
-        // cout << b.format(CleanFmt) << endl << endl;
-        // cout << x.format(CleanFmt) << endl <<endl;
 
         up->updateVals(currentVoltage, 0, 1);
     }
