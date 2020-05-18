@@ -113,7 +113,7 @@ void Circuit::nlSetup(){
 
     // sets up fixed aspects of A
     // same as in normal A calculation
-    
+    A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
     vector<int> nodes;
     for (int i{}; i < voltageSources.size(); i++)
     {
@@ -211,9 +211,7 @@ void Circuit::setupA()
     }
 }
 
-void Circuit::nonLinearA(){
-    A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
-    
+void Circuit::nonLinearA(){    
     // setup currents from non voltage source components
     for(const vector<nodeCompPair> nf : nodalFunctions){
         for(const nodeCompPair ncp : nf){
