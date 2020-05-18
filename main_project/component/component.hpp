@@ -8,6 +8,9 @@
 
 using namespace std;
 
+/*
+    Acts as interface for circuit components
+*/
 class Component
 {
 protected:
@@ -30,6 +33,7 @@ public:
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(double newVoltage, double newCurrent, int order);
+    
     // this should be used to update the time of the time dependant components or update nonlinear components (passing voltage)
     virtual void updateVals(double time_or_voltage);
 

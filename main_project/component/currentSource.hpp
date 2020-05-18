@@ -23,7 +23,7 @@ public:
     void setupBasic(int n1, int n2);
     void setupDC(double current);
 
-    void updateVals(double time);
+    void updateVals(double time) override;
 
     double getCurrent() const override;
 
