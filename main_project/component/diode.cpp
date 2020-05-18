@@ -47,7 +47,7 @@ double Diode::getCurrent() const{
 }
 
 double Diode::getTotalCurrent(double voltage, int order){
-	return NAN; //not yet implemented
+	return voltage*compConductance + compCurrent;
 }
 
 void Diode::updateVals(double time_or_voltage){
