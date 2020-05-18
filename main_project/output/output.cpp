@@ -4,6 +4,7 @@
 #include <vector>
 #include <circuit/circuit.hpp>
 #include <component/component.hpp>
+#include <component/resistor.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
 #include <component/diode.hpp>
