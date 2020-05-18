@@ -94,7 +94,7 @@ void Circuit::nlSetup(){
     int nvc = nonVoltageSources.size();
     int vsc = voltageSources.size();
 
-    x = MatrixXf::Zero(nvc + vsc);
+    b = VectorXf::Zero(nvc + vsc);
 
     nodalFunctions.resize(highestNodeNumber+vsc);
 

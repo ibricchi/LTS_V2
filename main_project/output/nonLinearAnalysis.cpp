@@ -61,8 +61,8 @@ string runNonLinearTransience(Circuit& c, float t){
     for(const auto &up : vcUpdatables){
         nodes = up->getNodes();
 
-        v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
-        v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
+        v1 = nodes.at(0) == 0 ? 0 : newX(nodes.at(0)-1);
+        v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 
         //currentCurrent = currentVoltage * up->getConductance();
