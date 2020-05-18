@@ -94,7 +94,7 @@ void Circuit::nlSetup(){
     int nvc = nonVoltageSources.size();
     int vsc = voltageSources.size();
 
-    b = VectorXf::Zero(nvc + vsc);
+    x = VectorXf::Zero(highestNodeNumber + vsc);
 
     nodalFunctions.resize(highestNodeNumber+vsc);
 
@@ -193,7 +193,7 @@ void Circuit::nonLinearA(){
             float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
             if(n1 != 0){
                 A(n1-1, n1-1) = ncp.DIV(n1, v);
-                A(n1-1, n2-1) = ncp.DIV(n2, v);
+                if(n2 != 0) A(n1-1, n2-1) = ncp.DIV(n2, v);
             }
         }
     }

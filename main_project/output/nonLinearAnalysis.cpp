@@ -31,6 +31,7 @@ string runNonLinearTransience(Circuit& c, float t){
     // keep calculating for current time step till threshold is bellow ceratin level
     do{
         c.nonLinearA();
+        c.computeA_inv();
         c.nonLinearB();
         c.computeNLX();
         currentX = newX;
