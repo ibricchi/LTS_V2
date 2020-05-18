@@ -17,10 +17,10 @@ public:
 	Capacitor(string name, vector<string> args, vector<float> extraInfo);
 	Capacitor(string _name, float l, int n1, int n2, float timeStep, int order);
 	~Capacitor() = default;
-	float getConductance() const override;
+	double getConductance() const override;
 	vector<int> getNodes() const ;
-	float getCurrent() const override;
-	float getTotalCurrent(float voltage, int order = 1) override;
+	double getCurrent() const override;
+	double getTotalCurrent(float voltage, int order = 1) override;
 	void updateVals(float newVoltage, float newCurrent, int order) override; //Called at the end of every iteration, after calculating node voltages and component currents.
 };
 

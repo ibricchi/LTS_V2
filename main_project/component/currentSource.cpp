@@ -43,7 +43,7 @@ void CurrentSource::setupDC(float _current){
     current = _current;
 }
 
-float CurrentSource::getCurrent() const{
+double CurrentSource::getCurrent() const{
     return current;
 }
 

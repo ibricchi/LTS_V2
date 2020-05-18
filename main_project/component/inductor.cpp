@@ -49,15 +49,15 @@ Inductor::Inductor(string _name,float l, int n1, int n2, float timeStep, int ord
 	types.push_back(componentType::vcUpdatable);
 }
 
-float Inductor::getConductance() const{
+double Inductor::getConductance() const{
 	return compConductance;
 }
 
-float Inductor::getCurrent() const{
+double Inductor::getCurrent() const{
 	return -compCurrent; //So it's in the right direction, as current source points towards negative.
 }
 
-float Inductor::getTotalCurrent(float voltage, int order){
+double Inductor::getTotalCurrent(float voltage, int order){
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance + compConductance*compVoltage +prevTotalCurrent;
 		prevTotalCurrent = res;

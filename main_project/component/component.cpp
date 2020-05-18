@@ -15,15 +15,15 @@ float Component::getVoltage() const{
     throw notSupportedByComponentException();
 }
 
-float Component::getCurrent() const{
+double Component::getCurrent() const{
    throw notSupportedByComponentException();
 }
 
-float Component::getTotalCurrent(float voltage,int order){
+double Component::getTotalCurrent(float voltage,int order){
 	throw notSupportedByComponentException();
 }
 
-float Component::getConductance() const{
+double Component::getConductance() const{
     throw notSupportedByComponentException();
 }
 

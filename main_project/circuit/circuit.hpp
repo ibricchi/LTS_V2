@@ -27,10 +27,10 @@ protected:
     float simulationTime; //time when simulation ends
     float timeStep;
     bool hasNonLinear;
-    MatrixXf A;
-    MatrixXf A_inv;
-    VectorXf b;
-    VectorXf x;
+    MatrixXd A;
+    MatrixXd A_inv;
+    VectorXd b;
+    VectorXd x;
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
 public:
     // default constructor for initializing empty object
@@ -114,15 +114,15 @@ public:
 
     // operation to create A
     void setupA();
-    MatrixXf getA() const;
+    MatrixXd getA() const;
 
     // compute inverse of A
     void computeA_inv();
-    MatrixXf getA_inv() const;
+    MatrixXd getA_inv() const;
 
     // operation to adjust B
     void adjustB();
-    VectorXf getB() const;
+    VectorXd getB() const;
 
     // operation to assign meaning to the result vector x
     void setupXMeaning();
@@ -130,7 +130,7 @@ public:
 
     // A_inv must exist for this to work
     void computeX();
-    VectorXf getX() const;
+    VectorXd getX() const;
 };
 
 #endif

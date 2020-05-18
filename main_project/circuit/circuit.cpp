@@ -162,7 +162,7 @@ void Circuit::setupA()
     }
 }
 
-MatrixXf Circuit::getA() const
+MatrixXd Circuit::getA() const
 {
     return A;
 }
@@ -171,14 +171,14 @@ void Circuit::computeA_inv(){
     A_inv = A.inverse();
 }
 
-MatrixXf Circuit::getA_inv() const{
+MatrixXd Circuit::getA_inv() const{
     return A_inv;
 }
 
 // setupB definition
 void Circuit::adjustB()
 {
-    b = VectorXf::Zero(highestNodeNumber + voltageSources.size());
+    b = VectorXd::Zero(highestNodeNumber + voltageSources.size());
 
     //adding currents
     for (const auto &cSource : currentSources)
@@ -210,7 +210,7 @@ void Circuit::adjustB()
     // cout << b.format(CleanFmt) << endl << endl;
 }
 
-VectorXf Circuit::getB() const
+VectorXd Circuit::getB() const
 {
     return b;
 }
@@ -234,6 +234,6 @@ void Circuit::computeX(){
     x = A_inv * b;
 }
 
-VectorXf Circuit::getX() const{
+VectorXd Circuit::getX() const{
     return x;
 }

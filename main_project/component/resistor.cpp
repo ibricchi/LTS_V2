@@ -24,7 +24,7 @@ Resistor::Resistor(string _name, float r, int n1, int n2)
     nodes.push_back(n2);
 }
 
-float Resistor::getConductance() const{
+double Resistor::getConductance() const{
     return conductance;
 }
 

@@ -19,9 +19,9 @@ public:
 	// float getIs() const;
 	// float getVt() const;
 	vector<int> getNodes() const ;
-	float getConductance() const override;
-	float getCurrent() const override;
-	float getTotalCurrent(float voltage, int order = 1) override;
+	double getConductance() const override;
+	double getCurrent() const override;
+	double getTotalCurrent(float voltage, int order = 1) override;
 	
 	//voltage = voltage across diode (v_n1 - v_n2)
 	void updateVals(float time_or_voltage) override;

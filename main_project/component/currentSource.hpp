@@ -25,7 +25,7 @@ public:
 
     void updateVals(float time);
 
-    float getCurrent() const override;
+    double getCurrent() const override;
 
     vector<int> getNodes() const override;
 };

@@ -49,15 +49,15 @@ Capacitor::Capacitor(string _name,float c, int n1, int n2, float timeStep, int o
 	types.push_back(componentType::vcUpdatable);
 }
 
-float Capacitor::getConductance() const{
+double Capacitor::getConductance() const{
 	return compConductance;
 }
 
-float Capacitor::getCurrent() const{
+double Capacitor::getCurrent() const{
 	return compCurrent;
 }
 
-float Capacitor::getTotalCurrent(float voltage, int order){
+double Capacitor::getTotalCurrent(float voltage, int order){
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
 		prevTotalCurrent = res;
