@@ -46,9 +46,10 @@ void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit5" << endl;
     buffer << "R1 1 2 1k" << endl;
     buffer << "R2 2 0 1k" << endl;
-    buffer << "F1 2 3 V1 2" <<endl;
-    buffer << "R3 3 0 1k" <<endl;
-    buffer << "V1 1 0 12" << endl;
+    buffer << "E1 3 2 1 2 2.5" <<endl;
+    buffer << "R3 3 4 1k" <<endl;
+    buffer << "V2 4 0 3" <<endl;
+    buffer << "V1 1 0 SIN(0 12 10)" << endl;
 }
 
 int main(int argc, char **argv){
