@@ -41,6 +41,8 @@ string runNonLinearTransience(Circuit& c, float t){
         newX = c.getX();
 
         IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        cout << c.getA().format(CleanFmt) << endl << endl;
+        cout << c.getB().format(CleanFmt) << endl << endl;
         cout << newX.format(CleanFmt) << endl << endl;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));

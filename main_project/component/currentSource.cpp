@@ -61,8 +61,8 @@ vector<int> CurrentSource::getNodes() const{
 }
 
 float CurrentSource::ivAtNode(int n1, int n2, float v) const{
-	return 1;
+	return current * (n1==nodes[0]?1:-1);
 };
 float CurrentSource::divAtNode(int n1, int n2, int dn, float v) const{
-	return 1;
+	return 0;
 };

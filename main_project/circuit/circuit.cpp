@@ -195,8 +195,8 @@ void Circuit::nonLinearA(){
                 A(n1-1, n1-1) += ncp.DIV(n1, v);
                 if(n2 != 0) A(n1-1, n2-1) = ncp.DIV(n2, v);
                 // code for debugging changes in A per itteration
-                IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-                cout << A.format(CleanFmt) << endl << endl;
+                // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+                // cout << A.format(CleanFmt) << endl << endl;
             }
         }
     }
@@ -287,6 +287,9 @@ void Circuit::nonLinearB(){
             int n2 = ncp.n2;
             float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
             b(n1-1) = ncp.IV(v);
+            // code for debugging changes in A per itteration
+            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+            // cout << b.format(CleanFmt) << endl << endl;
         }
     }
 
