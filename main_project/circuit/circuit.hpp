@@ -116,6 +116,9 @@ public:
     void setupA();
     MatrixXd getA() const;
 
+    // helper function for current controlled sources
+    int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
+
     // compute inverse of A
     void computeA_inv();
     MatrixXd getA_inv() const;

@@ -13,7 +13,7 @@ CurrentControlledSource::CurrentControlledSource(string name, vector<string> arg
 
     setupBasic(n1, n2, vsName);
 
-    gain = stod(args[4]);
+    gain = stod(args[3]);
 }
 
 // CurrentControlledSource::CurrentControlledSource(string _name, double _voltage, int n1, int n2)

@@ -174,8 +174,9 @@ void Circuit::setupA()
             }
         }else if(typeid(*vs) == typeid(CurrentControlledVoltageSource)){
             double gain = vs->getGain();
+            int controllingVsIndex = getVoltageSourceIndexByName(vs->getName(), voltageSources);
 
-            // A(highestNodeNumber + i, ) += gain;
+            A(highestNodeNumber + i, highestNodeNumber + controllingVsIndex) -= gain;
         }
     }
 
@@ -189,6 +190,14 @@ void Circuit::setupA()
 MatrixXd Circuit::getA() const
 {
     return A;
+}
+
+int Circuit::getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const{
+    for(int i{}; i<voltageSources.size(); i++){
+        if(voltageSources.at(i)->getName() == vsName){
+            return i;
+        }
+    }
 }
 
 void Circuit::computeA_inv(){
