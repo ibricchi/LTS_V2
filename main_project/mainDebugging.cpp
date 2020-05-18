@@ -28,7 +28,7 @@ using namespace std;
 // for debugging only
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
-    buffer << "R1 0 1 1" << endl;
+    buffer << "V1 0 1 1" << endl;
     buffer << "R1 1 2 1" << endl;
     buffer << "R1 2 3 1" << endl;
     buffer << "R1 3 0 1" << endl;
