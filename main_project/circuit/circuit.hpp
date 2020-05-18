@@ -15,10 +15,10 @@ struct nodeCompPair{
     int n2;
     Component* comp;
 
-    float IV(float v){
+    float IV(float v) const{
         return comp->ivAtNode(n1, n2, v);
     }
-    float DIV(float dn, float v){
+    float DIV(float dn, float v) const{
         return comp->divAtNode(n1, n2, dn, v);
     }
 };
@@ -147,6 +147,7 @@ public:
 
     // A_inv must exist for this to work
     void computeX();
+    void computeNLX();
     VectorXf getX() const;
 
     // non linear step

@@ -94,6 +94,8 @@ void Circuit::nlSetup(){
     int nvc = nonVoltageSources.size();
     int vsc = voltageSources.size();
 
+    x = MatrixXf::Zero(nvc + vsc);
+
     nodalFunctions.resize(highestNodeNumber+vsc);
 
     // sets up nodalFunctions vector
@@ -181,7 +183,20 @@ void Circuit::setupA()
 }
 
 void Circuit::nonLinearA(){
-
+    A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
+    
+    // setup currents from non voltage source components
+    for(const vector<nodeCompPair> nf : nodalFunctions){
+        for(const nodeCompPair ncp : nf){
+            int n1 = ncp.n1;
+            int n2 = ncp.n2;
+            float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
+            if(n1 != 0){
+                A(n1-1, n1-1) = ncp.DIV(n1, v);
+                A(n1-1, n2-1) = ncp.DIV(n2, v);
+            }
+        }
+    }
 }
 
 MatrixXf Circuit::getA() const
@@ -232,6 +247,25 @@ void Circuit::adjustB()
     // cout << b.format(CleanFmt) << endl << endl;
 }
 
+void Circuit::nonLinearB(){
+    b = VectorXf::Zero(highestNodeNumber + voltageSources.size());
+
+    // setup currents from non voltage source components
+    for(const vector<nodeCompPair> nf : nodalFunctions){
+        for(const nodeCompPair ncp : nf){
+            int n1 = ncp.n1;
+            int n2 = ncp.n2;
+            float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
+            b(n1-1) = ncp.IV(v);
+        }
+    }
+
+    //adding voltages
+    for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
+    {
+        b(i) = voltageSources.at(j)->getVoltage();
+    }
+};
 VectorXf Circuit::getB() const
 {
     return b;
@@ -254,6 +288,10 @@ vector<string> Circuit::getXMeaning() const{
 
 void Circuit::computeX(){
     x = A_inv * b;
+}
+
+void Circuit::computeNLX(){
+    x += A_inv * b;
 }
 
 VectorXf Circuit::getX() const{
