@@ -31,9 +31,10 @@ while(!cin.fail()){
 		}
 		cout << endl;
 		while(!cin.fail()){
-			s.erase(0,2);
 			for(int n=0;n<varNames.size();n++){
-				s.erase(0,1);
+				if(s[s.size()-23] == '-'){				
+					s.erase(0,s.size()-23); //22 is the number of characters in each value if positive		
+				}else{s.erase(0,s.size()-22);}
 				cout << s << ",";
 				getline(cin,s);
 				s.pop_back();
