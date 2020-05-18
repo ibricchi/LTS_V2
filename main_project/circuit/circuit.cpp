@@ -286,7 +286,7 @@ void Circuit::nonLinearB(){
             int n1 = ncp.n1;
             int n2 = ncp.n2;
             float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
-            b(n1-1) = ncp.IV(v);
+            b(n1-1) += ncp.IV(v);
             // code for debugging changes in A per itteration
             // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
             // cout << b.format(CleanFmt) << endl << endl;
