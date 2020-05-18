@@ -52,7 +52,7 @@ float Diode::getTotalCurrent(float voltage, int order){
 
 void Diode::updateVals(float time_or_voltage){
 	float vd = time_or_voltage;
-	float tempExp = exp(vd/vt); //more efficient to only calculate once
+	double tempExp = exp(vd/vt); //more efficient to only calculate once
 
 	compConductance = is/vt * tempExp;
 
