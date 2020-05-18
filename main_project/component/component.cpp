@@ -27,6 +27,10 @@ double Component::getConductance() const{
     throw notSupportedByComponentException();
 }
 
+double Component::getGain() const{
+	throw notSupportedByComponentException();
+}
+
 void Component::updateVals(double newVoltage, double newCurrent, int order){
     throw notSupportedByComponentException();
 }

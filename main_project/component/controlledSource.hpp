@@ -20,7 +20,7 @@ public:
 
     void setupBasic(int n1, int n2, int nc1, int nc2);
 
-    double getGain() const;
+    double getGain() const override;
 
     //returns all 4 nodes (N+, N-, NC+, NC-)
     vector<int> getNodes() const override;

@@ -11,6 +11,7 @@
 #include <component/resistor.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
+#include <component/voltageControlledVoltageSource.hpp>
 
 using namespace std;
 using namespace Eigen;
@@ -18,7 +19,7 @@ using namespace Eigen;
 Circuit::Circuit()
 {
     currentTime = 0;
-    timeStep = 0.1; // in seconds
+    timeStep = 0.001; // in seconds
     highestNodeNumber = 0;
     hasNonLinear = false;
 }
@@ -126,10 +127,6 @@ void Circuit::setupA()
                 A(nodes[i] - 1, nodes[j] - 1) -= conductance;
             }
         }
-
-        // code for debugging changes in A per itteration
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
     }
 
     //voltage part
@@ -140,25 +137,47 @@ void Circuit::setupA()
         nodes = vs->getNodes();
         const int node1 = nodes.at(0);
         const int node2 = nodes.at(1);
+        int nodeC1 = -1;
+        int nodeC2 = -1;
 
-        // I think we should consider the look at node functionallity so taht we can also implement this as a loop like above
-        // for now the easiest thing to do is just write to if statements, given our current structure
-        // I think the look at function would also help with the dependant sources problem with this implementation
+        //for controlled sources
+        if(nodes.size() == 4){
+            nodeC1 = nodes.at(2);
+            nodeC2 = nodes.at(3);
+        }
+
         if (node1 != 0)
         {
             A(node1 - 1, highestNodeNumber + i) = 1;
-            A(highestNodeNumber + i, node1 - 1) = 1; //different when dealing with dependent sources
+            A(highestNodeNumber + i, node1 - 1) = 1;
         }
 
         if (node2 != 0)
         {
             A(node2 - 1, highestNodeNumber + i) = -1;
-            A(highestNodeNumber + i, node2 - 1) = -1; //different when dealing with dependent sources
+            A(highestNodeNumber + i, node2 - 1) = -1;
+        }
+        
+        // need to add additional values when controlled sources
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
+            double gain = vs->getGain();
+
+            if (nodeC1 != 0)
+            {
+                A(highestNodeNumber + i, nodeC1 - 1) -= gain;
+            }
+
+            if (nodeC2 != 0)
+            {
+                A(highestNodeNumber + i, nodeC2 - 1) += gain;
+            }
         }
 
-        // code for debugging changes in A per itteration
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
+        //CurrentControlledVoltageSource
+        // A(node1 - 1, nodeC1 - 1) += gain;
+        // A(node1 - 1, nodeC2 - 1) -= gain;
+        // A(node2 - 1, nodeC1 - 1) -= gain;
+        // A(node2 - 1, nodeC2 - 1) += gain;
     }
 }
 
@@ -202,12 +221,14 @@ void Circuit::adjustB()
     //adding voltages
     for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
     {
-        b(i) = voltageSources.at(j)->getVoltage();
-    }
+        auto vs = voltageSources.at(j);
 
-    // code for debugging changes in A per itteration
-    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-    // cout << b.format(CleanFmt) << endl << endl;
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
+            continue;
+        }else{ // normal/independent voltage sources
+            b(i) = vs->getVoltage();
+        }
+    }
 }
 
 VectorXd Circuit::getB() const
@@ -221,8 +242,13 @@ void Circuit::setupXMeaning(){
     for(int i{1}; i<=highestNodeNumber; i++){
         xMeaning.push_back("v_" + to_string(i));
     }
+
     for(const auto &vs : voltageSources){
-        xMeaning.push_back("I_V" + vs->getName());
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
+            xMeaning.push_back("I_E" + vs->getName());
+        }else{ // normal/independent voltage sources
+            xMeaning.push_back("I_V" + vs->getName());
+        }
     }
 }
 

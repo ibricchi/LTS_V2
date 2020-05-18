@@ -8,6 +8,7 @@
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
 #include <component/diode.hpp>
+#include <component/voltageControlledVoltageSource.hpp>
 
 #include "linearAnalysis.hpp"
 #include "nonlinearAnalysis.hpp"
@@ -40,7 +41,11 @@ void outputCSV(Circuit& c, string outputFileName, double timeStep, double simula
     }
     //voltage sources
     for(const auto &vs : voltageSources){
-        outputFile << ",i_V" + vs->getName();
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
+            outputFile << ",i_E" + vs->getName();
+        }else{ // normal/independent voltage sources
+            outputFile << ",i_V" + vs->getName();
+        }
     }
     //current sources + other components
     for(const auto &cs : currentSources){
