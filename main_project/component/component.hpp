@@ -15,6 +15,7 @@ protected:
     string name;
     vector<int> nodes;
     vector<componentType> types; //indicates functionality of subComponents
+    vector<float> nodalVoltages;
     int subComponents;
 public:
     Component(string _name);
@@ -29,10 +30,11 @@ public:
     virtual vector<int> getNodes() const = 0;
 
     // these are used for non linear analysis
+    void setNodalVoltages(vector<float> v);
     // get the IV characteristics of a component given two nodes
-    virtual float ivAtNode(int n1, int n2, float v) const =0;
+    virtual float ivAtNode(int n1) const =0;
     // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
-    virtual float divAtNode(int n1, int n2, int dn, float v) const =0;
+    virtual float divAtNode(int n1, int dn) const =0;
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(float newVoltage, float newCurrent, int order);

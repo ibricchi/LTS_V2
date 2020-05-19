@@ -60,9 +60,10 @@ vector<int> CurrentSource::getNodes() const{
     return res;
 }
 
-float CurrentSource::ivAtNode(int n1, int n2, float v) const{
+// iv functions
+float CurrentSource::ivAtNode(int n1) const{
 	return current * (n1==nodes[0]?-1:1);
 };
-float CurrentSource::divAtNode(int n1, int n2, int dn, float v) const{
+float CurrentSource::divAtNode(int n1, int dn) const{
 	return 0;
 };

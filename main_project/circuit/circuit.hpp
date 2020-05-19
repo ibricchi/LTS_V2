@@ -11,15 +11,15 @@ using namespace std;
 using namespace Eigen;
 
 struct nodeCompPair{
-    int n1;
-    int n2;
+    int n;
+    vector<int> extraNodes;
     Component* comp;
 
-    float IV(float v) const{
-        return comp->ivAtNode(n1, n2, v);
+    float IV() const{
+        return comp->ivAtNode(n);
     }
-    float DIV(float dn, float v) const{
-        return comp->divAtNode(n1, n2, dn, v);
+    float DIV(float dn) const{
+        return comp->divAtNode(n, dn);
     }
 };
 

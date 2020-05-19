@@ -98,14 +98,18 @@ void Circuit::nlSetup(){
 
     // sets up nodalFunctions vector
     // very similar to the setup of A in linear analysis
+    vector<int> nodes;
+    vector<int> extraNodes;
     for(Component* comp : nonVoltageSources){
-        vector<int> nodes = comp->getNodes();
+        nodes = comp->getNodes();
+        extraNodes.resize(0);
         for(int n1 : nodes){
             if(n1 == 0) continue;
             for(int n2 : nodes){
-                if(n1 == n2) continue;
-                nodalFunctions.push_back(nodeCompPair{n1, n2, comp});
+                if(n1 == n2 || n2 == 0) continue;
+                extraNodes.push_back(n2);
             }
+            nodalFunctions.push_back(nodeCompPair{n1, extraNodes, comp});
         }            
     }
 }
@@ -185,16 +189,17 @@ void Circuit::nonLinearA(){
 
     // setup currents from non voltage source components
     for(const nodeCompPair ncp : nodalFunctions){
-        int n1 = ncp.n1;
-        int n2 = ncp.n2;
-        float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
-        if(n1 != 0){
-            A(n1-1, n1-1) += ncp.DIV(n1, v);
-            if(n2 != 0) A(n1-1, n2-1) += ncp.DIV(n2, v);
-            // code for debugging changes in A per itteration
-            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-            // cout << A.format(CleanFmt) << endl << endl;
+        int n = ncp.n;
+        vector<int> extraNodes = ncp.extraNodes;
+
+        // nodes are already checked not to be 0 on creation of ncp
+        A(n-1, n-1) += ncp.DIV(n);
+        for(int en : extraNodes){
+            A(n-1, en-1) += ncp.DIV(en);
         }
+        // code for debugging changes in A per itteration
+        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        // cout << A.format(CleanFmt) << endl << endl;
     }
 
     // same as linear for VS
@@ -280,15 +285,14 @@ void Circuit::nonLinearB(){
     // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
     // cout << x.format(CleanFmt) << endl << endl;
 
-    vector<int> nodes;
-    int n1, n2;
+    int n, n1, n2;
+    vector<int> nodes, extraNodes;
 
     // setup currents from non voltage source components
     for(const nodeCompPair ncp : nodalFunctions){
-        n1 = ncp.n1;
-        n2 = ncp.n2;
-        float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n2-1]);
-        b(n1-1) += ncp.IV(v);
+        n = ncp.n;
+        extraNodes = ncp.extraNodes;
+        b(n-1) += ncp.IV();
 
         // code for debugging changes in A per itteration
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
