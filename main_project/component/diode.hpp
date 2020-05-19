@@ -21,7 +21,7 @@ public:
     
     ~Diode() = default;
 
-    void addParam(string paramName, float paramValue);
+    void addParam(int paramId, float paramValue);
     vector<int> getNodes() const override;
 };
 

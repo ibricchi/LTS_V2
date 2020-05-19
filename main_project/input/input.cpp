@@ -22,11 +22,11 @@ ModelStatement::ModelStatement(vector<string> args){
     });
 
     auto it = componentTable.find(componentStr);
-    if(it == table.end()){
+    if(it == componentTable.end()){
         cerr << "This component is not supported. Component: " << componentStr <<endl;
         exit(1);
     }
-    component = it->second();
+    componentName = it->second;
 
     const string delimiter = "=";
     string param{}, paramName{}, paramValueStr{};
@@ -38,11 +38,11 @@ ModelStatement::ModelStatement(vector<string> args){
         if(i == 2){
             param.erase(0, 1);
         }else if(i == args.size()-1){
-            param.erase(param.end()-2, 1);
+            param.erase(param.end()-1, param.end());
         }
 
         paramName = param.substr(0, param.find(delimiter));
-        paramValueStr = param.substr(param.find(delimiter)+1, param.end());
+        paramValueStr = param.substr(param.find(delimiter)+1, param.size()-1);
 
         //convert paramName to uppercase (as netlist case insensitive)
         for_each(paramName.begin(), paramName.end(), [](char &c){
@@ -51,11 +51,36 @@ ModelStatement::ModelStatement(vector<string> args){
 
         paramValue = Component::getValue(paramValueStr);
 
-        if(params.find(paramName) != params.end()){
+        //convert paramName to int enum
+        int paramId{};
+        if(componentName == component::DIODE){
+            auto it1 = diodeParamTable.find(paramName);
+            if(it1 == diodeParamTable.end()){
+                cerr << componentStr << " doesn't support the parameter " << paramName <<endl;
+                exit(1);
+            }
+            paramId = static_cast<int>(it1->second);
+        }else if(componentName == component::NMOS || componentName == component::PMOS){
+            auto it1 = mosfetParamTable.find(paramName);
+            if(it1 == mosfetParamTable.end()){
+                cerr << componentStr << " doesn't support the parameter " << paramName <<endl;
+                exit(1);
+            }
+            paramId = static_cast<int>(it1->second);
+        }else if(componentName == component::NPN || componentName == component::PNP){
+            auto it1 = bjtParamTable.find(paramName);
+            if(it1 == bjtParamTable.end()){
+                cerr << componentStr << " doesn't support the parameter " << paramName <<endl;
+                exit(1);
+            }
+            paramId = static_cast<int>(it1->second);
+        }
+
+        if(params.find(paramId) == params.end()){
             cerr << "Invalid netlist: Cannot contain the same parameter twice in a model statement" <<endl;
             exit(1);
         }
-        params.insert(paramName, paramValue);
+        params.emplace(paramId, paramValue);
     }
 }
 
@@ -113,16 +138,12 @@ void readSpice(Circuit& c, istream& file){
     //add model params to components
     auto nonLinears = c.getNonLinearsRef();
     for(const auto &model : modelStatements){
-        auto it == find_if(nonLinears.begin(), nonLinears.end(), [](const auto nL){
-            (nL->getName()==model.componentId) ? true : false
-        });)
-        
-        if(it == nonLinears.end()){
-            continue;
-        }
-
-        for(const auto &el : model.params){
-            it->addParam(el.first, el.second);
+        for(const auto &nL : nonLinears){
+            if(nL->getName() == model.componentId){
+                for(const auto &el : model.params){
+                    nL->addParam(el.first, el.second);
+                }
+            }
         }
     }
 

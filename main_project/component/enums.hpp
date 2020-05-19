@@ -23,25 +23,27 @@ enum struct component{
     PMOS,
     NPN,
     PNP
-}
-// enum struct diodeParamTypes{
-//     IS, //saturation current
-//     N, //emission coefficient
-//     RS, //series resistance
-//     CJO, //junction capacitance
-//     TT, //transit time
-//     BV, //reverse bias breakdown voltage
-//     IBV //reverse bias breakdown current
-// };
-// enum struct mosfetParamTypes{
-//     L, //length
-//     W, //width
-//     VAF //early voltage
-// };
-// enum struct bjtParamTypes{
-//     BF, //beta (common emitter current gain)
-//     IS, //saturation current
-//     VAF //early voltage
-// };
+};
+
+//also need to add the params below to input/input.hpp/ModelStatement lookup tables
+enum struct diodeParamType{
+    IS, //saturation current
+    N, //emission coefficient
+    // RS, //series resistance
+    // CJO, //junction capacitance
+    // TT, //transit time
+    // BV, //reverse bias breakdown voltage
+    // IBV //reverse bias breakdown current
+};
+enum struct mosfetParamType{
+    L, //length
+    W, //width
+    VAF //early voltage
+};
+enum struct bjtParamType{
+    BF, //beta (common emitter current gain)
+    IS, //saturation current
+    VAF //early voltage
+};
 
 #endif

@@ -6,4 +6,5 @@ add_library(component
     voltageSource.cpp
     currentSource.cpp
     waveform.cpp
+    diode.cpp
 )

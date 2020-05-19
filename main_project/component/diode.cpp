@@ -15,8 +15,15 @@ Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
     types.push_back(componentType::nonLinear);
 }
 
-void Diode::addParam(string paramName, float paramValue){
-    
+void Diode::addParam(int paramId, float paramValue){
+    switch(static_cast<diodeParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
+        case diodeParamType::IS:
+            is = paramValue;
+            break;
+        case diodeParamType::N:
+            n = paramValue;
+            break;
+    }
 }
 
 vector<int> Diode::getNodes() const{

@@ -34,10 +34,10 @@ public:
     virtual void updateVals(float time);
 
     //used to add additional parameters to components after construction
-    virtual void addParam(string paramName, float paramValue);
+    virtual void addParam(int paramId, float paramValue);
 
     // helper function to parse string with units into float. Maybe better to move somewhere else
-    static float getValue(string val) const;
+    static float getValue(string val);
     vector<componentType> getTypes() const;
 };
 

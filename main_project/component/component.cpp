@@ -35,7 +35,7 @@ void Component::updateVals(float time){
     throw notSupportedByComponentException();
 }
 
-void Component::addParam(string paramName, float paramValue){
+void Component::addParam(int paramId, float paramValue){
 	throw notSupportedByComponentException();
 }
 
@@ -43,7 +43,7 @@ string Component::getName() const{
     return name;
 }
 
-static float Component::getValue(string val) const{
+float Component::getValue(string val){
 	string units{};
 	float base{};//base number
 	float mult{};//what we multiply the number by

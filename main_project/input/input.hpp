@@ -19,20 +19,34 @@ void setupBasic(Circuit& c, float timeStep);
 
 //used for .model statements
 struct ModelStatement{
-    component component;
+    component componentName;
     string componentId;
-    unordered_map<string, float> params;
+    unordered_map<int, float> params; //mapping of int enum to float
 
-    //string must be all uppercase
-    static constexpr unordered_map<string, component> componentTable = {
+    ModelStatement(vector<string> args);
+
+    //strings must be all uppercase
+    const unordered_map<string, component> componentTable = {
         {"D", component::DIODE},
         {"NMOS", component::NMOS},
         {"PMOS", component::PMOS},
         {"NPN", component::NPN},
         {"PNP", component::PNP}
-    }
-
-    ModelStatement(vector<string> args);
+    };
+    const unordered_map<string, diodeParamType> diodeParamTable = {
+        {"IS", diodeParamType::IS},
+        {"N", diodeParamType::N}
+    };
+    const unordered_map<string, mosfetParamType> mosfetParamTable = {
+        {"L", mosfetParamType::L},
+        {"W", mosfetParamType::W},
+        {"VAF", mosfetParamType::VAF}
+    };
+    const unordered_map<string, bjtParamType> bjtParamTable = {
+        {"BF", bjtParamType::BF},
+        {"IS", bjtParamType::IS},
+        {"VAF", bjtParamType::VAF}
+    };
 };
 
 #endif
