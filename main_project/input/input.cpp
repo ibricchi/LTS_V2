@@ -7,6 +7,7 @@
 #include <component/voltageSource.hpp>
 #include <component/currentSource.hpp>
 #include <component/diode.hpp>
+#include <component/bjt.hpp>
 
 #include "input.hpp"
 
