@@ -48,6 +48,7 @@ string runNonLinearTransience(Circuit& c, float t){
         c.computeA_inv();
         c.nonLinearB();
         c.computeNLX(gamma);
+        c.updateNodalVoltages();
         currentX = newX;
         newX = c.getX();
 

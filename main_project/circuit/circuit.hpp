@@ -136,7 +136,6 @@ public:
     void nonLinearA();
     MatrixXf getA() const;
 
-
     // compute inverse of A
     void computeA_inv();
     MatrixXf getA_inv() const;
@@ -157,8 +156,8 @@ public:
     void setX(VectorXf newX);
     VectorXf getX() const;
 
-    // non linear step
-    void nonLinearStep();
+    // update nodal voltages
+    void updateNodalVoltages();
 };
 
 #endif

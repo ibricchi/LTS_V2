@@ -309,3 +309,21 @@ void Circuit::setX(VectorXf newX){
 VectorXf Circuit::getX() const{
     return x;
 }
+
+// update nodal voltages
+void Circuit::updateNodalVoltages(){
+    vector<int> nodes;
+    vector<float> newNodalVoltages;
+    for(Component* comp : components){
+        newNodalVoltages.resize(0);
+        nodes = comp->getNodes();
+        for(int n : nodes){
+            if(n == 0){
+                newNodalVoltages.push_back(0);
+            }else{
+                newNodalVoltages.push_back(x[n-1]);
+            }
+        }
+        comp->setNodalVoltages(newNodalVoltages);
+    }
+};
