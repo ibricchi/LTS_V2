@@ -187,10 +187,18 @@ void Circuit::setupA()
             
             double gain = cs->getGain();
             
-            A(node1 - 1, nodeC1 - 1) += gain;
-            A(node1 - 1, nodeC2 - 1) -= gain;
-            A(node2 - 1, nodeC1 - 1) -= gain;
-            A(node2 - 1, nodeC2 - 1) += gain;
+            if(node1 != 0 && nodeC1 != 0){
+                A(node1 - 1, nodeC1 - 1) += gain;
+            }
+            if(node1 != 0 && nodeC2 != 0){
+                A(node1 - 1, nodeC2 - 1) -= gain;
+            }
+            if(node2 != 0 && nodeC1 != 0){
+                A(node2 - 1, nodeC1 - 1) -= gain;
+            }
+            if(node2 != 0 && nodeC2 != 0){
+                A(node2 - 1, nodeC2 - 1) += gain;
+            }
         }else if(typeid(*cs) == typeid(CurrentControlledCurrentSource)){
             nodes = cs->getNodes();
             int node1 = nodes.at(0);
@@ -199,8 +207,12 @@ void Circuit::setupA()
             double gain = cs->getGain();
             int controllingVsIndex = getVoltageSourceIndexByName(cs->getVsName(), voltageSources);
 
-            A(node1 - 1, highestNodeNumber + controllingVsIndex) += gain;
-            A(node2 - 1, highestNodeNumber + controllingVsIndex) -= gain;
+            if(node1 != 0){
+                A(node1 - 1, highestNodeNumber + controllingVsIndex) += gain;
+            }
+            if(node2 != 0){
+                A(node2 - 1, highestNodeNumber + controllingVsIndex) -= gain;
+            }
         }
     }
 }
