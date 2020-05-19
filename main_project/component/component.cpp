@@ -35,8 +35,16 @@ string Component::getVsName() const{
 	throw notSupportedByComponentException();
 }
 
+double Component::getGm() const{
+	throw notSupportedByComponentException();
+}
+
 void Component::updateVals(double newVoltage, double newCurrent, int order){
     throw notSupportedByComponentException();
+}
+
+void Component::updateVals(double vgs, double vds){
+	throw notSupportedByComponentException();
 }
 
 void Component::updateVals(double time_or_voltage){

@@ -15,7 +15,7 @@ class Component
 {
 protected:
     string name;
-    vector<int> nodes;
+    vector<int> nodes; //order of nodes should correspond to netlist convention
     vector<componentType> types; //indicates functionality of subComponents
     int subComponents;
 public:
@@ -28,6 +28,7 @@ public:
     virtual double getTotalCurrent(double voltage, int order = 1); //For complex components, this return the current through the whole component
     virtual double getGain() const;
     virtual string getVsName() const;
+    virtual double getGm() const;
     
     string getName() const;
     virtual vector<int> getNodes() const = 0;
@@ -35,7 +36,8 @@ public:
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(double newVoltage, double newCurrent, int order);
-    
+    // used for mosfet
+    virtual void updateVals(double vgs, double vds);
     // this should be used to update the time of the time dependant components or update nonlinear components (passing voltage)
     virtual void updateVals(double time_or_voltage);
 

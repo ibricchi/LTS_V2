@@ -13,4 +13,5 @@ add_library(component
     currentControlledVoltageSource.cpp
     voltageControlledCurrentSource.cpp
     currentControlledCurrentSource.cpp
+    mosfet.cpp
 )

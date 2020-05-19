@@ -3,10 +3,17 @@
 
 #include "component.hpp"
 
+/*
+	Full netlist => D<name> <n+> <n-> <model-name>
+	Where model name must be defined seperately and is associated params such as Is.
+	Currently only a simplified netlist is supported => D<name> <n+> <n-> 
+*/
 class Diode: public Component{
 private:
-	static constexpr double vt = 25e-3f; //Constants for now. Could determine from netlist later on
+	//Constants for now. Should determine from netlist .options statement later on
+	static constexpr double vt = 25e-3f;
 	static constexpr double is = 1e-14f;
+	
 	double compCurrent; //Value of the current source in the companion model
 	// double compVoltage; //value of the voltage across the diode
 	double compConductance; //Conductance of the resistor in the companion model

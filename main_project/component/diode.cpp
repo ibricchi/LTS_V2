@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <CustomExceptionClasses/unsupportedIntegrationMethodOrderException.hpp>
 
 #include "diode.hpp"
 
