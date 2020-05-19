@@ -179,19 +179,33 @@ void Circuit::setupA()
 
     //dependent current sources
     for(const auto& cs : currentSources){
-        if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
+        if(typeid(*cs) == typeid(VoltageControlledCurrentSource) || typeid(*cs) == typeid(Mosfet)){
             nodes = cs->getNodes();
             int node1 = nodes.at(0);
             int node2 = nodes.at(1);
             int nodeC1 = nodes.at(2);
             int nodeC2 = nodes.at(3);
+
+            if(typeid(*cs) == typeid(Mosfet)){
+                node2 = nodes.at(2);
+                nodeC1 = nodes.at(1);
+                nodeC2 = nodes.at(2);
+            }
             
             double gain = cs->getGain();
             
-            A(node1 - 1, nodeC1 - 1) += gain;
-            A(node1 - 1, nodeC2 - 1) -= gain;
-            A(node2 - 1, nodeC1 - 1) -= gain;
-            A(node2 - 1, nodeC2 - 1) += gain;
+            if(node1 != 0 && nodeC1 != 0){
+                A(node1 - 1, nodeC1 - 1) += gain;
+            }
+            if(node1 != 0 && nodeC2 != 0){
+                A(node1 - 1, nodeC2 - 1) -= gain;
+            }
+            if(node2 != 0 && nodeC1 != 0){
+                A(node2 - 1, nodeC1 - 1) -= gain;
+            }
+            if(node2 != 0 && nodeC2 != 0){
+                A(node2 - 1, nodeC2 - 1) += gain;
+            }
         }else if(typeid(*cs) == typeid(CurrentControlledCurrentSource)){
             nodes = cs->getNodes();
             int node1 = nodes.at(0);
@@ -200,8 +214,12 @@ void Circuit::setupA()
             double gain = cs->getGain();
             int controllingVsIndex = getVoltageSourceIndexByName(cs->getVsName(), voltageSources);
 
-            A(node1 - 1, highestNodeNumber + controllingVsIndex) += gain;
-            A(node2 - 1, highestNodeNumber + controllingVsIndex) -= gain;
+            if(node1 != 0){
+                A(node1 - 1, highestNodeNumber + controllingVsIndex) += gain;
+            }
+            if(node2 != 0){
+                A(node2 - 1, highestNodeNumber + controllingVsIndex) -= gain;
+            }
         }
     }
 }

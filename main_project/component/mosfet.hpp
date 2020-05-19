@@ -18,7 +18,6 @@ private:
 	static constexpr double k = 0.25e-3; //calculate in constructor from .options arguments (e.g length, width)
     static constexpr mosfetType type = mosfetType::NMOS;
 	
-    double gain; //value of the voltage controlled current source in the companion model
     double compCurrent; //Value of the current source in the companion model (Not storing current through dependent current source!)
 	double compConductance; //Conductance of the resistor in the companion model (keep this name to support polymorthism)
 	double gm; //value of the gm conductance

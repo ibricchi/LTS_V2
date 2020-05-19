@@ -50,7 +50,7 @@ double Mosfet::getCurrent() const{
 }
 
 double Mosfet::getGain() const{
-    return gain;
+    return gm; //gain of voltage controlled current source
 }
 
 double Mosfet::getTotalCurrent(double voltage, int order){
