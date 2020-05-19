@@ -9,12 +9,15 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 {
     int n1 = stoi(args[0]);
     int n2 = stoi(args[1]);
+	nodes.push_back(n1);
+	nodes.push_back(n2);
+
+	nodalVoltages = {0,0};
+
     float val = getValue(args[2]);
 	int order = 1;
 
 	subComponents = 2;
-	nodes.push_back(n1);
-	nodes.push_back(n2);	
 	compCurrent = 0;
 	prevCurrent = 0; // previous comp_current
 	prevVoltage = 0;

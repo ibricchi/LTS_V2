@@ -30,6 +30,9 @@ VoltageSource::VoltageSource(string name, vector<string> args, vector<float> ext
 void VoltageSource::setupBasic(int n1, int n2){
     nodes.push_back(n1);
     nodes.push_back(n2);
+    
+	nodalVoltages = {0,0};
+
     types.push_back(componentType::voltageSource);
 }
 

@@ -8,10 +8,12 @@ Resistor::Resistor(string name, vector<string> args, vector<float> extraInfo)
 {
     int n1 = stoi(args[0]);
     int n2 = stoi(args[1]);
-    float val = getValue(args[2]);
-
     nodes.push_back(n1);
     nodes.push_back(n2);
+
+    nodalVoltages = {0, 0};
+
+    float val = getValue(args[2]);
     conductance = 1/val;
 
     types.push_back(componentType::conductanceSource);
