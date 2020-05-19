@@ -25,7 +25,7 @@ void testCircuit2(stringstream& buffer){
     buffer << "R1 2 0 1000" << endl;
     buffer << "L1 1 2 .1" << endl;
 }
-void testCircuit3(stringstream& buffer){
+void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit3" << endl;
     buffer << "V1 1 0 SIN(0 18 10)" << endl;
     buffer << "R1 1 2 4k" << endl;
@@ -51,7 +51,7 @@ void testCircuit5(stringstream& buffer){
     buffer << "V2 4 0 3" <<endl;
     buffer << "V1 1 0 SIN(0 12 10)" << endl;
 }
-void testCircuit(stringstream& buffer){
+void testCircuit6(stringstream& buffer){
     buffer << "ExampleCircuit6" << endl;
     buffer << "R1 1 2 1k" << endl;
     buffer << "V1 1 0 20" <<endl;

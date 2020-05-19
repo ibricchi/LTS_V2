@@ -222,9 +222,6 @@ void Circuit::setupA()
             }
         }
     }
-    // cout<<endl<<endl;
-    // cout << A;
-    // cout<<endl<<endl;
 }
 
 MatrixXd Circuit::getA() const
