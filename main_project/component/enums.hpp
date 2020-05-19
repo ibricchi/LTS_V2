@@ -11,7 +11,7 @@ enum struct componentType{
     vcUpdatable = 3,
     timeUpdatable = 4,
     nonVoltageSource = 5,
-    nonLinears = 5 
+    nonLinears = 6
 };
 enum struct sourceTypes{
     DC = 0,

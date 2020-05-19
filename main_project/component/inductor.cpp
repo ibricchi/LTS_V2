@@ -67,9 +67,9 @@ vector<int> Inductor::getNodes() const{
     return res;
 }
 
-float Inductor::ivAtNode(int n1, int n2, float v) const{
+float Inductor::ivAtNode(int n) const{
 	return 1;
 };
-float Inductor::divAtNode(int n1, int n2, int dn, float v) const{
+float Inductor::divAtNode(int n, int dn) const{
 	return 1;
 };

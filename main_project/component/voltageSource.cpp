@@ -56,9 +56,9 @@ vector<int> VoltageSource::getNodes() const{
     return res;
 }
 
-float VoltageSource::ivAtNode(int n1, int n2, float v) const{
+float VoltageSource::ivAtNode(int n) const{
 	return 1;
 };
-float VoltageSource::divAtNode(int n1, int n2, int dn, float v) const{
+float VoltageSource::divAtNode(int n, int dn) const{
 	return 1;
 };

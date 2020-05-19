@@ -75,9 +75,9 @@ vector<int> Capacitor::getNodes() const{
     return res;
 }
 
-float Capacitor::ivAtNode(int n1, int n2, float v) const{
+float Capacitor::ivAtNode(int n) const{
 	return 1;
 };
-float Capacitor::divAtNode(int n1, int n2, int dn, float v) const{
+float Capacitor::divAtNode(int n, int dn) const{
 	return 1;
 };
