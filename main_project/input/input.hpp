@@ -3,7 +3,10 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
+
 #include <circuit/circuit.hpp>
+#include <component/enums.hpp>
 
 using namespace std;
 
@@ -13,5 +16,23 @@ void readSpice(Circuit& c, string file);
 void readSpice(Circuit& c, istream& file);
 // this function setsup basic variables for circuit
 void setupBasic(Circuit& c, float timeStep);
+
+//used for .model statements
+struct ModelStatement{
+    component component;
+    string componentId;
+    unordered_map<string, float> params;
+
+    //string must be all uppercase
+    static constexpr unordered_map<string, component> componentTable = {
+        {"D", component::DIODE},
+        {"NMOS", component::NMOS},
+        {"PMOS", component::PMOS},
+        {"NPN", component::NPN},
+        {"PNP", component::PNP}
+    }
+
+    ModelStatement(vector<string> args);
+};
 
 #endif

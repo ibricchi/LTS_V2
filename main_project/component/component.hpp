@@ -33,7 +33,11 @@ public:
     // this should ebe used to update the time of the time dependant components
     virtual void updateVals(float time);
 
-    float getValue(string val) const;
+    //used to add additional parameters to components after construction
+    virtual void addParam(string paramName, float paramValue);
+
+    // helper function to parse string with units into float. Maybe better to move somewhere else
+    static float getValue(string val) const;
     vector<componentType> getTypes() const;
 };
 

@@ -35,13 +35,15 @@ void Component::updateVals(float time){
     throw notSupportedByComponentException();
 }
 
+void Component::addParam(string paramName, float paramValue){
+	throw notSupportedByComponentException();
+}
+
 string Component::getName() const{
     return name;
 }
 
-
-// helper function to parse string with units into float
-float Component::getValue(string val) const{
+static float Component::getValue(string val) const{
 	string units{};
 	float base{};//base number
 	float mult{};//what we multiply the number by

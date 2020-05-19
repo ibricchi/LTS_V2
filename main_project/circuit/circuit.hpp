@@ -20,6 +20,7 @@ protected:
     vector<Component*> conductanceSources{};
     vector<Component*> vcUpdatables{};
     vector<Component*> timeUpdatables{};
+    vector<Component*> nonLinears{};
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
     float currentTime;
@@ -64,6 +65,7 @@ public:
     vector<Component*>& getConductanceSourcesRef();
     vector<Component*>& getVCUpdatablesRef();
     vector<Component*>& getTimeUpdatablesRef();
+    vector<Component*>& getNonLinearsRef();
 
     // operator overload to add ability to read from iostream to set up circuit
     void operator<<(istream& input);

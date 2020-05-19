@@ -88,6 +88,9 @@ vector<Component*>& Circuit::getVCUpdatablesRef(){
 vector<Component*>& Circuit::getTimeUpdatablesRef(){
     return timeUpdatables;
 }
+vector<Component*>& Circuit::getNonLinearsRef(){
+    return nonLinears;
+}
 
 // setupA definition
 void Circuit::setupA()
