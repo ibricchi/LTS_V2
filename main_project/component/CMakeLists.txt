@@ -7,4 +7,5 @@ add_library(component
     currentSource.cpp
     waveform.cpp
     diode.cpp
+    bjt.cpp
 )
