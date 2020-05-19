@@ -234,21 +234,24 @@ void Circuit::adjustB()
     //adding currents
     for (const auto &cs : currentSources)
     {
-        if(typeid(*cs) == typeid(CurrentSource)){
-            vector<int> nodes = cs->getNodes();
-            const int node1 = nodes.at(0);
-            const int node2 = nodes.at(1);
+        //dependent current sources don't contribute to the b vector
+        if(typeid(*cs) == typeid(CurrentControlledSource)){ 
+            continue;
+        }
+        
+        vector<int> nodes = cs->getNodes();
+        const int node1 = nodes.at(0);
+        const int node2 = nodes.at(1);
 
-            // same suggestion as above, would make the whole code base more flexible to new componetns
-            if (node1 != 0)
-            {
-                b(node1 - 1) += cs->getCurrent();
-            }
+        // same suggestion as above, would make the whole code base more flexible to new componetns
+        if (node1 != 0)
+        {
+            b(node1 - 1) += cs->getCurrent();
+        }
 
-            if (node2 != 0)
-            {
-                b(node2 - 1) -= cs->getCurrent();
-            }
+        if (node2 != 0)
+        {
+            b(node2 - 1) -= cs->getCurrent();
         }
     }
 
