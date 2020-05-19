@@ -41,19 +41,27 @@ void readSpice(Circuit& c, istream& file){
         if(n1 > maxNode) maxNode = n1;
         if(n2 > maxNode) maxNode = n2;
 
+        // expected inputs are in comments, anything after the -> is optional
         if(compTypeC == "R" || compTypeC == "r"){
+            // + - resistance
 			c.addComponent<Resistor>(name, args);
 		}else if(compTypeC == "V" || compTypeC == "v"){
+            // + - voltage
 			c.addComponent<VoltageSource>(name, args);
 		}else if(compTypeC == "I" || compTypeC == "i"){
+            // + - current
 			c.addComponent<CurrentSource>(name, args);
-		//}else if(compTypeC == "I" || compTypeC == "i"){ //Is this meant to be here twice?
-		//	c.addComponent<CurrentSource>(name, args);
 		}else if(compTypeC == "L" || compTypeC == "l"){
+            // + - inductance
 			c.addComponent<Inductor>(name, args);
 		}else if(compTypeC =="C" || compTypeC == "c"){
+            // + - capacitance
 			c.addComponent<Capacitor>(name,args);
 		}else if(compTypeC =="D" || compTypeC == "d"){
+            // + - -> IS N VT
+			c.addComponent<Diode>(name,args);
+		}else if(compTypeC =="Q" || compTypeC == "q"){
+            // + - -> VB IS VAF
 			c.addComponent<Diode>(name,args);
 		}
 		
