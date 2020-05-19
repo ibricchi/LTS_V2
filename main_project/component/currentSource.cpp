@@ -27,12 +27,6 @@ CurrentSource::CurrentSource(string name, vector<string> args, vector<float> ext
     }
 }
 
-CurrentSource::CurrentSource(string _name, float _current, int n1, int n2)
-    :Component{_name}{
-    setupBasic(n1, n2);
-    setupDC(_current);
-}
-
 void CurrentSource::setupBasic(int n1, int n2){
     nodes.push_back(n1);
     nodes.push_back(n2);

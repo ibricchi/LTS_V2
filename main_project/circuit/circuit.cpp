@@ -126,16 +126,6 @@ void Circuit::setupA()
         const float conductance = comp->getConductance();
         nodes = comp->getNodes();
 
-        // I had to change the algorithm to allow for node1 to be 0
-        // Doing it this way also allows for multiple nodes per component
-        // This code would get much cleaner if we have a node input to the getConductnace method to return a positive or negative depending on the node order
-        // But that's just a thought for the future
-
-        // Isn't loop less efficient than using if statements? (Main objectives of LTS_V2 are accuracy and efficiency)
-        // => Second loop will face multiple scenarios when we just continue. This is wasted time. Old method would just use two if statements with no going in circles (loop)
-        // Not really significant for small circuits that don't consider nonlinear components
-        // but could become significant for very large circuits and if we have to recompute A (kinda depends on the method we choose) for nonlinear components
-        // For flexibility: I still cannot think of an example where there is a 3+ terminal device that would work with this exact algorithm (if there is, this would make the code even less efficient)
         for (int i = 0; i < nodes.size(); i++)
         {
             if (nodes[i] == 0)
@@ -149,9 +139,6 @@ void Circuit::setupA()
             }
         }
 
-        // code for debugging changes in A per itteration
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
     }
 
     //voltage part
@@ -163,9 +150,6 @@ void Circuit::setupA()
         const int node1 = nodes.at(0);
         const int node2 = nodes.at(1);
 
-        // I think we should consider the look at node functionallity so taht we can also implement this as a loop like above
-        // for now the easiest thing to do is just write to if statements, given our current structure
-        // I think the look at function would also help with the dependant sources problem with this implementation
         if (node1 != 0)
         {
             A(node1 - 1, highestNodeNumber + i) = 1;
@@ -177,10 +161,6 @@ void Circuit::setupA()
             A(node2 - 1, highestNodeNumber + i) = -1;
             A(highestNodeNumber + i, node2 - 1) = -1; //different when dealing with dependent sources
         }
-
-        // code for debugging changes in A per itteration
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
     }
 }
 
@@ -197,9 +177,6 @@ void Circuit::nonLinearA(){
         for(int en : extraNodes){
             A(n-1, en-1) += ncp.DIV(en);
         }
-        // code for debugging changes in A per itteration
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
     }
 
     // same as linear for VS
@@ -223,10 +200,6 @@ void Circuit::nonLinearA(){
             A(node2 - 1, highestNodeNumber + i) += -1;
             A(highestNodeNumber + i, node2 - 1) += -1; //different when dealing with dependent sources
         }
-
-        // code for debugging changes in A per itteration
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
     }
 }
 
@@ -272,18 +245,10 @@ void Circuit::adjustB()
     {
         b(i) = voltageSources.at(j)->getVoltage();
     }
-
-    // code for debugging changes in A per itteration
-    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-    // cout << b.format(CleanFmt) << endl << endl;
 }
 
 void Circuit::nonLinearB(){
     b = VectorXf::Zero(highestNodeNumber + voltageSources.size());
-
-    
-    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-    // cout << x.format(CleanFmt) << endl << endl;
 
     int n, n1, n2;
     vector<int> nodes, extraNodes;
@@ -293,10 +258,6 @@ void Circuit::nonLinearB(){
         n = ncp.n;
         extraNodes = ncp.extraNodes;
         b(n-1) += ncp.IV();
-
-        // code for debugging changes in A per itteration
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << b.format(CleanFmt) << endl << endl;
     }
 
     //adding voltages
@@ -311,11 +272,7 @@ void Circuit::nonLinearB(){
         b(i) -= voltageSources.at(j)->getVoltage();
         b(i) += (n1 == 0? 0 : x[n1-1]);
         b(i) -= (n2 == 0? 0 : x[n2-1]);
-
-        // cout << b.format(CleanFmt) << endl << endl;
     }
-
-    // cout << b.format(CleanFmt) << endl << endl;
 };
 VectorXf Circuit::getB() const
 {
@@ -342,11 +299,6 @@ void Circuit::computeX(){
 }
 
 void Circuit::computeNLX(float gamma){
-    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-    // cout << (A).format(CleanFmt) << endl << endl;
-    // cout << (b).format(CleanFmt) << endl << endl;
-    // cout << x.format(CleanFmt) << endl << endl;
-    // cout << (A_inv*b).format(CleanFmt) << endl << endl;
     x -= gamma * A_inv * b;
 }
 

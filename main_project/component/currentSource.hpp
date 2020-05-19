@@ -17,7 +17,6 @@ private:
     Waveform currentWaveform{};
 public:
     CurrentSource(string _name, vector<string> args, vector<float> extraInfo);
-    CurrentSource(string _name, float _current, int n1, int n2);
     ~CurrentSource() = default;
 
     void setupBasic(int n1, int n2);

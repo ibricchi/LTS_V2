@@ -18,29 +18,8 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 	compCurrent = 0;
 	prevTotalCurrent=0;
 
-
-	
 	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
 		compConductance = extraInfo[0]/(2.0*val);
-	}else{
-		throw unsupportedIntegrationMethodOrderException();
-	}
-
-	types.push_back(componentType::conductanceSource);
-	types.push_back(componentType::currentSource);
-	types.push_back(componentType::vcUpdatable);
-	types.push_back(componentType::nonVoltageSource);
-}
-
-Inductor::Inductor(string _name,float l, int n1, int n2, float timeStep, int order)
-	:Component{_name}, inductance{l}{
-	subComponents = 2;	
-	nodes.push_back(n1);
-	nodes.push_back(n2);	
-	compCurrent = 0;
-	
-	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
-		compConductance = timeStep/(2.0*l);
 	}else{
 		throw unsupportedIntegrationMethodOrderException();
 	}

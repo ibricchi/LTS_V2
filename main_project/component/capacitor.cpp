@@ -32,25 +32,6 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::nonVoltageSource);
 }
 
-Capacitor::Capacitor(string _name,float c, int n1, int n2, float timeStep, int order)
-	:Component{_name}, capacitance{c}{
-	subComponents = 2;	
-	nodes.push_back(n1);
-	nodes.push_back(n2);	
-	compCurrent = 0;
-	
-	if(order==1){ //Conductance of the capacitor will be the same as the companion model even at T=0 
-		compConductance = (2.0f*c)/timeStep;
-	}else{
-		throw unsupportedIntegrationMethodOrderException();
-	}
-
-	types.push_back(componentType::conductanceSource);
-	types.push_back(componentType::currentSource);
-	types.push_back(componentType::vcUpdatable);
-	types.push_back(componentType::nonVoltageSource);
-}
-
 float Capacitor::getConductance() const{
 	return compConductance;
 }

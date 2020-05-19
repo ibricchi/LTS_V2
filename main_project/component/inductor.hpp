@@ -15,7 +15,6 @@ private:
 
 public:
 	Inductor(string name, vector<string> args, vector<float> extraInfo);
-	Inductor(string _name, float l, int n1, int n2, float timeStep, int order);
 	~Inductor() = default;
 	float getConductance() const override;
 	vector<int> getNodes() const ;

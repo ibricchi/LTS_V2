@@ -17,7 +17,6 @@ private:
     Waveform voltageWaveform{};
 public:
     VoltageSource(string _name, vector<string> args, vector<float> extraInfo);
-    VoltageSource(string _name, float _voltage, int n1, int n2);
     ~VoltageSource() = default;
 
     void setupBasic(int n1, int n2);
