@@ -32,6 +32,9 @@ Diode::Diode(string _name,double c, int n1, int n2, double timeStep, int order)
 	//initialize conductance/current with an initial guess of vd = 0
 	updateVals(0);
 
+	//initalize prevVoltage to -1.0f
+	prevVoltage = -1.0f;
+
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::nonLinear);
@@ -49,6 +52,10 @@ double Diode::getTotalCurrent(double voltage, int order){
 	return voltage*compConductance + compCurrent;
 }
 
+vector<double> Diode::getPrevVoltages() const{
+	return {prevVoltage};
+}
+
 void Diode::updateVals(double time_or_voltage){
 	double vd = time_or_voltage;
 	double tempExp = exp(vd/vt); //more efficient to only calculate once
@@ -56,6 +63,8 @@ void Diode::updateVals(double time_or_voltage){
 	compConductance = is/vt * tempExp;
 
 	compCurrent = is*(tempExp-1) - compConductance*vd;
+
+	prevVoltage = vd;
 }
 
 vector<int> Diode::getNodes() const{

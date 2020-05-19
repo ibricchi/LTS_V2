@@ -15,6 +15,7 @@
 #include <component/currentControlledVoltageSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
 #include <component/currentControlledCurrentSource.hpp>
+#include <component/mosfet.hpp>
 
 using namespace std;
 using namespace Eigen;
@@ -240,8 +241,13 @@ void Circuit::adjustB()
         }
         
         vector<int> nodes = cs->getNodes();
-        const int node1 = nodes.at(0);
-        const int node2 = nodes.at(1);
+        int node1 = nodes.at(0);
+        int node2 = nodes.at(1);
+
+        //different node order for some components
+        if(typeid(*cs) == typeid(Mosfet)){ 
+           node2 = nodes.at(2);
+        }
 
         // same suggestion as above, would make the whole code base more flexible to new componetns
         if (node1 != 0)

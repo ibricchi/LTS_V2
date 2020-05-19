@@ -31,6 +31,10 @@ double Component::getGain() const{
 	throw notSupportedByComponentException();
 }
 
+vector<double> Component::getPrevVoltages() const{
+	throw notSupportedByComponentException();
+}
+
 string Component::getVsName() const{
 	throw notSupportedByComponentException();
 }

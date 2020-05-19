@@ -19,10 +19,11 @@ private:
     static constexpr mosfetType type = mosfetType::NMOS;
 	
     double gain; //value of the voltage controlled current source in the companion model
-    double compCurrent; //Value of the current source in the companion model
+    double compCurrent; //Value of the current source in the companion model (Not storing current through dependent current source!)
 	double compConductance; //Conductance of the resistor in the companion model (keep this name to support polymorthism)
 	double gm; //value of the gm conductance
 
+	vector<double> prevVoltages; //used for newton-raphson convergence checking (vgs, vds)
 public:
 	Mosfet(string name, vector<string> args, vector<double> extraInfo);
 	~Mosfet() = default;
@@ -33,7 +34,8 @@ public:
 	double getCurrent() const override;
 	double getGain() const override;
 	double getTotalCurrent(double voltage, int order = 1) override;
-	
+	vector<double> getPrevVoltages() const override;
+
 	void updateVals(double vgs, double vds) override;
 
 	// helper function to determine the current operating region of the mosfet

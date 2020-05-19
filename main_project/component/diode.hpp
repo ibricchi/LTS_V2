@@ -18,6 +18,7 @@ private:
 	// double compVoltage; //value of the voltage across the diode
 	double compConductance; //Conductance of the resistor in the companion model
 
+	double prevVoltage; //used for newton-raphson convergence checking
 public:
 	Diode(string name, vector<string> args, vector<double> extraInfo);
 	Diode(string _name, double l, int n1, int n2, double timeStep, int order);
@@ -29,7 +30,8 @@ public:
 	double getConductance() const override;
 	double getCurrent() const override;
 	double getTotalCurrent(double voltage, int order = 1) override;
-	
+	vector<double> getPrevVoltages() const override;
+
 	//voltage = voltage across diode (v_n1 - v_n2)
 	void updateVals(double time_or_voltage) override;
 };

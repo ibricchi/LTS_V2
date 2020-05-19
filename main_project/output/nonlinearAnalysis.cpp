@@ -1,14 +1,16 @@
 #include <vector>
 #include <string>
+
 #include <circuit/circuit.hpp>
 #include <component/component.hpp>
 #include <component/resistor.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
-#include <component/diode.hpp>
 #include <component/currentSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
 #include <component/currentControlledCurrentSource.hpp>
+#include <component/diode.hpp>
+#include <component/mosfet.hpp>
 
 #include "nonlinearAnalysis.hpp"
 
@@ -36,7 +38,8 @@ string runNonlinearTransience(Circuit& c, double t){
 
     //variables that are used multiple times in this function
     vector<int> nodes{};
-    double prevVoltage{-1.0f}, voltage{}, v1{}, v2{};
+    vector<double> prevVoltages{}; //for newton_raphson convergence checking
+    double voltage{}, v1{}, v2{}, v3{};
     double current{};
 
     //set maximum Newton-Raphson error
@@ -58,19 +61,33 @@ string runNonlinearTransience(Circuit& c, double t){
         //update values for non linear components (used in next iteration)
         for(const auto comp : nonLinears){
             nodes = comp->getNodes();
+            prevVoltages = comp->getPrevVoltages();
 
-            v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
-            v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
-            voltage = v1 - v2;
+            if(typeid(*comp) == typeid(Diode)){
+                v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
+                v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
+                voltage = v1 - v2;
+                
+                //check if a nonlinear component has not yet converged
+                if(prevVoltages.at(0) == -1.0f || abs(voltage - prevVoltages.at(0)) > nrError){
+                    flag = true; //do another iteration
 
-            //check if a nonlinear component has not yet converged
-            if(prevVoltage == -1.0f || abs(voltage - prevVoltage) > nrError){
-                flag = true; //do another iteration
+                    comp->updateVals(voltage);
+                }
+            }else if(typeid(*comp) == typeid(Mosfet)){
+                v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1); //vd
+                v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1); //vg
+                v3 = nodes.at(2) == 0 ? 0 : x(nodes.at(2)-1); //vs
+                double vgs = v2 - v3;
+                double vds = v1 - v3;
+
+                //check if a nonlinear component has not yet converged
+                if(prevVoltages.at(0) == -1.0f || (abs(vgs - prevVoltages.at(0)) > nrError && abs(vds - prevVoltages.at(1)) > nrError)){
+                    flag = true; //do another iteration
+
+                    comp->updateVals(vgs, vds);
+                }
             }
-
-            comp->updateVals(voltage);
-
-            prevVoltage = voltage;
         }
     }while(flag);
 
@@ -116,7 +133,17 @@ string runNonlinearTransience(Circuit& c, double t){
          	outLine += "," + to_string(cs->getCurrent());
         }else if((typeid(*cs) == typeid(VoltageControlledCurrentSource)) || (typeid(*cs) == typeid(CurrentControlledCurrentSource))){
             outLine += ",NotImplemented"; //still need to figure out way to compute current here
-        }else{ //component = everything with companion models
+        }else if(typeid(*cs) == typeid(Mosfet)){
+            nodes = cs->getNodes();
+		    v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1); //vd
+            v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1); //vg
+            v3 = nodes.at(2) == 0 ? 0 : x(nodes.at(2)-1); //vs
+            double vgs = v2 - v3;
+            double vds = v1 - v3;
+
+            // outLine += "," + to_string(cs->getTotalCurrent(vgs, vds));
+            outLine += ",NotImplemented";
+        }else{ //component = everything with 2 terminal companion models
             nodes = cs->getNodes();
 		    v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
         	v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);  
