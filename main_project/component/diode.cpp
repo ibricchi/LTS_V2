@@ -15,9 +15,6 @@ Diode::Diode(string name, vector<string> args, vector<double> extraInfo)
 	nodes.push_back(n1);
 	nodes.push_back(n2);	
 	
-	//initialize conductance/current with an initial guess of vd = 0
-	updateVals(0);
-	
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::nonLinear);

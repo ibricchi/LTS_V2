@@ -55,7 +55,8 @@ void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit6" << endl;
     buffer << "R1 1 2 1k" << endl;
     buffer << "V1 1 0 20" <<endl;
-    buffer << "V2 3 0 SIN(0 5 10)" << endl;
+    buffer << "V2 3 0 SIN(0 5 5)" << endl;
+    // buffer << "V2 3 0 5" <<endl;
     buffer << "M1 2 3 0 0" <<endl;
 }
 
@@ -63,7 +64,7 @@ int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
     double timeStep = 0.00001; //seconds
-    double simulationTime = 0.2; //seconds
+    double simulationTime = 0.5; //seconds
     if(argc > 1){
         outputFileName = argv[1];
     }

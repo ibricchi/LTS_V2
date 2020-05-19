@@ -67,12 +67,12 @@ string runNonlinearTransience(Circuit& c, double t){
                 v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
                 v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
                 voltage = v1 - v2;
+
+                comp->updateVals(voltage);
                 
                 //check if a nonlinear component has not yet converged
-                if(prevVoltages.at(0) == -1.0f || abs(voltage - prevVoltages.at(0)) > nrError){
+                if(abs(voltage - prevVoltages.at(0)) > nrError){
                     flag = true; //do another iteration
-
-                    comp->updateVals(voltage);
                 }
             }else if(typeid(*comp) == typeid(Mosfet)){
                 v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1); //vd
@@ -81,11 +81,11 @@ string runNonlinearTransience(Circuit& c, double t){
                 double vgs = v2 - v3;
                 double vds = v1 - v3;
 
-                //check if a nonlinear component has not yet converged
-                if(prevVoltages.at(0) == -1.0f || (abs(vgs - prevVoltages.at(0)) > nrError && abs(vds - prevVoltages.at(1)) > nrError)){
-                    flag = true; //do another iteration
+                comp->updateVals(vgs, vds);
 
-                    comp->updateVals(vgs, vds);
+                //check if a nonlinear component has not yet converged
+                if((abs(vgs - prevVoltages.at(0)) > nrError && abs(vds - prevVoltages.at(1)) > nrError)){
+                    flag = true; //do another iteration
                 }
             }
         }

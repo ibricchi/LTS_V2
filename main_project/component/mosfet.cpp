@@ -21,11 +21,6 @@ Mosfet::Mosfet(string name, vector<string> args, vector<double> extraInfo)
 	//initialize conductances/current with an initial guess of vgs, vds = 0
 	updateVals(0, 0);
 
-	//initialize prevVoltages to -1.0f
-	prevVoltages.clear();
-	prevVoltages.push_back(-1.0f);
-	prevVoltages.push_back(-1.0f);
-
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource); //both because of the current source and the voltage controlled current source in the companion model
 	types.push_back(componentType::nonLinear);
