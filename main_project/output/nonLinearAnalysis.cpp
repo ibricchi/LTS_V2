@@ -25,26 +25,40 @@ string runNonLinearTransience(Circuit& c, float t){
 
     float threshold = 0.1;
 
+    VectorXf startX = c.getX();
     MatrixXf currentX = c.getX();
     MatrixXf newX = c.getX();
 
-    IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-    cout << newX.format(CleanFmt) << endl << endl;
+    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+    // cout << newX.format(CleanFmt) << endl << endl;
 
     // keep calculating for current time step till threshold is bellow ceratin level
+    int count = 0;
+    int maxCount = 1;
+    float gamma = 0.1;
     do{
+        if(count > maxCount){
+            gamma *= 0.9;
+            c.setX(startX);
+            currentX = c.getX();
+            newX = c.getX();
+            maxCount += 1;
+        }
         c.nonLinearA();
         c.computeA_inv();
         c.nonLinearB();
-        c.computeNLX();
+        c.computeNLX(gamma);
         currentX = newX;
         newX = c.getX();
 
-        IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        cout << c.getA().format(CleanFmt) << endl << endl;
-        cout << c.getB().format(CleanFmt) << endl << endl;
-        cout << currentX.format(CleanFmt) << endl << endl;
-        cout << newX.format(CleanFmt) << endl << endl;
+        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        // cout << c.getA().format(CleanFmt) << endl << endl;
+        // cout << c.getA_inv().format(CleanFmt) << endl << endl;
+        // cout << c.getB().format(CleanFmt) << endl << endl;
+        // cout << currentX.format(CleanFmt) << endl << endl;
+        // cout << newX.format(CleanFmt) << endl << endl;
+
+        count++;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
@@ -87,6 +101,7 @@ string runNonLinearTransience(Circuit& c, float t){
 // both matrixes are assumed to be x:1 matrixes with same x
 bool matrixDiffBellowThreshold(MatrixXf& m1, MatrixXf& m2, float d){
     for(int i = 0; i < m1.rows(); i++){
+        //cout << m1(i) << " " << m2(i) << endl << endl;
         if(abs(m1(i) - m2(i)) > d){
             return false;
         }

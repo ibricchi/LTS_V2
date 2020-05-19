@@ -190,7 +190,7 @@ void Circuit::nonLinearA(){
         float v = (n1 == 0? 0 : x[n1-1]) - (n2 == 0? 0 : x[n1-1]);
         if(n1 != 0){
             A(n1-1, n1-1) += ncp.DIV(n1, v);
-            if(n2 != 0) A(n1-1, n2-1) = ncp.DIV(n2, v);
+            if(n2 != 0) A(n1-1, n2-1) += ncp.DIV(n2, v);
             // code for debugging changes in A per itteration
             // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
             // cout << A.format(CleanFmt) << endl << endl;
@@ -337,13 +337,17 @@ void Circuit::computeX(){
     x = A_inv * b;
 }
 
-void Circuit::computeNLX(){
+void Circuit::computeNLX(float gamma){
     // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
     // cout << (A).format(CleanFmt) << endl << endl;
     // cout << (b).format(CleanFmt) << endl << endl;
     // cout << x.format(CleanFmt) << endl << endl;
     // cout << (A_inv*b).format(CleanFmt) << endl << endl;
-    x -= A_inv * b;
+    x -= gamma * A_inv * b;
+}
+
+void Circuit::setX(VectorXf newX){
+    x = newX;
 }
 
 VectorXf Circuit::getX() const{

@@ -16,6 +16,7 @@
 #include <component/voltageSource.cpp>
 #include <component/currentSource.cpp>
 #include <component/waveform.cpp>
+#include <component/diode.cpp>
 
 #include <input/input.cpp>
 
@@ -28,18 +29,15 @@ using namespace std;
 // for debugging only
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
-    buffer << "V1 3 2 1" << endl;
-    buffer << "R2 0 1 1" << endl;
-    buffer << "R1 1 2 1" << endl;
-    buffer << "R3 2 4 1" << endl;
-    buffer << "R4 3 4 1" << endl;
-    buffer << "I2 4 0 1" << endl;
+    buffer << "V1 1 0 2" << endl;
+    buffer << "D1 1 2" << endl;
+    buffer << "R1 2 0 1" << endl;
 }
 
 int main(){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.02; //seconds
+    float timeStep = 0.001; //seconds
     float simulationTime = 1; //seconds
     
     // setup circuit

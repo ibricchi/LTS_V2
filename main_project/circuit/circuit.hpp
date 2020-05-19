@@ -147,7 +147,8 @@ public:
 
     // A_inv must exist for this to work
     void computeX();
-    void computeNLX();
+    void computeNLX(float gamma);
+    void setX(VectorXf newX);
     VectorXf getX() const;
 
     // non linear step

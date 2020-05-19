@@ -6,6 +6,7 @@
 #include <component/inductor.hpp>
 #include <component/voltageSource.hpp>
 #include <component/currentSource.hpp>
+#include <component/diode.hpp>
 
 #include "input.hpp"
 
@@ -53,6 +54,8 @@ void readSpice(Circuit& c, istream& file){
 			c.addComponent<Inductor>(name, args);
 		}else if(compTypeC =="C" || compTypeC == "c"){
 			c.addComponent<Capacitor>(name,args);
+		}else if(compTypeC =="D" || compTypeC == "d"){
+			c.addComponent<Diode>(name,args);
 		}
 		
     }
