@@ -8,9 +8,12 @@ Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
 {
     int n1 = stoi(args[0]);
     int n2 = stoi(args[1]);
-
     nodes.push_back(n1);
     nodes.push_back(n2);
+
+    //initialize params to default values
+    is = 1e-14;
+    n = 1;
 
     types.push_back(componentType::nonLinear);
 }

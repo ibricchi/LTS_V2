@@ -14,8 +14,8 @@ class Diode: public Component{
 private:
     float is; //saturation current
     float n; //emission coefficient
-    float bv; //reverse bias breakdown voltage
-    float ibv; //reverse bias breakdown current
+    // float bv; //reverse bias breakdown voltage
+    // float ibv; //reverse bias breakdown current
 public:
     Diode(string _name, vector<string> args, vector<float> extraInfo);
     
