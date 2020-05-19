@@ -14,7 +14,6 @@ void readSpice(Circuit& c, istream& file){
     string title;
     getline(file, title);
     c.setTitle(title);
-    c.setHasNonLinearComponents(true);
 
     string lineString{};
     int maxNode = 0;

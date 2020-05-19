@@ -34,6 +34,8 @@ protected:
     vector<Component*> vcUpdatables{};
     vector<Component*> timeUpdatables{};
     vector<Component*> nonVoltageSources{};
+    vector<Component*> nonLinears{};
+
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
     float currentTime;
@@ -113,6 +115,10 @@ public:
                 break;
             case componentType::nonVoltageSource:
                 nonVoltageSources.push_back(newComp);
+                break;
+            case componentType::nonLinear:
+                hasNonLinear = true;
+                nonLinears.push_back(newComp);
                 break;
             default:
                 break;
