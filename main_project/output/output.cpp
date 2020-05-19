@@ -7,11 +7,12 @@
 #include <component/resistor.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
-#include <component/diode.hpp>
 #include <component/voltageControlledVoltageSource.hpp>
 #include <component/currentControlledVoltageSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
 #include <component/currentControlledCurrentSource.hpp>
+#include <component/diode.hpp>
+#include <component/mosfet.hpp>
 
 #include "linearAnalysis.hpp"
 #include "nonlinearAnalysis.hpp"
@@ -64,6 +65,8 @@ void outputCSV(Circuit& c, string outputFileName, double timeStep, double simula
             outputFile << ",i_G" + cs->getName();
         }else if(typeid(*cs) == typeid(CurrentControlledCurrentSource)){
             outputFile << ",i_F" + cs->getName();
+        }else if(typeid(*cs) == typeid(Mosfet)){
+            outputFile << ",i_M" + cs->getName();
         }else{ //component = currentSource
             outputFile << ",i_I" + cs->getName();
         }
