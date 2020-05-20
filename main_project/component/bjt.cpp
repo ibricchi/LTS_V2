@@ -25,26 +25,26 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
 
     switch (args.size())
     {
-    case 2:
-        SetupValues();
-        break;
     case 3:
-        SetupValues(
-            stof(args[2])
-        );
+        SetupValues();
         break;
     case 4:
         SetupValues(
-            stof(args[2]),
             stof(args[3])
         );
         break;
     case 5:
         SetupValues(
-            stof(args[2]),
             stof(args[3]),
-            true,
             stof(args[4])
+        );
+        break;
+    case 6:
+        SetupValues(
+            stof(args[3]),
+            stof(args[4]),
+            true,
+            stof(args[5])
         );
         break;
     default:
@@ -60,18 +60,23 @@ void BJT::SetupValues(float _BF, float _IS, bool _hasVAF, float _VAF){
     VAF = _VAF;
 }
 
-float BJT::ivAtNode(int n) const{
+float BJT::ivAtNode(int nin) const{
     float VBE = nodalVoltages[n::B] - nodalVoltages[n::E];
     float VBC = nodalVoltages[n::B] - nodalVoltages[n::C];
     float VCE = nodalVoltages[n::C] - nodalVoltages[n::E];
-    float current;
+    double current;
+
+    // this is just because I aciddentally set up the switch statement wrong
+    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+    int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
+
     switch(n){
         case n::C:
             current = IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR);
             return current;
             break;
         case n::B:
-            current = IS*(1/BF*(exp(VBE/VT)-1)+1/BR*(exp(VBC/VT)-1));
+            current = IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
             return current;
             break;
         case n::E:
@@ -81,10 +86,16 @@ float BJT::ivAtNode(int n) const{
     }
 };
 
-float BJT::divAtNode(int n, int dn) const{
+float BJT::divAtNode(int nin, int dnin) const{
     float VBE = nodalVoltages[n::B] - nodalVoltages[n::E];
     float VBC = nodalVoltages[n::B] - nodalVoltages[n::C];
     float VCE = nodalVoltages[n::C] - nodalVoltages[n::E];
+
+    // this is just because I aciddentally set up the switch statement wrong
+    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+    int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
+    int dn = dnin==nodes[n::C]?n::C:(dnin==nodes[n::B]?n::B:n::E);
+
     float conductance;
     switch(n){
         case n::C:

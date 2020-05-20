@@ -31,10 +31,10 @@ using namespace std;
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "V1 1 0 SIN(0 1 10)" << endl;
-    buffer << "R2 1 2 10000" << endl;
-    buffer << "R1 3 4 10" << endl;
+    buffer << "R2 1 2 2" << endl;
+    buffer << "R1 3 4 3" << endl;
     buffer << "V1 4 0 5" << endl;
-    buffer << "R3 3 4 5000" << endl;
+    buffer << "Q1 3 2 0" << endl;
 }
 
 int main(){

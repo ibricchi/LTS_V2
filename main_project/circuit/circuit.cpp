@@ -102,8 +102,8 @@ void Circuit::nlSetup(){
     vector<int> extraNodes;
     for(Component* comp : nonVoltageSources){
         nodes = comp->getNodes();
-        extraNodes.resize(0);
         for(int n1 : nodes){
+            extraNodes.resize(0);
             if(n1 == 0) continue;
             for(int n2 : nodes){
                 if(n1 == n2 || n2 == 0) continue;
@@ -171,7 +171,7 @@ void Circuit::nonLinearA(){
     for(const nodeCompPair ncp : nodalFunctions){
         int n = ncp.n;
         vector<int> extraNodes = ncp.extraNodes;
-
+        
         // nodes are already checked not to be 0 on creation of ncp
         A(n-1, n-1) += ncp.DIV(n);
         for(int en : extraNodes){

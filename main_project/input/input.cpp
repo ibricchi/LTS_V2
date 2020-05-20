@@ -63,7 +63,7 @@ void readSpice(Circuit& c, istream& file){
 			c.addComponent<Diode>(name,args);
 		}else if(compTypeC =="Q" || compTypeC == "q"){
             // + - -> VB IS VAF
-			c.addComponent<Diode>(name,args);
+			c.addComponent<BJT>(name,args);
 		}
 		
     }

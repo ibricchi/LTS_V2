@@ -12,8 +12,8 @@ using namespace std;
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "V1 1 0 SIN(0 1 10)" << endl;
-    buffer << "R2 1 2 10000" << endl;
-    buffer << "R1 3 4 10" << endl;
+    buffer << "R2 1 2 3" << endl;
+    buffer << "R1 3 4 2" << endl;
     buffer << "V1 4 0 5" << endl;
     buffer << "Q1 3 2 0" << endl;
 }
@@ -21,7 +21,7 @@ void testCircuit(stringstream& buffer){
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.0001; //seconds
+    float timeStep = 0.00001; //seconds
     float simulationTime = 0.5; //seconds
     if(argc > 1){
         outputFileName = argv[1];
