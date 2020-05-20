@@ -17,7 +17,14 @@ void readSpice(Circuit& c, istream& file);
 // this function setsup basic variables for circuit
 void setupBasic(Circuit& c, float timeStep);
 
-//used for .model statements
+/*
+    Used for .model statements.
+    .model statement syntax example => '.model D1N4148 D (is=1n N=1.2)'
+    The param names (is, n) and the componentName (D) are case insensitive.
+    The componentId (D1N4148) must correspond exactly to the name of a component (case sensitive).
+    The .model can either be written all lowercase or all uppercase (no mix allowed).
+    The spaces are important (Cannot remove or add extra spaces).
+*/
 struct ModelStatement{
     component componentName;
     string componentId;

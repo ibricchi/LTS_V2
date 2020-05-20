@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream> //for testing
+
 #include "diode.hpp"
 
 Diode::Diode(string name, vector<string> args, vector<float> extraInfo)

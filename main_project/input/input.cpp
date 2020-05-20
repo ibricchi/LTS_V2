@@ -9,6 +9,7 @@
 #include <component/currentSource.hpp>
 #include <component/component.hpp>
 #include <component/enums.hpp>
+#include <component/diode.hpp>
 
 #include "input.hpp"
 
@@ -55,7 +56,7 @@ ModelStatement::ModelStatement(vector<string> args){
         int paramId{};
         if(componentName == component::DIODE){
             auto it1 = diodeParamTable.find(paramName);
-            if(it1 == diodeParamTable.end()){
+            if(it1 == diodeParamTable.end()){ //if not found
                 cerr << componentStr << " doesn't support the parameter " << paramName <<endl;
                 exit(1);
             }
@@ -76,7 +77,7 @@ ModelStatement::ModelStatement(vector<string> args){
             paramId = static_cast<int>(it1->second);
         }
 
-        if(params.find(paramId) == params.end()){
+        if(params.find(paramId) != params.end()){ //if found
             cerr << "Invalid netlist: Cannot contain the same parameter twice in a model statement" <<endl;
             exit(1);
         }
@@ -109,6 +110,12 @@ void readSpice(Circuit& c, istream& file){
             args.push_back(arg);
         }
 
+        if(name == ".model" || name == ".MODEL"){
+			modelStatements.emplace_back(args);
+
+            continue; //don't execute the rest (not relevant for .model statements)
+        }
+
         // for now this script will assume knowledge of components to get largest node values
         // will only work for components with two inputs, will fix this later
         int n1 = stoi(args[0]);
@@ -127,8 +134,8 @@ void readSpice(Circuit& c, istream& file){
 			c.addComponent<Inductor>(name, args);
 		}else if(compTypeC == "C" || compTypeC == "c"){
 			c.addComponent<Capacitor>(name,args);
-		}else if(name == ".model" || name == ".MODEL"){
-			modelStatements.emplace_back(args);
+		}else if(compTypeC == "D" || compTypeC == "d"){
+			c.addComponent<Diode>(name,args);
 		}else{
             cerr << "Unsuported netlist statement. Statement: " << compTypeC <<endl;
             exit(1);

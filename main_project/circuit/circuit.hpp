@@ -99,7 +99,13 @@ public:
             case componentType::timeUpdatable:
                 timeUpdatables.push_back(newComp);
                 break;
+            case componentType::nonLinear:
+                nonLinears.push_back(newComp);
+                // hasNonLinear = true;
+                break;
             default:
+                cerr << "The component " << name << " has no supported componentType" <<endl;
+                exit(1);
                 break;
             }
         }
