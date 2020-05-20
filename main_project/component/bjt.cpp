@@ -61,9 +61,9 @@ void BJT::SetupValues(float _BF, float _IS, bool _hasVAF, float _VAF){
 }
 
 float BJT::ivAtNode(int nin) const{
-    float VBE = nodalVoltages[n::B] - nodalVoltages[n::E];
-    float VBC = nodalVoltages[n::B] - nodalVoltages[n::C];
-    float VCE = nodalVoltages[n::C] - nodalVoltages[n::E];
+    float VBE = -(nodalVoltages[n::B] - nodalVoltages[n::E]);
+    float VBC = -(nodalVoltages[n::B] - nodalVoltages[n::C]);
+    float VCE = -(nodalVoltages[n::C] - nodalVoltages[n::E]);
     double current;
 
     // this is just because I aciddentally set up the switch statement wrong
@@ -87,9 +87,9 @@ float BJT::ivAtNode(int nin) const{
 };
 
 float BJT::divAtNode(int nin, int dnin) const{
-    float VBE = nodalVoltages[n::B] - nodalVoltages[n::E];
-    float VBC = nodalVoltages[n::B] - nodalVoltages[n::C];
-    float VCE = nodalVoltages[n::C] - nodalVoltages[n::E];
+    float VBE = -(nodalVoltages[n::B] - nodalVoltages[n::E]);
+    float VBC = -(nodalVoltages[n::B] - nodalVoltages[n::C]);
+    float VCE = -(nodalVoltages[n::C] - nodalVoltages[n::E]);
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -105,7 +105,7 @@ float BJT::divAtNode(int nin, int dnin) const{
                     return conductance;
                     break;
                 case n::B:
-                    conductance = IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR));
+                    conductance = IS/VT*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR));
                     return conductance;
                     break;
                 case n::E:
