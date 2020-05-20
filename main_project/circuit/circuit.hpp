@@ -119,7 +119,7 @@ public:
             case componentType::nonVoltageSource:
                 nonVoltageSources.push_back(newComp);
                 break;
-            case componentType::nonLinears:
+            case componentType::nonLinear:
                 hasNonLinear = true;
                 nonLinears.push_back(newComp);
                 break;

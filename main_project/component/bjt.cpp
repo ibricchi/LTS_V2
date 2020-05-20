@@ -21,7 +21,7 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     nodes.push_back(NE);
 
 	types.push_back(componentType::nonVoltageSource);
-	types.push_back(componentType::nonLinears);
+	types.push_back(componentType::nonLinear);
 
     switch (args.size())
     {
