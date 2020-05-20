@@ -12,31 +12,31 @@ Component::~Component(){}
 // this allows to call an error if ever a function that shouldn't be returning a voltage or current or conductance
 // is asked for one
 float Component::getVoltage() const{
-    throw notSupportedByComponentException();
+    throw NotSupportedByComponentException("component.cpp/getVoltage");
 }
 
 float Component::getCurrent() const{
-   throw notSupportedByComponentException();
+   throw NotSupportedByComponentException("component.cpp/getCurrent");
 }
 
 float Component::getTotalCurrent(float voltage,int order){
-	throw notSupportedByComponentException();
+	throw NotSupportedByComponentException("component.cpp/getTotalCurrent");
 }
 
 float Component::getConductance() const{
-    throw notSupportedByComponentException();
+    throw NotSupportedByComponentException("component.cpp/getConductance");
 }
 
 void Component::updateVals(float newVoltage, float newCurrent, int order){
-    throw notSupportedByComponentException();
+    throw NotSupportedByComponentException("component.cpp/updateVals");
 }
 
 void Component::updateVals(float time){
-    throw notSupportedByComponentException();
+    throw NotSupportedByComponentException("component.cpp/updateVals");
 }
 
 void Component::addParam(int paramId, float paramValue){
-	throw notSupportedByComponentException();
+	throw NotSupportedByComponentException("component.cpp/addParam");
 }
 
 string Component::getName() const{

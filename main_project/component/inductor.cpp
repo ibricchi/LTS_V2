@@ -23,7 +23,7 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
 		compConductance = extraInfo[0]/(2.0*val);
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/constructor");
 	}
 
 	types.push_back(componentType::conductanceSource);
@@ -41,7 +41,7 @@ Inductor::Inductor(string _name,float l, int n1, int n2, float timeStep, int ord
 	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
 		compConductance = timeStep/(2.0*l);
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/constructor");
 	}
 
 	types.push_back(componentType::conductanceSource);
@@ -63,7 +63,7 @@ float Inductor::getTotalCurrent(float voltage, int order){
 		prevTotalCurrent = res;
 		return res; //negative as current flows from n1 to n2 of inductor
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/getTotalCurrent");
 	}
 }
 
@@ -73,7 +73,7 @@ void Inductor::updateVals(float newVoltage, float newCurrent, int order){
 		compCurrent =(2.0*compConductance*newVoltage)+compCurrent;
 		compVoltage = newVoltage;
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/updateVals");
 	}
 		
 }

@@ -23,7 +23,7 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	if(order==1){ //Conductance of the capacitor will be the same as the companion model even at T=0 
 		compConductance = (2.0f*val)/extraInfo[0];
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/constructor");
 	}
 
 	types.push_back(componentType::conductanceSource);
@@ -41,7 +41,7 @@ Capacitor::Capacitor(string _name,float c, int n1, int n2, float timeStep, int o
 	if(order==1){ //Conductance of the capacitor will be the same as the companion model even at T=0 
 		compConductance = (2.0f*c)/timeStep;
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/constructor");
 	}
 
 	types.push_back(componentType::conductanceSource);
@@ -63,7 +63,7 @@ float Capacitor::getTotalCurrent(float voltage, int order){
 		prevTotalCurrent = res;
 		return res;	
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrent");
 	}
 }
 
@@ -78,7 +78,7 @@ void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
 	//	prev_current = comp_current;		
 		compVoltage = newVoltage;
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
 	}
 		
 }
