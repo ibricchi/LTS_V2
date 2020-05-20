@@ -9,7 +9,8 @@
 #include <component/currentSource.hpp>
 #include <component/component.hpp>
 #include <component/enums.hpp>
-#include <component/diode.hpp>
+
+#include <component/exampleInputDiode.hpp> //remove after replacing with real diode
 
 #include "input.hpp"
 
@@ -135,7 +136,7 @@ void readSpice(Circuit& c, istream& file){
 		}else if(compTypeC == "C" || compTypeC == "c"){
 			c.addComponent<Capacitor>(name,args);
 		}else if(compTypeC == "D" || compTypeC == "d"){
-			c.addComponent<Diode>(name,args);
+			c.addComponent<ExampleInputDiode>(name,args);
 		}else{
             cerr << "Unsuported netlist statement. Statement: " << compTypeC <<endl;
             exit(1);

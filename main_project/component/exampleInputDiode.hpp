@@ -10,16 +10,16 @@
     This diode is for testing only.
     It shoud be removed once a real diode is added.
 */
-class Diode: public Component{
+class ExampleInputDiode: public Component{
 private:
     float is; //saturation current
     float n; //emission coefficient
     // float bv; //reverse bias breakdown voltage
     // float ibv; //reverse bias breakdown current
 public:
-    Diode(string _name, vector<string> args, vector<float> extraInfo);
+    ExampleInputDiode(string _name, vector<string> args, vector<float> extraInfo);
     
-    ~Diode() = default;
+    ~ExampleInputDiode() = default;
 
     void addParam(int paramId, float paramValue);
     vector<int> getNodes() const override;

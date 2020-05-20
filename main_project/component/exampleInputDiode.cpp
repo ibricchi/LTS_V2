@@ -1,11 +1,9 @@
 #include <string>
 #include <vector>
 
-#include <iostream> //for testing
+#include "exampleInputDiode.hpp"
 
-#include "diode.hpp"
-
-Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
+ExampleInputDiode::ExampleInputDiode(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
     int n1 = stoi(args[0]);
@@ -20,7 +18,7 @@ Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
     types.push_back(componentType::nonLinear);
 }
 
-void Diode::addParam(int paramId, float paramValue){
+void ExampleInputDiode::addParam(int paramId, float paramValue){
     switch(static_cast<diodeParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
         case diodeParamType::IS:
             is = paramValue;
@@ -31,6 +29,6 @@ void Diode::addParam(int paramId, float paramValue){
     }
 }
 
-vector<int> Diode::getNodes() const{
+vector<int> ExampleInputDiode::getNodes() const{
     return nodes;
 }
