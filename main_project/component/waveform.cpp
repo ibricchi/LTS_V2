@@ -166,8 +166,40 @@ float Waveform::updateSinVals(float time){
 }
 
 float Waveform::updatePwlVals(float time){
-    cerr << "PWL not yet supported" <<endl;
-    exit(1);
+    auto it = find_if(pwlTimeVoltageMapping.begin(), pwlTimeVoltageMapping.end(), [&time](const auto &n){
+        return (n.first >= time) ? true : false;
+    });
+    if(it == pwlTimeVoltageMapping.end()){ //not found
+        //time > last specified time
+        return 0; 
+    }
+
+    //check if haven't yet reached first data point
+    if(it == pwlTimeVoltageMapping.begin()){
+        return it->second;
+    }
+
+    //get second data point
+    float time2 = it->first;
+    float value2 = it->second;
+
+    //only one data point
+    if(pwlTimeVoltageMapping.size() == 1){
+        return value2;
+    }
+
+    //get first data point
+    it--;
+    float time1 = it->first;
+    float value1 = it->second;
+
+    //check for constant value
+    if(value1 == value2){
+        return value1;
+    }
+
+    float gradient = (value2-value1)/(time2-time1);
+    return value1 + gradient*(time-time1);
 }
 
 float Waveform::updatePulseVals(float time){
