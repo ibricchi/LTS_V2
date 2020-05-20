@@ -16,13 +16,16 @@ CurrentSource::CurrentSource(string name, vector<string> args, vector<float> ext
         setupDC(val);
     }else{
         string flow = args[2];
-        if(flow == "DC" || flow == "dc"){
+        if(flow == "DC" || flow == "dc" || flow == "Dc" || flow == "dC"){
             setupDC(
                 getValue(args[3]) // current
             );
         }else if(flow.size() > 4){ //checks if "flow" is long enough to be SIN(* where * is any character
             currentWaveform.setupWaveform(this, args, extraInfo);
             types.push_back(componentType::timeUpdatable);
+        }else{
+            cerr << "Invalid netlist: The syntax of current source is incorrect." <<endl;
+            exit(1);
         }
     }
 }

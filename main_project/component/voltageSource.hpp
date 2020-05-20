@@ -14,6 +14,7 @@ private:
     //used for dc
     float voltage;
 
+    //used for ac
     Waveform voltageWaveform{};
 public:
     VoltageSource(string _name, vector<string> args, vector<float> extraInfo);
