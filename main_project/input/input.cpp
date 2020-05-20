@@ -144,6 +144,11 @@ void readSpice(Circuit& c, istream& file){
             cerr << "Unsuported netlist statement. Statement: " << compTypeC <<endl;
             exit(1);
         }
+
+        nodes = c.getLastComponent()->getNodes();
+        for(int n : nodes){
+            maxNode = n>maxNode?n:maxNode;
+        } 
     }
 
     //add model params to components
@@ -156,12 +161,6 @@ void readSpice(Circuit& c, istream& file){
                 }
             }
         }
-
-        nodes = c.getLastComponent()->getNodes();
-        for(int n : nodes){
-            maxNode = n>maxNode?n:maxNode;
-        } 
-		
     }
 
     c.setHighestNodeNumber(maxNode);
