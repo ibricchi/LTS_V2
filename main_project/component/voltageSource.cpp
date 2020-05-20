@@ -27,15 +27,12 @@ VoltageSource::VoltageSource(string name, vector<string> args, vector<float> ext
     }
 }
 
-VoltageSource::VoltageSource(string _name, float _voltage, int n1, int n2)
-    :Component{_name}{
-    setupBasic(n1, n2);
-    setupDC(_voltage);
-}
-
 void VoltageSource::setupBasic(int n1, int n2){
     nodes.push_back(n1);
     nodes.push_back(n2);
+    
+	nodalVoltages = {0,0};
+
     types.push_back(componentType::voltageSource);
 }
 
@@ -58,3 +55,10 @@ vector<int> VoltageSource::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+float VoltageSource::ivAtNode(int n) const{
+	return 1;
+};
+float VoltageSource::divAtNode(int n, int dn) const{
+	return 1;
+};

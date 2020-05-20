@@ -27,16 +27,14 @@ CurrentSource::CurrentSource(string name, vector<string> args, vector<float> ext
     }
 }
 
-CurrentSource::CurrentSource(string _name, float _current, int n1, int n2)
-    :Component{_name}{
-    setupBasic(n1, n2);
-    setupDC(_current);
-}
-
 void CurrentSource::setupBasic(int n1, int n2){
     nodes.push_back(n1);
     nodes.push_back(n2);
+
+	nodalVoltages = {0,0};
+
     types.push_back(componentType::currentSource);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 void CurrentSource::setupDC(float _current){
@@ -58,3 +56,11 @@ vector<int> CurrentSource::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+// iv functions
+float CurrentSource::ivAtNode(int n1) const{
+	return current * (n1==nodes[0]?-1:1);
+};
+float CurrentSource::divAtNode(int n1, int dn) const{
+	return 0;
+};

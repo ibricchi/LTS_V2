@@ -8,6 +8,7 @@
 #include <component/inductor.hpp>
 
 #include "linearAnalysis.hpp"
+#include "nonLinearAnalysis.hpp"
 
 #include "output.hpp"
 
@@ -62,6 +63,12 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         linearSetup(c); //compute A, b, A_inv, xMeaning
         for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
             outLine = runLinearTransience(c, t); 
+            outputFile << outLine << endl;
+        }
+    }else{
+        nonLinearSetup(c);
+        for(float t = 0; t <= simulationTime; t += timeStep){
+            outLine = runNonLinearTransience(c, t);
             outputFile << outLine << endl;
         }
     }

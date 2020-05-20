@@ -108,3 +108,9 @@ float Component::getValue(string val){
 vector<componentType> Component::getTypes() const{
 	return types;
 }
+
+// functions for non linear
+// set functions
+void Component::setNodalVoltages(vector<float> v){
+    nodalVoltages = v;
+}

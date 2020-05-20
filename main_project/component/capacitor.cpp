@@ -9,12 +9,15 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 {
     int n1 = stoi(args[0]);
     int n2 = stoi(args[1]);
+	nodes.push_back(n1);
+	nodes.push_back(n2);
+
+	nodalVoltages = {0,0};
+
     float val = getValue(args[2]);
 	int order = 1;
 
 	subComponents = 2;
-	nodes.push_back(n1);
-	nodes.push_back(n2);	
 	compCurrent = 0;
 	prevCurrent = 0; // previous comp_current
 	prevVoltage = 0;
@@ -29,24 +32,7 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::vcUpdatable);
-}
-
-Capacitor::Capacitor(string _name,float c, int n1, int n2, float timeStep, int order)
-	:Component{_name}, capacitance{c}{
-	subComponents = 2;	
-	nodes.push_back(n1);
-	nodes.push_back(n2);	
-	compCurrent = 0;
-	
-	if(order==1){ //Conductance of the capacitor will be the same as the companion model even at T=0 
-		compConductance = (2.0f*c)/timeStep;
-	}else{
-		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/constructor");
-	}
-
-	types.push_back(componentType::conductanceSource);
-	types.push_back(componentType::currentSource);
-	types.push_back(componentType::vcUpdatable);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 float Capacitor::getConductance() const{
@@ -88,3 +74,10 @@ vector<int> Capacitor::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+float Capacitor::ivAtNode(int n) const{
+	return 1;
+};
+float Capacitor::divAtNode(int n, int dn) const{
+	return 1;
+};

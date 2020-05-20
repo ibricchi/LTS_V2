@@ -16,26 +16,33 @@
 #include <component/voltageSource.cpp>
 #include <component/currentSource.cpp>
 #include <component/waveform.cpp>
+#include <component/diode.cpp>
+#include <component/bjt.cpp>
 
 #include <input/input.cpp>
 
 #include <output/output.cpp>
 #include <output/linearAnalysis.cpp>
+#include <output/nonLinearAnalysis.cpp>
 
 using namespace std;
 
 // for debugging only
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
-    buffer << "Ib 1 0 SIN(0 1 1)" << endl;
-    buffer << "R1 1 0 1" << endl;
+    buffer << "V1 1 0 SIN(0 1 10)" << endl;
+    buffer << "R2 1 2 3" << endl;
+    buffer << "R1 3 4 2" << endl;
+    buffer << "V1 4 0 5" << endl;
+    buffer << "Q3 3 2 5" << endl;
+    buffer << "R3 5 0 4" << endl;
 }
 
 int main(){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.02; //seconds
-    float simulationTime = 1; //seconds
+    float timeStep = 0.0001; //seconds
+    float simulationTime = 0.5; //seconds
     
     // setup circuit
     Circuit c{};
@@ -49,5 +56,3 @@ int main(){
     // run simulation
     outputCSV(c, outputFileName, timeStep, simulationTime);
 }
-
-

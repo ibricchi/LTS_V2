@@ -9,17 +9,17 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 {
     int n1 = stoi(args[0]);
     int n2 = stoi(args[1]);
-    float val = getValue(args[2]);
-	int order = 1;
-
-	subComponents = 2;
 	nodes.push_back(n1);
 	nodes.push_back(n2);	
+
+	nodalVoltages = {0,0};
+
+    float val = getValue(args[2]);
+	int order = 1;
+	subComponents = 2;
 	compCurrent = 0;
 	prevTotalCurrent=0;
 
-
-	
 	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
 		compConductance = extraInfo[0]/(2.0*val);
 	}else{
@@ -29,24 +29,7 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::vcUpdatable);
-}
-
-Inductor::Inductor(string _name,float l, int n1, int n2, float timeStep, int order)
-	:Component{_name}, inductance{l}{
-	subComponents = 2;	
-	nodes.push_back(n1);
-	nodes.push_back(n2);	
-	compCurrent = 0;
-	
-	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
-		compConductance = timeStep/(2.0*l);
-	}else{
-		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/constructor");
-	}
-
-	types.push_back(componentType::conductanceSource);
-	types.push_back(componentType::currentSource);
-	types.push_back(componentType::vcUpdatable);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 float Inductor::getConductance() const{
@@ -83,3 +66,10 @@ vector<int> Inductor::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+float Inductor::ivAtNode(int n) const{
+	return 1;
+};
+float Inductor::divAtNode(int n, int dn) const{
+	return 1;
+};

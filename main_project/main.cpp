@@ -11,19 +11,9 @@ using namespace std;
 // for debugging only
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
-    buffer << "V1 2 1 SIN(0 10 10)" << endl;
-    buffer << "R1 3 2 2000" << endl;
-    buffer << "L1 1 0 .1" << endl;
-    buffer << "R2 3 0 5000" << endl;
-    buffer << "I1 4 3 .5" << endl;
-    buffer << "R3 4 0 10000" << endl;
-    buffer << "C1 4 0 .000001" << endl;
-}
-void testCircuit2(stringstream& buffer){
-    buffer << "ExampleCircuit2" << endl;
-    buffer << "V1 1 0 SIN(0 10 10)" << endl;
-    buffer << "R1 2 0 1000" << endl;
-    buffer << "L1 1 2 .1" << endl;
+    buffer << "V1 1 0 SIN(0 1 10)" << endl;
+    buffer << "V1 2 0 10" << endl;
+    buffer << "Q1 2 1 3" << endl;
 }
 void testCircuit3(stringstream& buffer){
     buffer << "ExampleCircuit3" << endl;
@@ -37,7 +27,7 @@ void testCircuit3(stringstream& buffer){
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.0001; //seconds
+    float timeStep = 0.00001; //seconds
     float simulationTime = 0.5; //seconds
     if(argc > 1){
         outputFileName = argv[1];
@@ -48,11 +38,15 @@ int main(int argc, char **argv){
     if(argc > 3){
         simulationTime = (float)atof(argv[3]);
     }
+    
+    // setup circuit
+    // Circuit c{};
+    // setupBasic(c, timeStep);
+    // readSpice(c, cin);
 
     // setup circuit
     Circuit c{};
     setupBasic(c, timeStep);
-
     stringstream buffer;
     testCircuit(buffer);
 

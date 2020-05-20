@@ -9,8 +9,8 @@
 #include <component/currentSource.hpp>
 #include <component/component.hpp>
 #include <component/enums.hpp>
-
-#include <component/exampleInputDiode.hpp> //remove after replacing with real diode
+#include <component/diode.hpp>
+#include <component/bjt.hpp>
 
 #include "input.hpp"
 
@@ -92,6 +92,7 @@ void readSpice(Circuit& c, istream& file){
     getline(file, title);
     c.setTitle(title);
 
+    vector<int> nodes;
     string lineString{};
     int maxNode = 0;
     vector<ModelStatement> modelStatements{};
@@ -117,26 +118,28 @@ void readSpice(Circuit& c, istream& file){
             continue; //don't execute the rest (not relevant for .model statements)
         }
 
-        // for now this script will assume knowledge of components to get largest node values
-        // will only work for components with two inputs, will fix this later
-        int n1 = stoi(args[0]);
-        int n2 = stoi(args[1]);
-        
-        if(n1 > maxNode) maxNode = n1;
-        if(n2 > maxNode) maxNode = n2;
-
+        // expected inputs are in comments, anything after the -> is optional
         if(compTypeC == "R" || compTypeC == "r"){
+            // + - resistance
 			c.addComponent<Resistor>(name, args);
 		}else if(compTypeC == "V" || compTypeC == "v"){
+            // + - voltage
 			c.addComponent<VoltageSource>(name, args);
 		}else if(compTypeC == "I" || compTypeC == "i"){
+            // + - current
 			c.addComponent<CurrentSource>(name, args);
 		}else if(compTypeC == "L" || compTypeC == "l"){
+            // + - inductance
 			c.addComponent<Inductor>(name, args);
-		}else if(compTypeC == "C" || compTypeC == "c"){
+		}else if(compTypeC =="C" || compTypeC == "c"){
+            // + - capacitance
 			c.addComponent<Capacitor>(name,args);
-		}else if(compTypeC == "D" || compTypeC == "d"){
-			c.addComponent<ExampleInputDiode>(name,args);
+		}else if(compTypeC =="D" || compTypeC == "d"){
+            // + - -> IS N VT
+			c.addComponent<Diode>(name,args);
+		}else if(compTypeC =="Q" || compTypeC == "q"){
+            // + - -> VB IS VAF
+			c.addComponent<BJT>(name,args);
 		}else{
             cerr << "Unsuported netlist statement. Statement: " << compTypeC <<endl;
             exit(1);
@@ -153,6 +156,12 @@ void readSpice(Circuit& c, istream& file){
                 }
             }
         }
+
+        nodes = c.getLastComponent()->getNodes();
+        for(int n : nodes){
+            maxNode = n>maxNode?n:maxNode;
+        } 
+		
     }
 
     c.setHighestNodeNumber(maxNode);
