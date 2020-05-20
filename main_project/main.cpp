@@ -15,7 +15,8 @@ void testCircuit(stringstream& buffer){
     buffer << "R2 1 2 3" << endl;
     buffer << "R1 3 4 2" << endl;
     buffer << "V1 4 0 5" << endl;
-    buffer << "Q1 3 2 0" << endl;
+    buffer << "Q3 3 2 0" << endl;
+    // buffer << "R3 5 0 4" << endl;
 }
 
 int main(int argc, char **argv){
