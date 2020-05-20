@@ -62,257 +62,77 @@ void BJT::SetupValues(float _BF, float _IS, bool _hasVAF, float _VAF){
 
 float BJT::ivAtNode(int n) const{
     float VBE = nodalVoltages[n::B] - nodalVoltages[n::E];
-    float VCB = nodalVoltages[n::C] - nodalVoltages[n::B];
+    float VBC = nodalVoltages[n::B] - nodalVoltages[n::C];
     float VCE = nodalVoltages[n::C] - nodalVoltages[n::E];
-    float IC, IE;
-    if(VBE < 0 && VCB > 0){
-        return 0;
-    }else if(VBE > 0 && VCB > 0){
-        IC = IS*exp(VBE/VT)*(hasVAF?(1 + VCE/VAF):1);
-        switch(n)
-        {
-            case n::C:
-                return IC;
-                break;
-            case n::B:
-                return IC/BF;
-                break;
-            case n::E:
-                return IC/AF;
-                break;
-            default:
-                cerr << "This node is not included in this BJT";
-                exit(1);
-                break;
-        }
-    }else if(VBE > 0 && VCB < 0){
-        switch(n){
-            case n::C:
-                IC = IS*exp(-VCB/VT);
-                return IC;
-                break;
-            case n::B:
-                IC = IS*exp(-VCB/VT);
-                IE = IS*exp(VBE/VT);
-                return IE - IC;
-                break;
-            case n::E:
-                IE = IS*exp(VBE/VT);
-                return IE;
-                break;
-            default:
-                cerr << "This node is not included in this BJT";
-                exit(1);
-                break;
-        }
-    }else if(VBE > 0 && VCB > 0){
-        IE = IS*exp(-VCB/VT)*(hasVAF?(1 - VCE/VAF):1);
-        switch(n)
-        {
-            case n::C:
-                return IE/AF;
-                break;
-            case n::B:
-                return IE/BF;
-                break;
-            case n::E:
-                return IE;
-                break;
-            default:
-                cerr << "This node is not included in this BJT";
-                exit(1);
-                break;
-        }
+    float current;
+    switch(n){
+        case n::C:
+            current = IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR);
+            return current;
+            break;
+        case n::B:
+            current = IS*(1/BF*(exp(VBE/VT)-1)+1/BR*(exp(VBC/VT)-1));
+            return current;
+            break;
+        case n::E:
+            current = IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
+            return -current;
+            break;
     }
 };
 
 float BJT::divAtNode(int n, int dn) const{
     float VBE = nodalVoltages[n::B] - nodalVoltages[n::E];
-    float VCB = nodalVoltages[n::C] - nodalVoltages[n::B];
+    float VBC = nodalVoltages[n::B] - nodalVoltages[n::C];
     float VCE = nodalVoltages[n::C] - nodalVoltages[n::E];
-    float IC, IE;
-    switch(dn){
+    float conductance;
+    switch(n){
         case n::C:
-            if(VBE < 0 && VCB > 0){
-                return 0;
-            }else if(VBE > 0 && VCB > 0){
-                IC = IS*exp(VBE/VT)*(hasVAF?1/VAF:0);
-                switch(n)
-                {
-                    case n::C:
-                        return IC;
-                        break;
-                    case n::B:
-                        return IC/BF;
-                        break;
-                    case n::E:
-                        return IC/AF;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
-            }else if(VBE > 0 && VCB < 0){
-                switch(n){
-                    case n::C:
-                        IC = -IS/VT*exp(-VCB/VT);
-                        return IC;
-                        break;
-                    case n::B:
-                        IC = -IS/VT*exp(-VCB/VT);
-                        IE = 0;
-                        return IE - IC;
-                        break;
-                    case n::E:
-                        IE = 0;
-                        return IE;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
-            }else if(VBE > 0 && VCB > 0){
-                IE = -IS/VT*exp(-VCB/VT)*(hasVAF?-1/VAF:1);
-                switch(n)
-                {
-                    case n::C:
-                        return IE/AF;
-                        break;
-                    case n::B:
-                        return IE/BF;
-                        break;
-                    case n::E:
-                        return IE;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
+            switch(dn){
+                case n::C:
+                    conductance = IS/VT*exp(VBC/VT)*(1+1/BR);
+                    return conductance;
+                    break;
+                case n::B:
+                    conductance = IS*(exp(VBE/VT) - exp(VBE/VT)*(1+1/BR));
+                    return conductance;
+                    break;
+                case n::E:
+                    conductance = -IS/VT*exp(VBE/VT);
+                    return -conductance;
+                    break;
             }
             break;
         case n::B:
-            if(VBE < 0 && VCB > 0){
-                return 0;
-            }else if(VBE > 0 && VCB > 0){
-                IC = IS/VT*exp(VBE/VT)*(hasVAF?(1 + VCE/VAF):1);
-                switch(n)
-                {
-                    case n::C:
-                        return IC;
-                        break;
-                    case n::B:
-                        return IC/BF;
-                        break;
-                    case n::E:
-                        return IC/AF;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
-            }else if(VBE > 0 && VCB < 0){
-                switch(n){
-                    case n::C:
-                        IC = IS/VT*exp(-VCB/VT);
-                        return IC;
-                        break;
-                    case n::B:
-                        IC = IS/VT*exp(-VCB/VT);
-                        IE = IS/VT*exp(VBE/VT);
-                        return IE - IC;
-                        break;
-                    case n::E:
-                        IE = IS/VT*exp(VBE/VT);
-                        return IE;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
-            }else if(VBE > 0 && VCB > 0){
-                IE = IS/VT*exp(-VCB/VT)*(hasVAF?(1 - VCE/VAF):1);
-                switch(n)
-                {
-                    case n::C:
-                        return IE/AF;
-                        break;
-                    case n::B:
-                        return IE/BF;
-                        break;
-                    case n::E:
-                        return IE;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
+            switch(dn){
+                case n::C:
+                    conductance = -IS/VT/BR*exp(VBC/VT);
+                    return conductance;
+                    break;
+                case n::B:
+                    conductance = IS/VT*(exp(VBE/VT)/BF + exp(VBC/VT)/BR);
+                    return conductance;
+                    break;
+                case n::E:
+                    conductance = -IS/VT/BF*exp(VBE/VT);
+                    return -conductance;
+                    break;
             }
             break;
         case n::E:
-            if(VBE < 0 && VCB > 0){
-                return 0;
-            }else if(VBE > 0 && VCB > 0){
-                IC = -IS/VT*exp(VBE/VT)*(hasVAF?-1/VAF:1);
-                switch(n)
-                {
-                    case n::C:
-                        return IC;
-                        break;
-                    case n::B:
-                        return IC/BF;
-                        break;
-                    case n::E:
-                        return IC/AF;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
-            }else if(VBE > 0 && VCB < 0){
-                switch(n){
-                    case n::C:
-                        IC = 0;
-                        return IC;
-                        break;
-                    case n::B:
-                        IC = 0;
-                        IE = -IS/VT*exp(VBE/VT);
-                        return IE - IC;
-                        break;
-                    case n::E:
-                        IE = -IS/VT*exp(VBE/VT);
-                        return IE;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
-            }else if(VBE > 0 && VCB > 0){
-                IE = IS*exp(-VCB/VT)*(hasVAF?1/VAF:0);
-                switch(n)
-                {
-                    case n::C:
-                        return IE/AF;
-                        break;
-                    case n::B:
-                        return IE/BF;
-                        break;
-                    case n::E:
-                        return IE;
-                        break;
-                    default:
-                        cerr << "This node is not included in this BJT";
-                        exit(1);
-                        break;
-                }
+            switch(dn){
+                case n::C:
+                    conductance = IS/VT*exp(VBE/VT);
+                    return conductance;
+                    break;
+                case n::B:
+                    conductance = IS/VT*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF));
+                    return conductance;
+                    break;
+                case n::E:
+                    conductance = -IS/VT*exp(VBE/VT)*(1+1/BF);
+                    return -conductance;
+                    break;
             }
             break;
     }

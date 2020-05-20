@@ -10,6 +10,7 @@ class BJT: public Component{
 private:
     bool hasVAF;
     float BF, AF, IS, VAF;
+    float BR = 0;
     float VT = 0.025;
 
     // don't know if I could replace with enum
