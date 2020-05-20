@@ -24,13 +24,13 @@ ModelStatement::ModelStatement(vector<string> args){
     });
 
     auto it = componentTable.find(componentStr);
-    if(it == componentTable.end()){
+    if(it == componentTable.end()){ //if not found
         cerr << "This component is not supported. Component: " << componentStr <<endl;
         exit(1);
     }
     componentName = it->second;
 
-    const string delimiter = "=";
+    const string delimiter = "="; //separates paramName and paramValue
     string param{}, paramName{}, paramValueStr{};
     float paramValue{};
     for(int i{2}; i<args.size(); i++){
@@ -64,14 +64,14 @@ ModelStatement::ModelStatement(vector<string> args){
             paramId = static_cast<int>(it1->second);
         }else if(componentName == component::NMOS || componentName == component::PMOS){
             auto it1 = mosfetParamTable.find(paramName);
-            if(it1 == mosfetParamTable.end()){
+            if(it1 == mosfetParamTable.end()){ //if not found
                 cerr << componentStr << " doesn't support the parameter " << paramName <<endl;
                 exit(1);
             }
             paramId = static_cast<int>(it1->second);
         }else if(componentName == component::NPN || componentName == component::PNP){
             auto it1 = bjtParamTable.find(paramName);
-            if(it1 == bjtParamTable.end()){
+            if(it1 == bjtParamTable.end()){ //if not found
                 cerr << componentStr << " doesn't support the parameter " << paramName <<endl;
                 exit(1);
             }
