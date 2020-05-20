@@ -48,11 +48,6 @@ int main(int argc, char **argv){
     if(argc > 3){
         simulationTime = (float)atof(argv[3]);
     }
-    
-    // // setup circuit
-    // Circuit c{};
-    // setupBasic(c, timeStep);
-    // readSpice(c, cin);
 
     // setup circuit
     Circuit c{};
@@ -62,6 +57,7 @@ int main(int argc, char **argv){
     testCircuit(buffer);
 
     readSpice(c, buffer);
+    // readSpice(c, cin); //use this if want to read from txt file
 
     // run simulation
     outputCSV(c, outputFileName, timeStep, simulationTime);
