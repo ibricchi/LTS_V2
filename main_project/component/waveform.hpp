@@ -41,7 +41,7 @@ private:
 
         Arguments in <> are optional and assumed to be 0 by default
     */
-    void setupSin(float startTime, float _voltageOffset, float _voltageAmplitude, float _frequency, float _timeDelay, float _dampingFactor, float _phase);
+    void setupSin(float startTime, float _voltageOffset, float _voltageAmplitude, float _frequency, float _timeDelay = 0, float _dampingFactor = 0, float _phase = 0);
 
     /*
         PWL netlist syntax:

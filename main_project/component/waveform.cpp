@@ -1,11 +1,19 @@
 #include <iostream>
+#include <algorithm>
+#include <map>
 
 #include "component.hpp"
 #include "waveform.hpp"
 
 void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<float> extraInfo){
     string flow = args[2];
-    if(flow.substr(0,4) == "SIN(" || flow.substr(0,4) == "sin("){
+
+    string typeName = flow.substr(0,3);
+    for_each(typeName.begin(), typeName.end(), [](char &c){
+	    c = toupper(c);
+    });
+
+    if(typeName == "SIN"){
         switch (args.size()) // switch statment depending on how many arguments were given as some are not required
         {
         case 5:
@@ -13,8 +21,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
                 extraInfo[1], // start time
                 comp->getValue(flow.substr(4, flow.size()-4)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
-                comp->getValue(args[4].substr(0,args[4].size()-1)), // frequency
-                0, 0, 0 // defaults
+                comp->getValue(args[4].substr(0,args[4].size()-1)) // frequency
             );
             break;
         case 6:
@@ -23,8 +30,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
                 comp->getValue(flow.substr(4, flow.size()-4)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4]), // frequency
-                comp->getValue(args[5].substr(0,args[5].size()-1)), // time delay
-                0, 0 // defaults
+                comp->getValue(args[5].substr(0,args[5].size()-1)) // time delay
             );
             break;
         case 7:
@@ -34,8 +40,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4]), // frequency
                 comp->getValue(args[5]), // time delay
-                comp->getValue(args[6].substr(0,args[6].size()-1)), // damping factor
-                0 // defaults
+                comp->getValue(args[6].substr(0,args[6].size()-1)) // damping factor
             );
             break;
         case 8:
@@ -50,13 +55,58 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
             );
             break;
         default:
-            cerr << "wrong number of arguments given for SIN voltage input" <<endl;
+            cerr << "wrong number of arguments given for SIN waveform input" <<endl;
             exit(1);
             break;
         }
+    }else if(typeName == "PWL"){
+        if(args.size()%2 != 0){
+            cerr << "Wrong number of arguments given for PWL waveform input. An even number of inputs is required." <<endl;
+            exit(1);
+        }
+
+        map<float, float> inputPairs{};
+        float time{}, value{};
+        for(int i{2}; i<args.size(); i+=2){
+            //check if first or last param (need to remove bracket)
+            if(i == 2){
+                time = comp->getValue(flow.substr(4, flow.size()-4));
+                value = comp->getValue(args.at(i+1));
+            }else if(i == args.size()-2){
+                time = comp->getValue(args.at(i));
+                value = comp->getValue(args.at(i+1).substr(0,args.at(i+1).size()-1));
+            }else{
+                time = comp->getValue(args.at(i));
+                value = comp->getValue(args.at(i+1));
+            }
+            inputPairs.emplace(time, value);
+        }
+
+        setupPwl(
+            extraInfo[1], // start time
+            inputPairs // time-voltage mapping
+        );
+    }else if(typeName == "PULSE"){
+        if(args.size() != 9){
+            cerr << "Wrong number of arguments given for PULSE waveform input. All 9 arguments are required." <<endl;
+            exit(1);
+        }
+
+        setupPulse(
+            extraInfo[1], // start time
+            comp->getValue(flow.substr(4, flow.size()-4)), // initial voltage
+            comp->getValue(args[3]), // peak voltage
+            comp->getValue(args[4]), // initial delay time
+            comp->getValue(args[5]), // rise time
+            comp->getValue(args[6]), // fall time
+            comp->getValue(args[7]), // pulse-width
+            comp->getValue(args[8].substr(0,args[8].size()-1)) // period of wave
+        );
+    }else{
+        cerr << "Tried to use unsupported waveform type" <<endl;
+        exit(1);
     }
 }
-
 
 void Waveform::setupSin(float startTime, float _offset, float _amplitude, float _frequency, float _timeDelay, float _dampingFactor, float _phase){
     offset = _offset;
