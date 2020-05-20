@@ -50,7 +50,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
             );
             break;
         default:
-            cerr << "wrong number of arguments given for SIN voltage input" << endl;
+            cerr << "wrong number of arguments given for SIN voltage input" <<endl;
             exit(1);
             break;
         }
@@ -63,11 +63,34 @@ void Waveform::setupSin(float startTime, float _offset, float _amplitude, float 
     amplitude = _amplitude;
     frequency = _frequency;
     timeDelay = _timeDelay;
-    dampingFactor = _phase;
+    dampingFactor = _dampingFactor;
+    phase = _phase;
 
     sourceType = sourceTypes::SIN;
 
     updateSinVals(startTime);
+}
+
+void Waveform::setupPwl(float startTime, map<float, float> _pwlTimeVoltageMapping){
+   pwlTimeVoltageMapping = _pwlTimeVoltageMapping;
+
+   sourceType = sourceTypes::PWL;
+
+   updatePwlVals(startTime);
+}
+
+void Waveform::setupPulse(float startTime, float _initialVoltage, float _peakVoltage, float _initialDelayTime, float _riseTime, float _fallTime, float _pulseWidth, float _period){
+    initialVoltage = _initialVoltage;
+    peakVoltage = _peakVoltage;
+    initialDelayTime = _initialDelayTime;
+    riseTime = _riseTime;
+    fallTime = _fallTime;
+    pulseWidth = _pulseWidth;
+    period = _period;
+
+    sourceType = sourceTypes::PULSE;
+
+    updatePulseVals(startTime);
 }
 
 float Waveform::updateVals(float time){
@@ -75,11 +98,29 @@ float Waveform::updateVals(float time){
         case sourceTypes::SIN:
             return updateSinVals(time);
             break;
+        case sourceTypes::PWL:
+            return updatePwlVals(time);
+            break;
+        case sourceTypes::PULSE:
+            return updatePulseVals(time);
+            break;
         default:
+            cerr << "Tried to use an unknown sourceType in waveforms/updateVals" <<endl;
+            exit(1);
             break;
     }
 }
 
 float Waveform::updateSinVals(float time){
     return offset + amplitude * exp(-dampingFactor*(time - timeDelay)) * sin(2 * PI * frequency * (time - timeDelay) + (phase/360));
+}
+
+float Waveform::updatePwlVals(float time){
+    cerr << "PWL not yet supported" <<endl;
+    exit(1);
+}
+
+float Waveform::updatePulseVals(float time){
+    cerr << "Pulse not yet supported" <<endl;
+    exit(1);
 }

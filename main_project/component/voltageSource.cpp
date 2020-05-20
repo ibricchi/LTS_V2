@@ -24,7 +24,7 @@ VoltageSource::VoltageSource(string name, vector<string> args, vector<float> ext
             voltageWaveform.setupWaveform(this, args, extraInfo);
             types.push_back(componentType::timeUpdatable);
         }else{
-            cerr << "Invalid netlist: The syntax of voltage source is incorrect." <<endl;
+            std::cerr << "Invalid netlist: The syntax of voltage source is incorrect." <<std::endl;
             exit(1);
         }
     }

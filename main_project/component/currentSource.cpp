@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "currentSource.hpp"
 
@@ -24,7 +25,7 @@ CurrentSource::CurrentSource(string name, vector<string> args, vector<float> ext
             currentWaveform.setupWaveform(this, args, extraInfo);
             types.push_back(componentType::timeUpdatable);
         }else{
-            cerr << "Invalid netlist: The syntax of current source is incorrect." <<endl;
+            std::cerr << "Invalid netlist: The syntax of current source is incorrect." <<std::endl;
             exit(1);
         }
     }
