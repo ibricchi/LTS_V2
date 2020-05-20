@@ -12,11 +12,8 @@ using namespace std;
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "V1 1 0 SIN(0 1 10)" << endl;
-    buffer << "R2 1 2 3" << endl;
-    buffer << "R1 3 4 2" << endl;
-    buffer << "V1 4 0 5" << endl;
-    buffer << "Q3 3 2 0" << endl;
-    // buffer << "R3 5 0 4" << endl;
+    buffer << "V1 2 0 10" << endl;
+    buffer << "Q1 2 1 3" << endl;
 }
 
 int main(int argc, char **argv){

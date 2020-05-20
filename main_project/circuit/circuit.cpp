@@ -73,6 +73,13 @@ void Circuit::setHasNonLinearComponents(bool _hasNonLinearComponents){
     hasNonLinear = _hasNonLinearComponents;
 }
 
+vector<Component*>& Circuit::getComponentsRef(){
+    return components;
+}
+Component* Circuit::getLastComponent(){
+    return components[components.size()-1];
+}
+
 vector<Component*>& Circuit::getVoltageSourcesRef(){
     return voltageSources;
 }

@@ -78,6 +78,8 @@ public:
     void setHasNonLinearComponents(bool _hasNonLinearComponents);
 
     // returns references to prevent inefficient copying
+    vector<Component*>& getComponentsRef();
+    Component* getLastComponent();
     vector<Component*>& getVoltageSourcesRef();
     vector<Component*>& getCurrentSourcesRef();
     vector<Component*>& getConductanceSourcesRef();

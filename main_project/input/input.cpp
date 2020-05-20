@@ -16,6 +16,7 @@ void readSpice(Circuit& c, istream& file){
     getline(file, title);
     c.setTitle(title);
 
+    vector<int> nodes;
     string lineString{};
     int maxNode = 0;
 
@@ -33,14 +34,6 @@ void readSpice(Circuit& c, istream& file){
         while(line >> arg){
             args.push_back(arg);
         }
-
-        // for now this script will assume knowledge of components to get largest node values
-        // will only work for components with two inputs, will fix this later
-        int n1 = stoi(args[0]);
-        int n2 = stoi(args[1]);
-        
-        if(n1 > maxNode) maxNode = n1;
-        if(n2 > maxNode) maxNode = n2;
 
         // expected inputs are in comments, anything after the -> is optional
         if(compTypeC == "R" || compTypeC == "r"){
@@ -65,6 +58,11 @@ void readSpice(Circuit& c, istream& file){
             // + - -> VB IS VAF
 			c.addComponent<BJT>(name,args);
 		}
+
+        nodes = c.getLastComponent()->getNodes();
+        for(int n : nodes){
+            maxNode = n>maxNode?n:maxNode;
+        } 
 		
     }
     c.setHighestNodeNumber(maxNode);
