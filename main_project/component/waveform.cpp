@@ -103,7 +103,8 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
             comp->getValue(args[8].substr(0,args[8].size()-1)) // period of wave
         );
     }else{
-        cerr << "Tried to use unsupported waveform type" <<endl;
+        cout << typeName <<endl; //for testing only
+        cerr << "Tried to use a unsupported waveform type" <<endl;
         exit(1);
     }
 }
@@ -140,7 +141,16 @@ void Waveform::setupPulse(float startTime, float _initialVoltage, float _peakVol
 
     sourceType = sourceTypes::PULSE;
 
+    setPulseConstants();
+
     updatePulseVals(startTime);
+}
+
+void Waveform::setPulseConstants(){
+    float voltageDifference = peakVoltage - initialVoltage;
+    
+    riseGradient = voltageDifference/riseTime;
+    fallGradient = -voltageDifference/fallTime;
 }
 
 float Waveform::updateVals(float time){
@@ -203,6 +213,29 @@ float Waveform::updatePwlVals(float time){
 }
 
 float Waveform::updatePulseVals(float time){
-    cerr << "Pulse not yet supported" <<endl;
-    exit(1);
+    //check if the waveform has started yet
+    if(time <= initialDelayTime){
+        return initialVoltage;
+    }
+
+    //periodic behaviour starts at time = initialDelayTime
+    float timeInPeriod = fmod(time-initialDelayTime, period);
+
+    //if at rise part
+    if(timeInPeriod < riseTime){
+        return initialVoltage + riseGradient*timeInPeriod;
+    }
+
+    //if at on part
+    if(timeInPeriod < pulseWidth){
+        return peakVoltage;
+    }
+
+    //if at fall part
+    if(timeInPeriod < fallTime){
+        return peakVoltage + fallGradient*(timeInPeriod-riseTime-pulseWidth);
+    }
+
+    //if none of the previous conditions is met, the pulse must be off
+    return initialVoltage;
 }

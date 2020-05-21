@@ -27,6 +27,9 @@ private:
 
     //used for pulse
     float initialVoltage, peakVoltage, initialDelayTime, riseTime, fallTime, pulseWidth, period;
+
+    //helper variables for pulse
+    float riseGradient, fallGradient;
     
     /*
         SINE netlist syntax:
@@ -64,6 +67,9 @@ private:
         To - period of wave
     */
     void setupPulse(float startTime, float _initialVoltage, float _peakVoltage, float _initialDelayTime, float _riseTime, float _fallTime, float _pulseWidth, float _period);
+
+    //helper function to compute the variables that stay unchanged for a particular pulse waveform
+    void setPulseConstants();
 
 public:
     void setupWaveform(const Component* comp, vector<string> args, vector<float> extraInfo);
