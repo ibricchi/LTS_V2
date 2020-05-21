@@ -11,6 +11,10 @@
 #include <component/resistor.hpp>
 #include <component/capacitor.hpp>
 #include <component/inductor.hpp>
+#include <component/voltageControlledVoltageSource.hpp>
+#include <component/currentControlledVoltageSource.hpp>
+#include <component/voltageControlledCurrentSource.hpp>
+#include <component/currentControlledCurrentSource.hpp>
 
 using namespace std;
 using namespace Eigen;
@@ -18,7 +22,7 @@ using namespace Eigen;
 Circuit::Circuit()
 {
     currentTime = 0;
-    timeStep = 0.1; // in seconds
+    timeStep = 0.001; // in seconds
     highestNodeNumber = 0;
     hasNonLinear = false;
 }
@@ -76,6 +80,7 @@ void Circuit::setHasNonLinearComponents(bool _hasNonLinearComponents){
 vector<Component*>& Circuit::getComponentsRef(){
     return components;
 }
+
 Component* Circuit::getLastComponent(){
     return components[components.size()-1];
 }
@@ -148,7 +153,6 @@ void Circuit::setupA()
                 A(nodes[i] - 1, nodes[j] - 1) -= conductance;
             }
         }
-
     }
 
     //voltage part
@@ -157,19 +161,81 @@ void Circuit::setupA()
         const auto &vs = voltageSources.at(i);
 
         nodes = vs->getNodes();
-        const int node1 = nodes.at(0);
-        const int node2 = nodes.at(1);
+        int node1 = nodes.at(0);
+        int node2 = nodes.at(1);
 
         if (node1 != 0)
         {
             A(node1 - 1, highestNodeNumber + i) = 1;
-            A(highestNodeNumber + i, node1 - 1) = 1; //different when dealing with dependent sources
+            A(highestNodeNumber + i, node1 - 1) = 1;
         }
 
         if (node2 != 0)
         {
             A(node2 - 1, highestNodeNumber + i) = -1;
-            A(highestNodeNumber + i, node2 - 1) = -1; //different when dealing with dependent sources
+            A(highestNodeNumber + i, node2 - 1) = -1;
+        }
+        
+        // need to add additional values when controlled sources
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
+            float gain = vs->getGain();
+            int nodeC1 = nodes.at(2);
+            int nodeC2 = nodes.at(3);
+
+            if (nodeC1 != 0)
+            {
+                A(highestNodeNumber + i, nodeC1 - 1) -= gain;
+            }
+
+            if (nodeC2 != 0)
+            {
+                A(highestNodeNumber + i, nodeC2 - 1) += gain;
+            }
+        }else if(typeid(*vs) == typeid(CurrentControlledVoltageSource)){
+            float gain = vs->getGain();
+            int controllingVsIndex = getVoltageSourceIndexByName(vs->getVsName(), voltageSources);
+
+            A(highestNodeNumber + i, highestNodeNumber + controllingVsIndex) -= gain;
+        }
+    }
+
+    //dependent current sources
+    for(const auto& cs : currentSources){
+        if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
+            nodes = cs->getNodes();
+            int node1 = nodes.at(0);
+            int node2 = nodes.at(1);
+            int nodeC1 = nodes.at(2);
+            int nodeC2 = nodes.at(3);
+            
+            float gain = cs->getGain();
+            
+            if(node1 != 0 && nodeC1 != 0){
+                A(node1 - 1, nodeC1 - 1) += gain;
+            }
+            if(node1 != 0 && nodeC2 != 0){
+                A(node1 - 1, nodeC2 - 1) -= gain;
+            }
+            if(node2 != 0 && nodeC1 != 0){
+                A(node2 - 1, nodeC1 - 1) -= gain;
+            }
+            if(node2 != 0 && nodeC2 != 0){
+                A(node2 - 1, nodeC2 - 1) += gain;
+            }
+        }else if(typeid(*cs) == typeid(CurrentControlledCurrentSource)){
+            nodes = cs->getNodes();
+            int node1 = nodes.at(0);
+            int node2 = nodes.at(1);
+
+            float gain = cs->getGain();
+            int controllingVsIndex = getVoltageSourceIndexByName(cs->getVsName(), voltageSources);
+
+            if(node1 != 0){
+                A(node1 - 1, highestNodeNumber + controllingVsIndex) += gain;
+            }
+            if(node2 != 0){
+                A(node2 - 1, highestNodeNumber + controllingVsIndex) -= gain;
+            }
         }
     }
 }
@@ -218,6 +284,14 @@ MatrixXf Circuit::getA() const
     return A;
 }
 
+int Circuit::getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const{
+    for(int i{}; i<voltageSources.size(); i++){
+        if(voltageSources.at(i)->getName() == vsName){
+            return i;
+        }
+    }
+}
+
 void Circuit::computeA_inv(){
     A_inv = A.inverse();
 }
@@ -232,28 +306,39 @@ void Circuit::adjustB()
     b = VectorXf::Zero(highestNodeNumber + voltageSources.size());
 
     //adding currents
-    for (const auto &cSource : currentSources)
+    for (const auto &cs : currentSources)
     {
-        vector<int> nodes = cSource->getNodes();
+        //dependent current sources don't contribute to the b vector
+        if(typeid(*cs) == typeid(CurrentControlledSource)){ 
+            continue;
+        }
+        
+        vector<int> nodes = cs->getNodes();
         const int node1 = nodes.at(0);
         const int node2 = nodes.at(1);
 
         // same suggestion as above, would make the whole code base more flexible to new componetns
         if (node1 != 0)
         {
-            b(node1 - 1) += cSource->getCurrent();
+            b(node1 - 1) += cs->getCurrent();
         }
 
         if (node2 != 0)
         {
-            b(node2 - 1) -= cSource->getCurrent();
+            b(node2 - 1) -= cs->getCurrent();
         }
     }
 
     //adding voltages
     for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
     {
-        b(i) = voltageSources.at(j)->getVoltage();
+        auto vs = voltageSources.at(j);
+
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource) || typeid(*vs) == typeid(CurrentControlledVoltageSource)){
+            continue;
+        }else{ // normal/independent voltage sources
+            b(i) = vs->getVoltage();
+        }
     }
 }
 
@@ -284,6 +369,7 @@ void Circuit::nonLinearB(){
         b(i) -= (n2 == 0? 0 : x[n2-1]);
     }
 };
+
 VectorXf Circuit::getB() const
 {
     return b;
@@ -295,8 +381,13 @@ void Circuit::setupXMeaning(){
     for(int i{1}; i<=highestNodeNumber; i++){
         xMeaning.push_back("v_" + to_string(i));
     }
+
     for(const auto &vs : voltageSources){
-        xMeaning.push_back("I_V" + vs->getName());
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
+            xMeaning.push_back("I_E" + vs->getName());
+        }else{ // normal/independent voltage sources
+            xMeaning.push_back("I_V" + vs->getName());
+        }
     }
 }
 
@@ -336,4 +427,4 @@ void Circuit::updateNodalVoltages(){
         }
         comp->setNodalVoltages(newNodalVoltages);
     }
-};
+}

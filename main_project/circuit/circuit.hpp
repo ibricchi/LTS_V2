@@ -50,6 +50,7 @@ protected:
 
     // non-linear analysis vectors;
     vector<nodeCompPair> nodalFunctions{};
+
 public:
     // default constructor for initializing empty object
     Circuit();
@@ -120,8 +121,8 @@ public:
                 nonVoltageSources.push_back(newComp);
                 break;
             case componentType::nonLinear:
-                hasNonLinear = true;
                 nonLinears.push_back(newComp);
+                hasNonLinear = true;
                 break;
             default:
                 cerr << "The component " << name << " has no supported componentType" <<endl;
@@ -137,9 +138,14 @@ public:
 
     // operation to create A
     void setupA();
+
     // non linear A
     void nonLinearA();
+
     MatrixXf getA() const;
+
+    // helper function for current controlled sources
+    int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
 
     // compute inverse of A
     void computeA_inv();
@@ -147,8 +153,10 @@ public:
 
     // operation to adjust B
     void adjustB();
+
     // non linear b
     void nonLinearB();
+
     VectorXf getB() const;
 
     // operation to assign meaning to the result vector x
@@ -157,8 +165,11 @@ public:
 
     // A_inv must exist for this to work
     void computeX();
+
     void computeNLX(float gamma);
+
     void setX(VectorXf newX);
+    
     VectorXf getX() const;
 
     // update nodal voltages
