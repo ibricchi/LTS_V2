@@ -167,7 +167,7 @@ void readSpice(Circuit& c, istream& file){
     auto nonLinears = c.getNonLinearsRef();
     for(const auto &model : modelStatements){
         for(const auto &nL : nonLinears){
-            if(nL->getName() == model.componentId){
+            if(nL->getModelName() == model.componentId){
                 for(const auto &el : model.params){
                     nL->addParam(el.first, el.second);
                 }

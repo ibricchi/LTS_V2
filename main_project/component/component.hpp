@@ -16,6 +16,7 @@ class Component
 {
 protected:
     string name;
+    string modelName; //name of .model statement
     vector<int> nodes;
     vector<componentType> types; //indicates functionality of subComponents
     vector<float> nodalVoltages;
@@ -30,6 +31,7 @@ public:
     virtual float getTotalCurrent(float voltage, int order = 1); //For complex components, this return the current through the whole component
     virtual float getGain() const;
     virtual string getVsName() const;
+    virtual string getModelName() const;
     
     string getName() const;
     virtual vector<int> getNodes() const = 0;

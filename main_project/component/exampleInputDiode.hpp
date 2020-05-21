@@ -1,5 +1,5 @@
-#ifndef DIODE_HPP
-#define DIODE_HPP
+#ifndef EXAMPLEINPUTDIODE_HPP  
+#define EXAMPLEINPUTDIODE_HPP
 
 #include <vector>
 #include <string>
@@ -23,6 +23,10 @@ public:
 
     void addParam(int paramId, float paramValue);
     vector<int> getNodes() const override;
+    string getModelName() const override;
+
+    float ivAtNode(int n1) const override;
+    float divAtNode(int n1, int dn) const override;
 };
 
 #endif
