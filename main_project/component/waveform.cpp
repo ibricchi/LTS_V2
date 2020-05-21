@@ -226,12 +226,12 @@ float Waveform::updatePulseVals(float time){
     }
 
     //if at on part
-    if(timeInPeriod < pulseWidth){
+    if(timeInPeriod < riseTime+pulseWidth){
         return peakVoltage;
     }
 
     //if at fall part
-    if(timeInPeriod < fallTime){
+    if(timeInPeriod < riseTime+pulseWidth+fallTime){
         return peakVoltage + fallGradient*(timeInPeriod-riseTime-pulseWidth);
     }
 
