@@ -10,10 +10,8 @@
 
 //these don't change during simulation with linear components
 void linearSetup(Circuit& c){
-    cout << "start linear setup" <<endl;
     c.setupA();
     c.adjustB();
-    cout << "finished linear setup" <<endl;
     c.computeA_inv();
     c.setupXMeaning();
 }

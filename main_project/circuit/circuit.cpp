@@ -309,11 +309,9 @@ void Circuit::adjustB()
     for (const auto &cs : currentSources)
     {
         //dependent current sources don't contribute to the b vector
-        if(typeid(*cs) == typeid(CurrentControlledSource)){ 
+        if(typeid(*cs) == typeid(CurrentControlledCurrentSource) || typeid(*cs) == typeid(VoltageControlledCurrentSource)){ 
             continue;
         }
-
-        cout << (typeid(*cs) == typeid(CurrentControlledSource)) <<endl;
 
         vector<int> nodes = cs->getNodes();
         const int node1 = nodes.at(0);
