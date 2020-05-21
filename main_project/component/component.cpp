@@ -12,47 +12,47 @@ Component::~Component(){}
 // this allows to call an error if ever a function that shouldn't be returning a voltage or current or conductance
 // is asked for one
 float Component::getVoltage() const{
-	cerr << "Tried to call getVoltage from a component that doesn't support it" <<endl:
+	cerr << "Tried to call getVoltage from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
 float Component::getCurrent() const{
-   	cerr << "Tried to call getCurrent from a component that doesn't support it" <<endl:
+   	cerr << "Tried to call getCurrent from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
 float Component::getTotalCurrent(float voltage,int order){
-	cerr << "Tried to call getTotalCurrent from a component that doesn't support it" <<endl:
+	cerr << "Tried to call getTotalCurrent from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
 float Component::getConductance() const{
-    cerr << "Tried to call getConductance from a component that doesn't support it" <<endl:
+    cerr << "Tried to call getConductance from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
 float Component::getGain() const{
-	cerr << "Tried to call getGain from a component that doesn't support it" <<endl:
+	cerr << "Tried to call getGain from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
 string Component::getVsName() const{
-	cerr << "Tried to call getVSName from a component that doesn't support it" <<endl:
+	cerr << "Tried to call getVSName from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
 void Component::updateVals(float newVoltage, float newCurrent, int order){
-    cerr << "Tried to call updateVals from a component that doesn't support it" <<endl:
+    cerr << "Tried to call updateVals from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
 void Component::updateVals(float time_or_voltage){
-    cerr << "Tried to call updateVals from a component that doesn't support it" <<endl:
+    cerr << "Tried to call updateVals from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
 void Component::addParam(int paramId, float paramValue){
-	cerr << "Tried to call addParam from a component that doesn't support it" <<endl:
+	cerr << "Tried to call addParam from a component that doesn't support it" <<endl;
 	exit(1);
 }
 
