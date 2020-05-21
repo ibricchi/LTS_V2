@@ -16,13 +16,20 @@ VoltageSource::VoltageSource(string name, vector<string> args, vector<float> ext
         setupDC(val);
     }else{
         string flow = args[2];
-        if(flow == "DC" || flow == "dc"){
+        if(flow == "DC" || flow == "dc" || flow == "Dc" || flow == "dC"){
             setupDC(
                 getValue(args[3]) // voltage
             );
         }else if(flow.size() > 4){ //checks if "flow" is long enough to be SIN(* where * is any character
             voltageWaveform.setupWaveform(this, args, extraInfo);
+
+            //initialize voltage value to voltage at start time (extraInfo[1] = startTime)
+            updateVals(extraInfo[1]);
+
             types.push_back(componentType::timeUpdatable);
+        }else{
+            std::cerr << "Invalid netlist: The syntax of voltage source is incorrect." <<std::endl;
+            exit(1);
         }
     }
 }

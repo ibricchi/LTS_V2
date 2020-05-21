@@ -16,7 +16,9 @@ enum struct componentType{
 };
 enum struct sourceTypes{
     DC = 0,
-    SIN = 1
+    SIN = 1,
+    PWL = 2,
+    PULSE = 3
 };
 enum struct component{
     DIODE,

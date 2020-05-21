@@ -9,7 +9,7 @@
 using namespace std;
 
 // for debugging only
-void testCircuit(stringstream& buffer){
+void testCircuit1(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "V1 1 0 SIN(0 1 10)" << endl;
     buffer << "V1 2 0 10" << endl;
@@ -22,6 +22,18 @@ void testCircuit3(stringstream& buffer){
     buffer << "R1 1 2 1k" << endl;
     buffer << "R2 1 0 500" << endl;
     buffer << "D1N4148 2 0" <<endl;
+}
+void testCircuit4(stringstream& buffer){
+    buffer << "ExampleCircuit4" << endl;
+    buffer << "V1 1 0 Pwl(.1 10 .2 5 .3 2)" << endl;
+    buffer << "R1 2 0 1k" << endl;
+    buffer << "L1 1 2 .1" << endl;
+}
+void testCircuit(stringstream& buffer){
+    buffer << "ExampleCircuit5" << endl;
+    buffer << "I1 1 0 Pulse(2 5 .01 .01 .01 .05 .1)" << endl;
+    buffer << "R1 2 0 1k" << endl;
+    buffer << "L1 1 2 .1" << endl;
 }
 
 int main(int argc, char **argv){
