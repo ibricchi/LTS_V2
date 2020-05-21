@@ -13,7 +13,7 @@ CurrentControlledSource::CurrentControlledSource(string name, vector<string> arg
 
     setupBasic(n1, n2, vsName);
 
-    gain = stod(args[3]);
+    gain = Component::getValue(args[3]);
 }
 
 CurrentControlledSource::~CurrentControlledSource(){}

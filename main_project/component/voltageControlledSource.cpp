@@ -13,7 +13,7 @@ VoltageControlledSource::VoltageControlledSource(string name, vector<string> arg
 
     setupBasic(n1, n2, nc1, nc2);
 
-    gain = stod(args[4]);
+    gain = Component::getValue(args[4]);
 }
 
 VoltageControlledSource::~VoltageControlledSource(){}
