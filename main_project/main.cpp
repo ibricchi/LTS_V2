@@ -29,11 +29,20 @@ void testCircuit4(stringstream& buffer){
     buffer << "R1 2 0 1k" << endl;
     buffer << "L1 1 2 .1" << endl;
 }
-void testCircuit(stringstream& buffer){
+void testCircuit5(stringstream& buffer){
     buffer << "ExampleCircuit5" << endl;
     buffer << "I1 1 0 Pulse(2 5 .01 .01 .01 .05 .1)" << endl;
     buffer << "R1 2 0 1k" << endl;
     buffer << "L1 1 2 .1" << endl;
+}
+void testCircuit(stringstream& buffer){
+    buffer << "ExampleCircuit6" << endl;
+    buffer << "R1 1 2 1k" << endl;
+    buffer << "R2 2 0 1k" << endl;
+    buffer << "E1 3 2 1 2 2.5" <<endl;
+    buffer << "R3 3 4 1k" <<endl;
+    buffer << "V2 4 0 3" <<endl;
+    buffer << "V1 1 0 SIN(0 12 10)" << endl;
 }
 
 int main(int argc, char **argv){
