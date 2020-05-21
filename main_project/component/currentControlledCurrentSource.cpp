@@ -3,14 +3,17 @@
 
 #include "currentControlledCurrentSource.hpp"
 
-CurrentControlledCurrentSource::CurrentControlledCurrentSource(string name, vector<string> args, vector<double> extraInfo)
+CurrentControlledCurrentSource::CurrentControlledCurrentSource(string name, vector<string> args, vector<float> extraInfo)
     :CurrentControlledSource(name, args, extraInfo)
 {
     types.push_back(componentType::currentSource);
 }
 
-// CurrentControlledCurrentSource::CurrentControlledCurrentSource(string _name, double _voltage, int n1, int n2, int nc1, int nc2)
-//     :CurrentControlledSource(_name, _voltage, n1, n2, nc1, nc2)
-// {
-//     types.push_back(componentType::voltageSource);
-// }
+float CurrentControlledCurrentSource::ivAtNode(int n) const{
+    cerr << "ivAtNode not implemented in dependent source" <<endl;
+    exit(1);
+}
+float CurrentControlledCurrentSource::divAtNode(int n, int dn) const{
+    cerr << "divAtNode not implemented in dependent source" <<endl;
+    exit(1);
+}

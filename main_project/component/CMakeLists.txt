@@ -6,6 +6,12 @@ add_library(component
     voltageSource.cpp
     currentSource.cpp
     waveform.cpp
+    voltageControlledSource.cpp
+    voltageControlledVoltageSource.cpp
+    voltageControlledCurrentSource.cpp
+    currentControlledSource.cpp
+    currentControlledVoltageSource.cpp
+    currentControlledCurrentSource.cpp
     exampleInputDiode.cpp
     diode.cpp
     bjt.cpp

@@ -8,9 +8,11 @@
 
 class CurrentControlledCurrentSource: public CurrentControlledSource{
 public:
-    CurrentControlledCurrentSource(string _name, vector<string> args, vector<double> extraInfo);
-    // CurrentControlledCurrentSource(string _name, double _voltage, int n1, int n2, int nc1, int nc2);
+    CurrentControlledCurrentSource(string _name, vector<string> args, vector<float> extraInfo);
     ~CurrentControlledCurrentSource() = default;
+
+    float ivAtNode(int n) const override;
+    float divAtNode(int n, int dn) const override;
 };
 
 #endif

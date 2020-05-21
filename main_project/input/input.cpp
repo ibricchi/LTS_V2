@@ -11,6 +11,10 @@
 #include <component/enums.hpp>
 #include <component/diode.hpp>
 #include <component/bjt.hpp>
+#include <component/voltageControlledVoltageSource.hpp>
+#include <component/currentControlledVoltageSource.hpp>
+#include <component/voltageControlledCurrentSource.hpp>
+#include <component/currentControlledCurrentSource.hpp>
 
 #include "input.hpp"
 
@@ -131,7 +135,7 @@ void readSpice(Circuit& c, istream& file){
 		}else if(compTypeC == "L" || compTypeC == "l"){
             // + - inductance
 			c.addComponent<Inductor>(name, args);
-		}else if(compTypeC =="C" || compTypeC == "c"){
+		}else if(compTypeC == "C" || compTypeC == "c"){
             // + - capacitance
 			c.addComponent<Capacitor>(name,args);
 		}else if(compTypeC =="D" || compTypeC == "d"){
@@ -140,11 +144,19 @@ void readSpice(Circuit& c, istream& file){
 		}else if(compTypeC =="Q" || compTypeC == "q"){
             // + - -> VB IS VAF
 			c.addComponent<BJT>(name,args);
-		}else{
+		}else if(compTypeC == "E" || compTypeC == "e"){
+            c.addComponent<VoltageControlledVoltageSource>(name, args);
+        }else if(compTypeC == "H" || compTypeC == "h"){
+            c.addComponent<CurrentControlledVoltageSource>(name, args);
+        }else if(compTypeC == "G" || compTypeC == "g"){
+            c.addComponent<VoltageControlledCurrentSource>(name, args);
+        }else if(compTypeC == "F" || compTypeC == "f"){
+            c.addComponent<CurrentControlledCurrentSource>(name, args);
+        }else{
             cerr << "Unsuported netlist statement. Statement: " << compTypeC <<endl;
             exit(1);
         }
-
+		
         nodes = c.getLastComponent()->getNodes();
         for(int n : nodes){
             maxNode = n>maxNode?n:maxNode;

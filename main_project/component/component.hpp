@@ -9,6 +9,9 @@
 
 using namespace std;
 
+/*
+    Acts as interface for circuit components
+*/
 class Component
 {
 protected:
@@ -25,7 +28,9 @@ public:
     virtual float getVoltage() const;
     virtual float getCurrent() const; //For complex components, this returns the current through the companion model's current source rather than through the whole component
     virtual float getTotalCurrent(float voltage, int order = 1); //For complex components, this return the current through the whole component
-
+    virtual float getGain() const;
+    virtual string getVsName() const;
+    
     string getName() const;
     virtual vector<int> getNodes() const = 0;
 
@@ -38,14 +43,16 @@ public:
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(float newVoltage, float newCurrent, int order);
-    // this should ebe used to update the time of the time dependant components
-    virtual void updateVals(float time);
+    
+    // this should be used to update the time of the time dependant components or update nonlinear components (passing voltage)
+    virtual void updateVals(float time_or_voltage);
 
     //used to add additional parameters to components after construction
     virtual void addParam(int paramId, float paramValue);
 
     // helper function to parse string with units into float. Maybe better to move somewhere else
     static float getValue(string val);
+    
     vector<componentType> getTypes() const;
 };
 

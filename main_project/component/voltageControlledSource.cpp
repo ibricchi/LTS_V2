@@ -3,7 +3,7 @@
 
 #include "voltageControlledSource.hpp"
 
-VoltageControlledSource::VoltageControlledSource(string name, vector<string> args, vector<double> extraInfo)
+VoltageControlledSource::VoltageControlledSource(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
     int n1 = stoi(args[0]);
@@ -13,13 +13,8 @@ VoltageControlledSource::VoltageControlledSource(string name, vector<string> arg
 
     setupBasic(n1, n2, nc1, nc2);
 
-    gain = stod(args[4]);
+    gain = Component::getValue(args[4]);
 }
-
-// VoltageControlledSource::VoltageControlledSource(string _name, double _voltage, int n1, int n2, int nc1, int nc2)
-//     :Component{_name}{
-//     setupBasic(n1, n2, nc1, nc2);
-// }
 
 VoltageControlledSource::~VoltageControlledSource(){}
 
@@ -30,7 +25,7 @@ void VoltageControlledSource::setupBasic(int n1, int n2, int nc1, int nc2){
     nodes.push_back(nc2);
 }
 
-double VoltageControlledSource::getGain() const{
+float VoltageControlledSource::getGain() const{
     return gain;
 }
 

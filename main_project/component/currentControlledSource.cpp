@@ -3,7 +3,7 @@
 
 #include "currentControlledSource.hpp"
 
-CurrentControlledSource::CurrentControlledSource(string name, vector<string> args, vector<double> extraInfo)
+CurrentControlledSource::CurrentControlledSource(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
     int n1 = stoi(args[0]);
@@ -13,13 +13,8 @@ CurrentControlledSource::CurrentControlledSource(string name, vector<string> arg
 
     setupBasic(n1, n2, vsName);
 
-    gain = stod(args[3]);
+    gain = Component::getValue(args[3]);
 }
-
-// CurrentControlledSource::CurrentControlledSource(string _name, double _voltage, int n1, int n2)
-//     :Component{_name}{
-//     setupBasic(n1, n2);
-// }
 
 CurrentControlledSource::~CurrentControlledSource(){}
 
@@ -30,7 +25,7 @@ void CurrentControlledSource::setupBasic(int n1, int n2, string _vsName){
     vsName = _vsName;
 }
 
-double CurrentControlledSource::getGain() const{
+float CurrentControlledSource::getGain() const{
     return gain;
 }
 
