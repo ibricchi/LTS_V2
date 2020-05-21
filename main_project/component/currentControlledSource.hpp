@@ -16,7 +16,7 @@
 */
 class CurrentControlledSource: public Component{
 protected:
-    double gain;
+    float gain;
 
     //Name of the voltage source whose current is the controlling current.
     //vsName is case sensitive and must match the name of the voltage source exactly.
@@ -24,13 +24,12 @@ protected:
     string vsName;
 
 public:
-    CurrentControlledSource(string _name, vector<string> args, vector<double> extraInfo);
-    // CurrentControlledSource(string _name, double _voltage, int n1, int n2);
+    CurrentControlledSource(string _name, vector<string> args, vector<float> extraInfo);
     virtual ~CurrentControlledSource() = 0;
 
     void setupBasic(int n1, int n2, string vsName);
 
-    double getGain() const override;
+    float getGain() const override;
     string getVsName() const override;
 
     vector<int> getNodes() const override;
