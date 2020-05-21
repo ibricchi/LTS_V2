@@ -44,7 +44,7 @@ private:
 
         Arguments in <> are optional and assumed to be 0 by default
     */
-    void setupSin(float startTime, float _voltageOffset, float _voltageAmplitude, float _frequency, float _timeDelay = 0, float _dampingFactor = 0, float _phase = 0);
+    void setupSin(float _voltageOffset, float _voltageAmplitude, float _frequency, float _timeDelay = 0, float _dampingFactor = 0, float _phase = 0);
 
     /*
         PWL netlist syntax:
@@ -52,7 +52,7 @@ private:
 
         (Ti, Vi) specifies the source value Vi at time Ti
     */
-    void setupPwl(float startTime, map<float, float> _pwlTimeVoltageMapping);
+    void setupPwl(map<float, float> _pwlTimeVoltageMapping);
 
     /*
         PULSE netlist syntax:
@@ -66,7 +66,7 @@ private:
         Tw - pulse-width
         To - period of wave
     */
-    void setupPulse(float startTime, float _initialVoltage, float _peakVoltage, float _initialDelayTime, float _riseTime, float _fallTime, float _pulseWidth, float _period);
+    void setupPulse(float _initialVoltage, float _peakVoltage, float _initialDelayTime, float _riseTime, float _fallTime, float _pulseWidth, float _period);
 
     //helper function to compute the variables that stay unchanged for a particular pulse waveform
     void setPulseConstants();

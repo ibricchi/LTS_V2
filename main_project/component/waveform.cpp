@@ -18,7 +18,6 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
         {
         case 5:
             setupSin(
-                extraInfo[1], // start time
                 comp->getValue(flow.substr(flow.find("(")+1)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4].substr(0,args[4].size()-1)) // frequency
@@ -26,7 +25,6 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
             break;
         case 6:
             setupSin(
-                extraInfo[1], // start time
                 comp->getValue(flow.substr(flow.find("(")+1)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4]), // frequency
@@ -35,7 +33,6 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
             break;
         case 7:
             setupSin(
-                extraInfo[1], // start time
                 comp->getValue(flow.substr(flow.find("(")+1)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4]), // frequency
@@ -45,7 +42,6 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
             break;
         case 8:
             setupSin(
-                extraInfo[1], // start time
                 comp->getValue(flow.substr(flow.find("(")+1)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4]), // frequency
@@ -83,7 +79,6 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
         }
 
         setupPwl(
-            extraInfo[1], // start time
             inputPairs // time-voltage mapping
         );
     }else if(typeName == "PULSE"){
@@ -93,7 +88,6 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
         }
 
         setupPulse(
-            extraInfo[1], // start time
             comp->getValue(flow.substr(flow.find("(")+1)), // initial voltage
             comp->getValue(args[3]), // peak voltage
             comp->getValue(args[4]), // initial delay time
@@ -108,7 +102,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
     }
 }
 
-void Waveform::setupSin(float startTime, float _offset, float _amplitude, float _frequency, float _timeDelay, float _dampingFactor, float _phase){
+void Waveform::setupSin(float _offset, float _amplitude, float _frequency, float _timeDelay, float _dampingFactor, float _phase){
     offset = _offset;
     amplitude = _amplitude;
     frequency = _frequency;
@@ -117,19 +111,15 @@ void Waveform::setupSin(float startTime, float _offset, float _amplitude, float 
     phase = _phase;
 
     sourceType = sourceTypes::SIN;
-
-    updateSinVals(startTime);
 }
 
-void Waveform::setupPwl(float startTime, map<float, float> _pwlTimeVoltageMapping){
+void Waveform::setupPwl(map<float, float> _pwlTimeVoltageMapping){
    pwlTimeVoltageMapping = _pwlTimeVoltageMapping;
 
    sourceType = sourceTypes::PWL;
-
-   updatePwlVals(startTime);
 }
 
-void Waveform::setupPulse(float startTime, float _initialVoltage, float _peakVoltage, float _initialDelayTime, float _riseTime, float _fallTime, float _pulseWidth, float _period){
+void Waveform::setupPulse(float _initialVoltage, float _peakVoltage, float _initialDelayTime, float _riseTime, float _fallTime, float _pulseWidth, float _period){
     initialVoltage = _initialVoltage;
     peakVoltage = _peakVoltage;
     initialDelayTime = _initialDelayTime;
@@ -141,8 +131,6 @@ void Waveform::setupPulse(float startTime, float _initialVoltage, float _peakVol
     sourceType = sourceTypes::PULSE;
 
     setPulseConstants();
-
-    updatePulseVals(startTime);
 }
 
 void Waveform::setPulseConstants(){

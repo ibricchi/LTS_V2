@@ -23,6 +23,10 @@ CurrentSource::CurrentSource(string name, vector<string> args, vector<float> ext
             );
         }else if(flow.size() > 4){ //checks if "flow" is long enough to be SIN(* where * is any character
             currentWaveform.setupWaveform(this, args, extraInfo);
+            
+            //initialize current value to current at start time (extraInfo[1] = startTime)
+            updateVals(extraInfo[1]);
+            
             types.push_back(componentType::timeUpdatable);
         }else{
             std::cerr << "Invalid netlist: The syntax of current source is incorrect." <<std::endl;
