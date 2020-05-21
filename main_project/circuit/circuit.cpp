@@ -312,7 +312,9 @@ void Circuit::adjustB()
         if(typeid(*cs) == typeid(CurrentControlledSource)){ 
             continue;
         }
-        
+
+        cout << (typeid(*cs) == typeid(CurrentControlledSource)) <<endl;
+
         vector<int> nodes = cs->getNodes();
         const int node1 = nodes.at(0);
         const int node2 = nodes.at(1);
