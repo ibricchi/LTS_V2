@@ -8,3 +8,12 @@ CurrentControlledCurrentSource::CurrentControlledCurrentSource(string name, vect
 {
     types.push_back(componentType::currentSource);
 }
+
+float CurrentControlledCurrentSource::ivAtNode(int n) const{
+    cerr << "ivAtNode not implemented in dependent source" <<endl;
+    exit(1);
+}
+float CurrentControlledCurrentSource::divAtNode(int n, int dn) const{
+    cerr << "divAtNode not implemented in dependent source" <<endl;
+    exit(1);
+}
