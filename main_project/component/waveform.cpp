@@ -8,7 +8,7 @@
 void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<float> extraInfo){
     string flow = args[2];
 
-    string typeName = flow.substr(0,3);
+    string typeName = flow.substr(0, flow.find("("));
     for_each(typeName.begin(), typeName.end(), [](char &c){
 	    c = toupper(c);
     });
@@ -19,7 +19,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
         case 5:
             setupSin(
                 extraInfo[1], // start time
-                comp->getValue(flow.substr(4, flow.size()-4)), // voltage offset
+                comp->getValue(flow.substr(flow.find("(")+1)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4].substr(0,args[4].size()-1)) // frequency
             );
@@ -27,7 +27,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
         case 6:
             setupSin(
                 extraInfo[1], // start time
-                comp->getValue(flow.substr(4, flow.size()-4)), // voltage offset
+                comp->getValue(flow.substr(flow.find("(")+1)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4]), // frequency
                 comp->getValue(args[5].substr(0,args[5].size()-1)) // time delay
@@ -36,7 +36,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
         case 7:
             setupSin(
                 extraInfo[1], // start time
-                comp->getValue(flow.substr(4, flow.size()-4)), // voltage offset
+                comp->getValue(flow.substr(flow.find("(")+1)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4]), // frequency
                 comp->getValue(args[5]), // time delay
@@ -46,7 +46,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
         case 8:
             setupSin(
                 extraInfo[1], // start time
-                comp->getValue(flow.substr(4, flow.size()-4)), // voltage offset
+                comp->getValue(flow.substr(flow.find("(")+1)), // voltage offset
                 comp->getValue(args[3]), // voltage amplitude
                 comp->getValue(args[4]), // frequency
                 comp->getValue(args[5]), // time delay
@@ -70,7 +70,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
         for(int i{2}; i<args.size(); i+=2){
             //check if first or last param (need to remove bracket)
             if(i == 2){
-                time = comp->getValue(flow.substr(4, flow.size()-4));
+                time = comp->getValue(flow.substr(flow.find("(")+1));
                 value = comp->getValue(args.at(i+1));
             }else if(i == args.size()-2){
                 time = comp->getValue(args.at(i));
@@ -94,7 +94,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
 
         setupPulse(
             extraInfo[1], // start time
-            comp->getValue(flow.substr(4, flow.size()-4)), // initial voltage
+            comp->getValue(flow.substr(flow.find("(")+1)), // initial voltage
             comp->getValue(args[3]), // peak voltage
             comp->getValue(args[4]), // initial delay time
             comp->getValue(args[5]), // rise time
@@ -103,7 +103,6 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
             comp->getValue(args[8].substr(0,args[8].size()-1)) // period of wave
         );
     }else{
-        cout << typeName <<endl; //for testing only
         cerr << "Tried to use a unsupported waveform type" <<endl;
         exit(1);
     }
