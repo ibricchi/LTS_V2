@@ -167,8 +167,9 @@ float Waveform::updatePwlVals(float time){
         return (n.first >= time) ? true : false;
     });
     if(it == pwlTimeVoltageMapping.end()){ //not found
-        //time > last specified time
-        return 0; 
+        //time > last specified time => return last value
+        it--;
+        return it->second;
     }
 
     //check if haven't yet reached first data point
