@@ -61,92 +61,92 @@ void BJT::SetupValues(float _BF, float _IS, bool _hasVAF, float _VAF){
 }
 
 float BJT::ivAtNode(int nin) const{
-    float VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    float VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
-    float VCE = (nodalVoltages[n::C] - nodalVoltages[n::E]);
-    double current;
+    double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
+    double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
+    double VCE = (nodalVoltages[n::C] - nodalVoltages[n::E]);
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
 
+    double current;
     switch(n){
         case n::C:
             current = IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR);
-            return current;
             break;
         case n::B:
             current = IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
-            return current;
             break;
         case n::E:
-            current = IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
-            return -current;
+            current = -IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
             break;
     }
+    // cout << "n: " << n << " current: " << current << endl << endl;
+    return current;
 };
 
 float BJT::divAtNode(int nin, int dnin) const{
-    float VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    float VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
-    float VCE = (nodalVoltages[n::C] - nodalVoltages[n::E]);
+    double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
+    double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
+    double VCE = (nodalVoltages[n::C] - nodalVoltages[n::E]);
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
     int dn = dnin==nodes[n::C]?n::C:(dnin==nodes[n::B]?n::B:n::E);
 
-    float conductance;
+    double conductance;
     switch(n){
         case n::C:
             switch(dn){
+                // partial derivatives of:
+                // IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR)
                 case n::C:
                     conductance = IS/VT*exp(VBC/VT)*(1+1/BR);
-                    return conductance;
                     break;
                 case n::B:
                     conductance = IS/VT*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR));
-                    return conductance;
                     break;
                 case n::E:
                     conductance = -IS/VT*exp(VBE/VT);
-                    return -conductance;
                     break;
             }
             break;
         case n::B:
             switch(dn){
+                // partial derivatives of:
+                // IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
+                // IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
                 case n::C:
                     conductance = -IS/VT/BR*exp(VBC/VT);
-                    return conductance;
                     break;
                 case n::B:
                     conductance = IS/VT*(exp(VBE/VT)/BF + exp(VBC/VT)/BR);
-                    return conductance;
                     break;
                 case n::E:
                     conductance = -IS/VT/BF*exp(VBE/VT);
-                    return -conductance;
                     break;
             }
             break;
         case n::E:
             switch(dn){
+                // partial derivatives of:
+                // -IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
                 case n::C:
-                    conductance = IS/VT*exp(VBC/VT);
-                    return conductance;
+                    conductance = -IS/VT*exp(VBC/VT);
                     break;
                 case n::B:
-                    conductance = IS/VT*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF));
-                    return conductance;
+                    conductance = -IS/VT*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF));
                     break;
                 case n::E:
-                    conductance = -IS/VT*exp(VBE/VT)*(1+1/BF);
-                    return -conductance;
+                    conductance = IS/VT*exp(VBE/VT)*(1+1/BF);
                     break;
             }
             break;
     }
+
+    // cout << "n: " << n << " dn: " << dn << " conductance: " << conductance << endl << endl;
+    return conductance;
 };
 
 vector<int> BJT::getNodes() const{
