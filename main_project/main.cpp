@@ -18,7 +18,7 @@ void testCircuit1(stringstream& buffer){
 void testCircuit3(stringstream& buffer){
     buffer << "ExampleCircuit3" << endl;
     buffer << "V1 1 0 5" << endl;
-    buffer << ".model D1N4148 D (is=1n N=1.2)" <<endl;
+    buffer << ".model D1N4148 D (IS=1n N=1.2)" <<endl;
     buffer << "R1 1 2 1k" << endl;
     buffer << "R2 1 0 500" << endl;
     buffer << "D1 2 0 D1N4148" <<endl;
@@ -29,13 +29,13 @@ void testCircuit4(stringstream& buffer){
     buffer << "R1 2 0 1k" << endl;
     buffer << "L1 1 2 .1" << endl;
 }
-void testCircuit5(stringstream& buffer){
+void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit5" << endl;
     buffer << "I1 1 0 Pulse(2 5 .01 .01 .01 .05 .1)" << endl;
-    buffer << "R1 2 0 1k" << endl;
-    buffer << "L1 1 2 .1" << endl;
+    buffer << "R1 1 0 1k" << endl;
+    buffer << "C1 1 0 .1" << endl;
 }
-void testCircuit(stringstream& buffer){
+void testCircuit6(stringstream& buffer){
     buffer << "ExampleCircuit6" << endl;
     buffer << "V1 1 0 sin(0 10 10)" <<endl;
     buffer << "*This is a comment" <<endl;
@@ -48,7 +48,7 @@ void testCircuit(stringstream& buffer){
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.00001; //seconds
+    float timeStep = 0.0001; //seconds
     float simulationTime = 0.5; //seconds
     if(argc > 1){
         outputFileName = argv[1];
@@ -59,11 +59,6 @@ int main(int argc, char **argv){
     if(argc > 3){
         simulationTime = (float)atof(argv[3]);
     }
-    
-    // setup circuit
-    // Circuit c{};
-    // setupBasic(c, timeStep);
-    // readSpice(c, cin);
 
     // setup circuit
     Circuit c{};

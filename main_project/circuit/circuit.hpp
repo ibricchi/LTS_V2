@@ -42,6 +42,7 @@ protected:
     float simulationTime; //time when simulation ends
     float timeStep;
     bool hasNonLinear;
+    int inductorNumber; //number of inductors (used for DC operating point analysis)
     MatrixXf A;
     MatrixXf A_inv;
     VectorXf b;
@@ -77,6 +78,8 @@ public:
 
     bool hasNonLinearComponents() const;
     void setHasNonLinearComponents(bool _hasNonLinearComponents);
+
+    void incrementInductorNumber();
 
     // returns references to prevent inefficient copying
     vector<Component*>& getComponentsRef();
@@ -137,7 +140,7 @@ public:
     void nlSetup();
 
     // operation to create A
-    void setupA();
+    void setupA(bool dc = false);
 
     // non linear A
     void nonLinearA();
@@ -152,7 +155,7 @@ public:
     MatrixXf getA_inv() const;
 
     // operation to adjust B
-    void adjustB();
+    void adjustB(bool dc = false);
 
     // non linear b
     void nonLinearB();
