@@ -12,9 +12,37 @@ using namespace std;
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "V1 1 0 SIN(0 1 10)" << endl;
-    buffer << "V1 2 0 7" << endl;
-    buffer << "R1 2 3 1" << endl;
-    buffer << "Q1 3 1 0" << endl;
+    buffer << "V1 2 0 10" << endl;
+    buffer << "Q1 2 1 3" << endl;
+}
+void testCircuit3(stringstream& buffer){
+    buffer << "ExampleCircuit3" << endl;
+    buffer << "V1 1 0 5" << endl;
+    buffer << ".model D1N4148 D (is=1n N=1.2)" <<endl;
+    buffer << "R1 1 2 1k" << endl;
+    buffer << "R2 1 0 500" << endl;
+    buffer << "D1 2 0 D1N4148" <<endl;
+}
+void testCircuit4(stringstream& buffer){
+    buffer << "ExampleCircuit4" << endl;
+    buffer << "V1 1 0 Pwl(.1 10 .2 5 .3 2)" << endl;
+    buffer << "R1 2 0 1k" << endl;
+    buffer << "L1 1 2 .1" << endl;
+}
+void testCircuit5(stringstream& buffer){
+    buffer << "ExampleCircuit5" << endl;
+    buffer << "I1 1 0 Pulse(2 5 .01 .01 .01 .05 .1)" << endl;
+    buffer << "R1 2 0 1k" << endl;
+    buffer << "L1 1 2 .1" << endl;
+}
+void testCircuit(stringstream& buffer){
+    buffer << "ExampleCircuit6" << endl;
+    buffer << "V1 1 0 sin(0 10 10)" <<endl;
+    buffer << "*This is a comment" <<endl;
+    buffer << "R1 2 1 200" <<endl;
+    buffer << "F1 2 3 V1 1k" <<endl;
+    buffer << "R2 3 0 200" <<endl;
+    buffer << "R3 1 3 50" <<endl;
 }
 
 int main(int argc, char **argv){
