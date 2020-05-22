@@ -40,6 +40,7 @@ string runNonLinearTransience(Circuit& c, float t){
         if(count > maxCount){
             gamma *= 0.9;
             c.setX(startX);
+            c.updateNodalVoltages();
             currentX = c.getX();
             newX = c.getX();
             maxCount += 1;

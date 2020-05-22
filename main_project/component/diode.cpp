@@ -54,17 +54,29 @@ void Diode::SetupValues(float _IS, float _N, float _VT){
     VT = _VT;
 }
 
-float Diode::ivAtNode(int n1) const{
+float Diode::ivAtNode(int n) const{
     float v = nodalVoltages[0] - nodalVoltages[1];
     double current = IS * (exp(v/N/VT) - 1);
-    current *= n1==nodes[0]?1:-1;
+    if(n == nodes[1]){
+        current*=-1;
+    }
     return (float)current;
 };
 
-float Diode::divAtNode(int n1, int dn) const{
+float Diode::divAtNode(int n, int dn) const{
     float v = nodalVoltages[0] - nodalVoltages[1];
     double conductance = IS / N / VT * exp(v/N/VT);
-    conductance *= n1==nodes[0]?1:-1 * dn==nodes[0]?1:-1;
+    
+    if(n == nodes[0]){
+        if(dn == nodes[1]){
+            conductance *= -1;
+        }
+    }else{
+        conductance *= -1;
+        if(dn == nodes[1]){
+            conductance*=-1;
+        }
+    }
     return (float) conductance;
 };
 
