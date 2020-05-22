@@ -116,10 +116,13 @@ void readSpice(Circuit& c, istream& file){
             args.push_back(arg);
         }
 
+        //special inputs (not circuit components)
         if(name == ".model" || name == ".MODEL"){
 			modelStatements.emplace_back(args);
 
             continue; //don't execute the rest (not relevant for .model statements)
+        }else if(compTypeC == "*"){
+            continue; //ignore comments
         }
 
         // expected inputs are in comments, anything after the -> is optional
