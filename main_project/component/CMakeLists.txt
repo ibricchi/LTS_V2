@@ -12,7 +12,6 @@ add_library(component
     currentControlledSource.cpp
     currentControlledVoltageSource.cpp
     currentControlledCurrentSource.cpp
-    exampleInputDiode.cpp
     diode.cpp
     bjt.cpp
 )

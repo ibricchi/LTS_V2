@@ -9,46 +9,19 @@
 using namespace std;
 
 // for debugging only
-void testCircuit1(stringstream& buffer){
+void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "V1 1 0 SIN(0 1 10)" << endl;
-    buffer << "V1 2 0 10" << endl;
-    buffer << "Q1 2 1 3" << endl;
-}
-void testCircuit3(stringstream& buffer){
-    buffer << "ExampleCircuit3" << endl;
-    buffer << "V1 1 0 5" << endl;
-    buffer << ".model D1N4148 D (is=1n N=1.2)" <<endl;
-    buffer << "R1 1 2 1k" << endl;
-    buffer << "R2 1 0 500" << endl;
-    buffer << "D1N4148 2 0" <<endl;
-}
-void testCircuit4(stringstream& buffer){
-    buffer << "ExampleCircuit4" << endl;
-    buffer << "V1 1 0 Pwl(.1 10 .2 5 .3 2)" << endl;
-    buffer << "R1 2 0 1k" << endl;
-    buffer << "L1 1 2 .1" << endl;
-}
-void testCircuit5(stringstream& buffer){
-    buffer << "ExampleCircuit5" << endl;
-    buffer << "I1 1 0 Pulse(2 5 .01 .01 .01 .05 .1)" << endl;
-    buffer << "R1 2 0 1k" << endl;
-    buffer << "L1 1 2 .1" << endl;
-}
-void testCircuit(stringstream& buffer){
-    buffer << "ExampleCircuit6" << endl;
-    buffer << "V1 1 0 sin(0 10 10)" <<endl;
-    buffer << "R1 2 1 200" <<endl;
-    buffer << "F1 2 3 V1 1k" <<endl;
-    buffer << "R2 3 0 200" <<endl;
-    buffer << "R3 1 3 50" <<endl;
+    buffer << "V1 2 0 7" << endl;
+    buffer << "R1 2 3 1" << endl;
+    buffer << "Q1 3 1 0" << endl;
 }
 
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.00001; //seconds
-    float simulationTime = 0.5; //seconds
+    float timeStep = 0.0001; //seconds
+    float simulationTime = 1; //seconds
     if(argc > 1){
         outputFileName = argv[1];
     }
@@ -67,6 +40,7 @@ int main(int argc, char **argv){
     // setup circuit
     Circuit c{};
     setupBasic(c, timeStep);
+    
     stringstream buffer;
     testCircuit(buffer);
 
@@ -76,5 +50,3 @@ int main(int argc, char **argv){
     // run simulation
     outputCSV(c, outputFileName, timeStep, simulationTime);
 }
-
-
