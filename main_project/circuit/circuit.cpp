@@ -244,14 +244,19 @@ void Circuit::nonLinearA(){
     A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
 
     // setup currents from non voltage source components
+    int n{};
+    vector<int> extraNodes{};
+    float conductance{};
     for(const nodeCompPair ncp : nodalFunctions){
-        int n = ncp.n;
-        vector<int> extraNodes = ncp.extraNodes;
-        
+        n = ncp.n;
+        extraNodes = ncp.extraNodes;
+
         // nodes are already checked not to be 0 on creation of ncp
-        A(n-1, n-1) += ncp.DIV(n);
+        conductance = ncp.DIV(n);
+        A(n-1, n-1) += conductance;
         for(int en : extraNodes){
-            A(n-1, en-1) += ncp.DIV(en);
+            conductance = ncp.DIV(en);
+            A(n-1, en-1) += conductance;
         }
     }
 

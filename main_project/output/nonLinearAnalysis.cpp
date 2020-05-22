@@ -80,8 +80,6 @@ string runNonLinearTransience(Circuit& c, float t){
         outLine += "," + to_string(newX(i));
     }
 
-
-
     // update components before next calculation of b
     for(const auto &comp : timeUpdatables){
         comp->updateVals(t+c.getTimeStep());
