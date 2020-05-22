@@ -21,7 +21,7 @@ void testCircuit3(stringstream& buffer){
     buffer << ".model D1N4148 D (is=1n N=1.2)" <<endl;
     buffer << "R1 1 2 1k" << endl;
     buffer << "R2 1 0 500" << endl;
-    buffer << "D1N4148 2 0" <<endl;
+    buffer << "D1 2 0 D1N4148" <<endl;
 }
 void testCircuit4(stringstream& buffer){
     buffer << "ExampleCircuit4" << endl;
@@ -38,6 +38,7 @@ void testCircuit5(stringstream& buffer){
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit6" << endl;
     buffer << "V1 1 0 sin(0 10 10)" <<endl;
+    buffer << "*This is a comment" <<endl;
     buffer << "R1 2 1 200" <<endl;
     buffer << "F1 2 3 V1 1k" <<endl;
     buffer << "R2 3 0 200" <<endl;

@@ -56,6 +56,11 @@ void Component::addParam(int paramId, float paramValue){
 	exit(1);
 }
 
+string Component::getModelName() const{
+	cerr << "Tried to call getModelName from a component that doesn't support it" <<endl;
+	exit(1);
+}
+
 string Component::getName() const{
     return name;
 }
