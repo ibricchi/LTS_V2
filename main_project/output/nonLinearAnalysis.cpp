@@ -25,11 +25,12 @@ string runNonLinearTransience(Circuit& c, float t){
 
     float threshold = 0.1;
 
+    c.updateNodalVoltages();
     VectorXf startX = c.getX();
     MatrixXf currentX = c.getX();
     MatrixXf newX = c.getX();
 
-    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+    IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
     // cout << newX.format(CleanFmt) << endl << endl;
 
     // keep calculating for current time step till threshold is bellow ceratin level
@@ -37,6 +38,7 @@ string runNonLinearTransience(Circuit& c, float t){
     int maxCount = 5;
     float gamma = 0.1;
     do{
+        // cout << newX.format(CleanFmt) << endl << endl;
         if(count > maxCount){
             count = 0;
             gamma *= 0.9;
