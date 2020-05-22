@@ -31,9 +31,10 @@ void testCircuit4(stringstream& buffer){
 }
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit5" << endl;
-    buffer << "I1 1 0 Pulse(2 5 .01 .01 .01 .05 .1)" << endl;
-    buffer << "R1 1 0 1k" << endl;
-    buffer << "C1 1 0 .1" << endl;
+    buffer << "V1 1 0 pwl(0 5 0.25 10)" << endl;
+    buffer << "R1 2 0 100k" << endl;
+    buffer << "R2 1 2 10k" <<endl;
+    buffer << "C1 2 0 1m" << endl;
 }
 void testCircuit6(stringstream& buffer){
     buffer << "ExampleCircuit6" << endl;
