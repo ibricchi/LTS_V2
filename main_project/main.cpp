@@ -51,12 +51,22 @@ void testCircuit7(stringstream& buffer){
     buffer << "R1 2 3 1" << endl;
     buffer << "Q1 3 1 0" << endl;
 }
+void testCircuit8(stringstream& buffer){
+    buffer << "ExampleCircuit1" << endl;
+    buffer << "R1 1 3 4.7k" << endl;
+    buffer << "R2 3 0 1k" << endl;
+    buffer << "R3 1 2 4.7k" << endl;
+    buffer << "V1 3 0 sin(0 0.1 10)" << endl;
+    buffer << "V2 1 0 5" << endl;
+    buffer << "Q1 2 3 6" << endl;
+    buffer << "R4 1 0 1k" << endl;
+}
 
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
     float timeStep = 0.0001; //seconds
-    float simulationTime = 0.0003; //seconds
+    float simulationTime = 1; //seconds
     if(argc > 1){
         outputFileName = argv[1];
     }
@@ -77,7 +87,7 @@ int main(int argc, char **argv){
     setupBasic(c, timeStep);
     
     stringstream buffer;
-    testCircuit7(buffer);
+    testCircuit8(buffer);
 
     readSpice(c, buffer);
     // readSpice(c, cin); //use this if want to read from txt file
