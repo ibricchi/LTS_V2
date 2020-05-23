@@ -9,7 +9,7 @@
 using namespace std;
 
 // for debugging only
-void testCircuit(stringstream& buffer){
+void testCircuit1(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "V1 1 0 SIN(0 1 10)" << endl;
     buffer << "V1 2 0 10" << endl;
@@ -23,7 +23,7 @@ void testCircuit3(stringstream& buffer){
     buffer << "R2 1 0 500" << endl;
     buffer << "D1 2 0 D1N4148" <<endl;
 }
-void testCircuit(stringstream& buffer){
+void testCircuit4(stringstream& buffer){
     buffer << "ExampleCircuit4" << endl;
     buffer << "V1 1 0 Pwl(.1 10 .2 5 .3 2)" << endl;
     buffer << "R1 2 0 1k" << endl;
@@ -51,12 +51,20 @@ void testCircuit7(stringstream& buffer){
     buffer << "R1 2 3 1" << endl;
     buffer << "Q1 3 1 0" << endl;
 }
+void testCircuit(stringstream& buffer){
+    buffer << "ExampleCircuit8" << endl;
+    buffer << "I1 1 0 PWL(0 10 .1 10 .101 0)" <<endl;
+    buffer << "R1 1 0 1" <<endl;
+    buffer << "R2 1 2 1k" <<endl;
+    buffer << "R3 2 0 100k" <<endl;
+    buffer << "C1 2 0 0.00001" <<endl;
+}
 
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
     float timeStep = 0.00001; //seconds
-    float simulationTime = 0.1; //seconds
+    float simulationTime = 0.2; //seconds
     if(argc > 1){
         outputFileName = argv[1];
     }
@@ -77,7 +85,7 @@ int main(int argc, char **argv){
     setupBasic(c, timeStep);
     
     stringstream buffer;
-    testCircuit7(buffer);
+    testCircuit(buffer);
 
     readSpice(c, buffer);
     // readSpice(c, cin); //use this if want to read from txt file
