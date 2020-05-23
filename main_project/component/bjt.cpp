@@ -99,6 +99,8 @@ float BJT::divAtNode(int nin, int dnin) const{
     switch(n){
         case n::C:
             switch(dn){
+                // partial derivatives of:
+                // IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR)
                 case n::C:
                     conductance = IS/VT*exp(VBC/VT)*(1+1/BR);
                     break;
@@ -112,6 +114,8 @@ float BJT::divAtNode(int nin, int dnin) const{
             break;
         case n::B:
             switch(dn){
+                // partial derivatives of:
+                // IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
                 case n::C:
                     conductance = -IS/VT/BR*exp(VBC/VT);
                     break;
@@ -125,6 +129,8 @@ float BJT::divAtNode(int nin, int dnin) const{
             break;
         case n::E:
             switch(dn){
+                // partial derivatives of:
+                // -IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
                 case n::C:
                     conductance = IS/VT*exp(VBC/VT);
                     break;
