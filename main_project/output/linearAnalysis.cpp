@@ -103,20 +103,16 @@ string runLinearTransience(Circuit& c, float t){
         v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 
-        if(t < 0){
-            up->updateVals(currentVoltage, 1, 1);
-        }else{
-            up->updateVals(currentVoltage, 0, 1);
-        }
+        up->updateVals(currentVoltage, 0, 1);
 
 
-        // cout <<endl<<endl;
-        // cout << "time: " << t <<endl;
-        // cout << "voltage: " << currentVoltage <<endl;
-        // cout << "conductance: " << up->getConductance() <<endl;
-        // cout << "current: " << up->getCurrent() <<endl;
-        // cout << "total current: " << up->getTotalCurrent(currentVoltage) <<endl;
-        // cout <<endl<<endl;
+        cout <<endl<<endl;
+        cout << "time: " << t <<endl;
+        cout << "voltage: " << currentVoltage <<endl;
+        cout << "conductance: " << up->getConductance() <<endl;
+        cout << "current: " << up->getCurrent() <<endl;
+        cout << "total current: " << up->getTotalCurrent(currentVoltage) <<endl;
+        cout <<endl<<endl;
     }
 
     //update b for calculations at next timestep
