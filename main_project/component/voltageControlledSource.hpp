@@ -17,8 +17,6 @@ public:
     VoltageControlledSource(string _name, vector<string> args, vector<float> extraInfo);
     virtual ~VoltageControlledSource() = 0;
 
-    void setupBasic(int n1, int n2, int nc1, int nc2);
-
     float getGain() const override;
 
     //returns all 4 nodes (N+, N-, NC+, NC-)

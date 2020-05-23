@@ -54,6 +54,10 @@ public:
 
     // helper function to parse string with units into float. Maybe better to move somewhere else
     static float getValue(string val);
+
+    // Transforms nodes from the N123 format into integers
+    // The node order is preserved
+    vector<int> processNodes(vector<string> rawNodes);
     
     vector<componentType> getTypes() const;
 };

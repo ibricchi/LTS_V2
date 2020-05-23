@@ -19,7 +19,7 @@ public:
     CurrentSource(string _name, vector<string> args, vector<float> extraInfo);
     ~CurrentSource() = default;
 
-    void setupBasic(int n1, int n2);
+    void setupBasic();
     void setupDC(float current);
 
     void updateVals(float time);

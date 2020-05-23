@@ -127,6 +127,25 @@ float Component::getValue(string val){
 	}
 }
 
+vector<int> Component::processNodes(vector<string> rawNodes){
+    vector<int> nodeNumbers{};
+    for(auto& node : rawNodes){
+        if(node == "0"){
+            nodeNumbers.push_back(0);
+        }else if(node[0] == 'n' || node[0] == 'N'){
+			if(stoi(node.substr(1)) == 0){
+				cerr << "A zero (ground) node cannot start with N" <<endl;
+				exit(1);
+			}
+            nodeNumbers.push_back(stoi(node.substr(1))); //remove leading N
+        }else{
+            cerr << "A specified node is invalid. A node must either be 0 or have the format N123" <<endl;
+            exit(1);
+        }
+    }
+    return nodeNumbers;
+}
+
 vector<componentType> Component::getTypes() const{
 	return types;
 }

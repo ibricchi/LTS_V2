@@ -10,15 +10,10 @@ using namespace std;
 BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
-    int NC = stoi(args[n::C]);
-    int NB = stoi(args[n::B]);
-    int NE = stoi(args[n::E]);
+    // Order: C, B, E
+    nodes = processNodes({args[n::C], args[n::B], args[n::E]});
 
     nodalVoltages = {0,0};
-
-    nodes.push_back(NC);
-    nodes.push_back(NB);
-    nodes.push_back(NE);
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);

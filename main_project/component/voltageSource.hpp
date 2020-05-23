@@ -20,7 +20,7 @@ public:
     VoltageSource(string _name, vector<string> args, vector<float> extraInfo);
     ~VoltageSource() = default;
 
-    void setupBasic(int n1, int n2);
+    void setupBasic();
     void setupDC(float voltage);
 
     void updateVals(float time);

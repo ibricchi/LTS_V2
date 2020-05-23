@@ -27,8 +27,6 @@ public:
     CurrentControlledSource(string _name, vector<string> args, vector<float> extraInfo);
     virtual ~CurrentControlledSource() = 0;
 
-    void setupBasic(int n1, int n2, string vsName);
-
     float getGain() const override;
     string getVsName() const override;
 

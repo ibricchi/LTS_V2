@@ -53,12 +53,12 @@ void testCircuit7(stringstream& buffer){
 }
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit8" << endl;
-    buffer << "I1 1 0 PWL(0 10 .1 10 .101 0)" <<endl;
-    buffer << "R1 1 0 1" <<endl;
-    buffer << "R2 1 2 1k" <<endl;
-    buffer << "R3 2 0 100k" <<endl;
-    buffer << "C1 2 0 0.00001" <<endl;
-    buffer << ".Tran 0.1 0.5 0 0.1m" <<endl;
+    buffer << "I1 N1 0 PWL(0 10 .1 10 .101 0)" <<endl;
+    buffer << "R1 N1 0 1" <<endl;
+    buffer << "R2 n1 n2 1k" <<endl;
+    buffer << "R3 n2 0 100k" <<endl;
+    buffer << "C1 n2 0 0.00001" <<endl;
+    buffer << ".tran 0.1 0.5 0 0.0001s" <<endl;
     buffer << ".end" <<endl;
 }
 
