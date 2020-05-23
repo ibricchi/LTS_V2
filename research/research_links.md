@@ -90,13 +90,19 @@ Only Appendix A is interesting => Ignore the rest.
 Honestly wikipedia had a lot of good resources, but you know, it's wikipedia so here are a few links, including the wikipedia ones.
 <https://en.wikipedia.org/wiki/Bipolar_junction_transistor>
 This presentation has a good break down of what each part of the ebers moore model does
-<https://kpandiaraj.files.wordpress.com/2017/05/ebers-moll-model-ppt-compatibility-mode.pdf>
+<https://kpandiaraj.files.wordpress.com/2017/05/ebers-moll-model-ppt-compatibility-mode.pdf>  
 
 ---
 
 ## Gummel-Poon BJT model model links
 This model would be nicer to implement since it is more complete, however it's qutie a bit more complex and requires more time spent uderstanding. I don't think the benefits would outweigh the time spent
 This link has a basic breakdown of the equations
-<https://uk.mathworks.com/help/physmod/sps/ref/npnbipolartransistor.html>
+<https://uk.mathworks.com/help/physmod/sps/ref/npnbipolartransistor.html>  
 This link is the best resource I could find, it has a break down of everything to do with this model, and explains the basic and augmented versions of it, aswell as how to obtain everything necessary to model it. It is very complex however.
-<http://www.idea2ic.com/PlayWithSpice/pdf/G%20U%20M%20M%20E%20L%20-%20P%20O%20O%20N.pdf>
+<http://www.idea2ic.com/PlayWithSpice/pdf/G%20U%20M%20M%20E%20L%20-%20P%20O%20O%20N.pdf>  
+
+---
+
+## SPICE2: A computer program to simulate semiconductor circuits
+Written by the original developer of SPICE. It contains lots of detail but is a little outdated.  
+<https://www2.eecs.berkeley.edu/Pubs/TechRpts/1975/ERL-m-520.pdf>  
