@@ -17,11 +17,17 @@
 
 #include "output.hpp"
 
-void outputCSV(Circuit& c, string outputFileName, float timeStep, float simulationTime){
+void outputCSV(Circuit& c, string outputFileName){
     //get references to the components stored inside the circuit
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
+
+    //get simulation parameters from circuit
+    float timeStep = c.getMaxTimeStep(); //Change once we have implemented a dynamic timestep
+    float simulationTime = c.getSimulationTime();
+    // float tStep = c.getTStep(); //printing increment for csv file
+    // float maxTimeStep = c.getMaxTimeStep(); //used for dynamic timestep
 
     //setup csv file
     ofstream outputFile;

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <circuit/circuit.hpp>
 
-void outputCSV(Circuit& c, string fileName, float timeStep, float simulationTime);
+void outputCSV(Circuit& c, string fileName);
 void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulationTime);
 
 #endif

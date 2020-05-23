@@ -56,6 +56,27 @@ void Circuit::setCurrentTime(float _currentTime){
     currentTime = _currentTime;
 }
 
+float Circuit::getTStart() const{
+    return tStart;
+}
+void Circuit::setTStart(float _tStart){
+    tStart = _tStart;
+}
+
+float Circuit::getMaxTimeStep() const{
+    return maxTimeStep;
+}
+void Circuit::setMaxTimeStep(float _maxTimeStep){
+    maxTimeStep = _maxTimeStep;
+}
+
+float Circuit::getTStep() const{
+    return tStep;
+}
+float Circuit::setTStep(float _tStep){
+    tStep = _tStep;
+}
+
 float Circuit::getSimulationTime() const{
     return simulationTime;
 }

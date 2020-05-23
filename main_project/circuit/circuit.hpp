@@ -39,8 +39,11 @@ protected:
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
     float currentTime;
-    float simulationTime; //time when simulation ends
+    float tStart;
+    float simulationTime; //time when simulation ends (TSTOP)
     float timeStep;
+    float maxTimeStep;
+    float tStep; //printing incremement for csv output
     bool hasNonLinear;
     MatrixXf A;
     MatrixXf A_inv;
@@ -68,6 +71,15 @@ public:
 
     float getCurrentTime() const;
     void setCurrentTime(float _currentTime);
+
+    float getTStart() const;
+    void setTStart(float _tStart);
+
+    float getMaxTimeStep() const;
+    void setMaxTimeStep(float _maxTimeStep);
+
+    float getTStep() const;
+    float setTStep(float _tStep);
 
     float getSimulationTime() const;
     void setSimulationTime(float _simulationTime);

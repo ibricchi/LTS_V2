@@ -99,6 +99,8 @@ void readSpice(Circuit& c, istream& file){
     vector<int> nodes;
     string lineString{};
     int maxNode = 0;
+    bool containsEnd = false; //A valid netlist must contain a .end statement
+    bool containsAnalysisType = false; //A valid netlist must contain a simulation type statement e.g. .tran
     vector<ModelStatement> modelStatements{};
 
     while(getline(file, lineString)){
@@ -117,8 +119,56 @@ void readSpice(Circuit& c, istream& file){
         }
 
         //special inputs (not circuit components)
-        if(name == ".model" || name == ".MODEL"){
-			modelStatements.emplace_back(args);
+        if(compTypeC == "."){
+            //remove "."
+            name.erase(0, 1);
+
+            //convert name to uppercase (as netlist case insensitive)
+            for_each(name.begin(), name.end(), [](char &c){
+                c = toupper(c);
+            });
+
+            if(name == "MODEL"){
+                modelStatements.emplace_back(args);
+            }else if(name == "TRAN"){
+                if(args.size() < 2){
+                    cerr << "Not enough arguments supplied for .tran" <<endl;
+                    exit(1);
+                }else if(Component::getValue(args[0]) <= 0 || Component::getValue(args[1]) <= 0){
+                    cerr << "TSPEP and TSTOP must be greater than 0" <<endl;
+                    exit(1);
+                }else if(args.size() == 2){
+                    c.setTStep(Component::getValue(args[0])); //TSTEP
+                    c.setSimulationTime(Component::getValue(args[1])); //TSTOP
+                    c.setTStart(0); //TSTART
+                    c.setMaxTimeStep((c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1); //TMAX
+                }else if(args.size() == 3){
+                    if(Component::getValue(args[2]) < 0){
+                        cerr << "TSTART cannot be smaller than zero" <<endl;
+                        exit(1);
+                    }
+                    c.setTStep(Component::getValue(args[0])); //TSTEP
+                    c.setSimulationTime(Component::getValue(args[1])); //TSTOP
+                    c.setTStart(Component::getValue(args[2])); //TSTART
+                    c.setMaxTimeStep((c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1); //TMAX
+                }else{
+                    if(Component::getValue(args[2]) < 0 || Component::getValue(args[3]) <= 0){
+                        cerr << "START cannot be smaller than zero and TMAX must be greater than zero" <<endl;
+                        exit(1);
+                    }
+                    c.setTStep(Component::getValue(args[0])); //TSTEP
+                    c.setSimulationTime(Component::getValue(args[1])); //TSTOP
+                    c.setTStart(Component::getValue(args[2])); //TSTART
+                    c.setMaxTimeStep(Component::getValue(args[3])); //TMAX
+                }
+                containsAnalysisType = true;
+            }else if(name == "END"){
+                containsEnd = true;
+                break; //ignore anything that comes after a .end statement
+            }else{
+                cerr << "Unsuported netlist statement. Statement: " << compTypeC + name <<endl;
+                exit(1);
+            }
 
             continue; //don't execute the rest (not relevant for .model statements)
         }else if(compTypeC == "*"){
@@ -166,6 +216,17 @@ void readSpice(Circuit& c, istream& file){
         } 
     }
 
+    //Terminate with error message when the netlist is not terminated properly by an .end statement
+    if(!containsEnd){
+        cerr << "Netlist invalid: A netlist must be terminated with a '.end' statement" <<endl;
+        exit(1);
+    }
+    //Terminate with error message when the netlist does not specify a simulation type
+    if(!containsAnalysisType){
+        cerr << "Netlist invalid: A nestlist must contain a simulation type e.g. '.tran'" <<endl;
+        exit(1);
+    }
+
     //add model params to components
     auto nonLinears = c.getNonLinearsRef();
     for(const auto &model : modelStatements){
@@ -179,8 +240,4 @@ void readSpice(Circuit& c, istream& file){
     }
 
     c.setHighestNodeNumber(maxNode);
-}
-
-void setupBasic(Circuit& c, float timeStep){
-    c.setTimeStep(timeStep);
 }
