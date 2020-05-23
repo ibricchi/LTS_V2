@@ -57,11 +57,11 @@ string runNonLinearTransience(Circuit& c, float t){
         newX = c.getX();
 
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << c.getA().format(CleanFmt) << endl << endl;
-        // cout << c.getA_inv().format(CleanFmt) << endl << endl;
-        // cout << c.getB().format(CleanFmt) << endl << endl;
-        // cout << currentX.format(CleanFmt) << endl << endl;
-        // cout << newX.format(CleanFmt) << endl << endl;
+        cout << c.getA().format(CleanFmt) << endl << endl;
+        cout << c.getA_inv().format(CleanFmt) << endl << endl;
+        cout << c.getB().format(CleanFmt) << endl << endl;
+        cout << currentX.format(CleanFmt) << endl << endl;
+        cout << newX.format(CleanFmt) << endl << endl;
 
         if(t > 0.0691){
             count++;
