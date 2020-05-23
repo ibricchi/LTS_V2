@@ -47,28 +47,25 @@ float Capacitor::getCurrent() const{
 
 float Capacitor::getTotalCurrent(float voltage, int order){
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
-		float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
-		prevTotalCurrent = res;
-		return res;	
+		// float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
+		// prevTotalCurrent = res;
+		// return res;	
+		return voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;;
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrent");
 	}
 }
 
 void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
-	if(order==1){ //using companion model for the trapezoid integration method.
-		// newCurrent = (comp_conductance*newVoltage) - comp_current; //Current into capacitor = current through companion conductance - (as current source pointing towards + node) current source current.		
-		// comp_current = -comp_conductance*newVoltage - newCurrent;
-		// comp_current = comp_conductance*newVoltage-comp_conductance*prev_voltage - comp_current;
-		//comp_current = comp_conductance * newVoltage;		
-		compCurrent = (2.0f*compConductance*newVoltage) - compCurrent; //From trapezoid companion circuit diagram for capacitor. newVoltage = Vn, 		
-		//prev_voltage = newVoltage;		
-	//	prev_current = comp_current;		
+	if(order==1){ //using companion model for the trapezoid integration method.	
+		compCurrent = compConductance*compVoltage + prevTotalCurrent; //From trapezoid companion circuit diagram for capacitor. newVoltage = Vn, 		
+		
+		prevTotalCurrent = newVoltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
+
 		compVoltage = newVoltage;
+
 	}else{
-		compCurrent = 0;
-		compVoltage = newVoltage;
-		// throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
 	}
 		
 }

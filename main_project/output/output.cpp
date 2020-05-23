@@ -76,8 +76,8 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
     string outLine{};
     if(!c.hasNonLinearComponents()){
         //DC operating point analysis. Results are not written to CSV file.
-        linearDCSetup(c);
-        runLinearTransience(c, -1);
+        // linearDCSetup(c);
+        // runLinearTransience(c, -1);
         // linearDCSetup(c);
         // runLinearTransience(c, -1);
         // cout << c.getB() <<endl<<endl; //testing only
