@@ -4,6 +4,8 @@
 
 #include "capacitor.hpp"
 
+#include <iostream> //testing only
+
 Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
@@ -59,12 +61,14 @@ void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
 		// comp_current = -comp_conductance*newVoltage - newCurrent;
 		// comp_current = comp_conductance*newVoltage-comp_conductance*prev_voltage - comp_current;
 		//comp_current = comp_conductance * newVoltage;		
-		compCurrent = (2.0*compConductance*newVoltage) - compCurrent; //From trapezoid companion circuit diagram for capacitor. newVoltage = Vn, 		
+		compCurrent = (2.0f*compConductance*newVoltage) - compCurrent; //From trapezoid companion circuit diagram for capacitor. newVoltage = Vn, 		
 		//prev_voltage = newVoltage;		
 	//	prev_current = comp_current;		
 		compVoltage = newVoltage;
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
+		compCurrent = 0;
+		compVoltage = newVoltage;
+		// throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
 	}
 		
 }
