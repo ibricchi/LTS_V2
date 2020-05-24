@@ -23,6 +23,7 @@ void outputCSV(Circuit& c, string outputFileName){
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
+    c.setHasNonLinearComponents(true);
 
     //get simulation parameters from circuit
     float timeStep = c.getMaxTimeStep(); //Change once we have implemented a dynamic timestep

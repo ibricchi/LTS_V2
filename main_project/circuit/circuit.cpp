@@ -422,6 +422,8 @@ void Circuit::nonLinearB(){
         b(i) += (n1 == 0? 0 : x[n1-1]);
         b(i) -= (n2 == 0? 0 : x[n2-1]);
     }
+
+    b*=-1;
 };
 
 VectorXd Circuit::getB() const
@@ -454,7 +456,7 @@ void Circuit::computeX(){
 }
 
 void Circuit::computeNLX(float gamma){
-    x = gamma * A_inv * b;
+    x = A_inv * b;
 }
 
 void Circuit::setX(VectorXd newX){

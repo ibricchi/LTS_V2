@@ -36,32 +36,23 @@ string runNonLinearTransience(Circuit& c, float t){
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
     int maxCount = 5;
-    float gamma = 0.1;
     do{
         // cout << newX.format(CleanFmt) << endl << endl;
-        if(count > maxCount){
-            count = 0;
-            gamma *= 0.9;
-            c.setX(startX);
-            c.updateNodalVoltages();
-            currentX = c.getX();
-            newX = c.getX();
-            maxCount += 1;
-        }
         c.nonLinearA();
         c.computeA_inv();
         c.nonLinearB();
-        c.computeNLX(gamma);
+        c.computeX();
         c.updateNodalVoltages();
         currentX = newX;
         newX = c.getX();
 
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << c.getA().format(CleanFmt) << endl << endl;
+        // cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
+        // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
         // cout << c.getA_inv().format(CleanFmt) << endl << endl;
-        // cout << c.getB().format(CleanFmt) << endl << endl;
-        // cout << currentX.format(CleanFmt) << endl << endl;
-        // cout << newX.format(CleanFmt) << endl << endl;
+        // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
+        // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
+        // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
 
         if(t >= 0.058100){
             count++;
