@@ -15,13 +15,13 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	int order = 1;
 
 	subComponents = 2;
-	compCurrent = 0;
 	prevCurrent = 0; // previous comp_current
 	prevVoltage = 0;
 	prevTotalCurrent =0;
-	
+	compVoltage = 9.9;
 	if(order==1){ //Conductance of the capacitor will be the same as the companion model even at T=0 
 		compConductance = (2.0f*val)/extraInfo[0];
+		compCurrent = compConductance * compVoltage;
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/constructor");
 	}
