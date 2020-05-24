@@ -25,7 +25,7 @@ void outputCSV(Circuit& c, string outputFileName){
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
 
     //get simulation parameters from circuit
-    float timeStep = c.getMaxTimeStep(); //Change once we have implemented a dynamic timestep
+    float timeStep = c.getTStep(); //Change once we have implemented a dynamic timestep (Currently we are using the printing step tStep as the static timestep)
     float simulationTime = c.getSimulationTime();
     // float tStep = c.getTStep(); //printing increment for csv file
     // float maxTimeStep = c.getMaxTimeStep(); //used for dynamic timestep
