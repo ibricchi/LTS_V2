@@ -35,6 +35,12 @@ void testCircuit2(stringstream& buffer){
     buffer << "R4 1 0 1k" << endl;
 }
 
+void testCircuit3(stringstream& buffer){
+    buffer << "ExampleCircuit1" << endl;
+    buffer << "V1 1 0 SIN(0 1 10)" << endl;
+    buffer << "Q1 2 1 0" << endl;
+}
+
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
