@@ -10,10 +10,8 @@ CurrentControlledCurrentSource::CurrentControlledCurrentSource(string name, vect
 }
 
 float CurrentControlledCurrentSource::ivAtNode(int n) const{
-    cerr << "ivAtNode not implemented in dependent source" <<endl;
-    exit(1);
+    return 0;
 }
 float CurrentControlledCurrentSource::divAtNode(int n, int dn) const{
-    cerr << "divAtNode not implemented in dependent source" <<endl;
-    exit(1);
+    return 0;
 }

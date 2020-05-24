@@ -30,7 +30,7 @@ string runNonLinearTransience(Circuit& c, float t){
     MatrixXf currentX = c.getX();
     MatrixXf newX = c.getX();
 
-    IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
     // cout << newX.format(CleanFmt) << endl << endl;
 
     // keep calculating for current time step till threshold is bellow ceratin level
