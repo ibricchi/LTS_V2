@@ -15,6 +15,17 @@
 - Previous solution voltages as initial guess for next series of iterations
 - For a Newton-Raphson example applied to a trivial diode circuit, see page 35
 
+## Chapter 2 - DC operating point analysis
+- Every analysis begins with a DC operating point calculation
+- Operating point voltages = initial condition for other analyses
+- Capacitors = open circuits
+- Inductors = short circuits
+- The resulting voltages are used to calculate the initial equivalent inductances/currents for the nonlinear elements + charge storing elements
+- If the circuit contains nonlinear elements, Newton-Raphson is now used to finalize the starting values for the nonlinear components
+- If Newton-Raphson is used, the DC operating point solution requires between 10 and 500 iterations *(Many more than for future timesteps!)*
+- Some tests show that allowing a maximum of 500 Newton-Raphson iterations for the operating point is desirable (No significant improvement for a higher maximum)  
+![DC operating points convergence aids](./Images_for_md_files/InsideSpice_Table_3.5.png)
+
 ## Chapter 3 - Convergence and the Newton-Raphson algorithm
 - Newton-Raphson starts with guess and tries to get closer to load line intersection with every successive iteration (see HELM maths link for detailed information)  
 ![Result of Newton-Raphson algorithm](./Images_for_md_files/InsideSpice_Figure_3.1.png)

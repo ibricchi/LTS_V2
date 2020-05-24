@@ -14,16 +14,19 @@ private:
     //used for dc
     float voltage;
 
+    //used for ac
     Waveform voltageWaveform{};
 public:
     VoltageSource(string _name, vector<string> args, vector<float> extraInfo);
-    VoltageSource(string _name, float _voltage, int n1, int n2);
     ~VoltageSource() = default;
 
-    void setupBasic(int n1, int n2);
+    void setupBasic();
     void setupDC(float voltage);
 
     void updateVals(float time);
+
+    float ivAtNode(int n) const override;
+    float divAtNode(int n, int dn) const override;
 
     float getVoltage() const override;
 

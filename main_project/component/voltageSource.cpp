@@ -6,36 +6,37 @@
 VoltageSource::VoltageSource(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
-    int n1 = stoi(args[0]);
-    int n2 = stoi(args[1]);
+    nodes = processNodes({args[0], args[1]});
 
-    setupBasic(n1, n2);
+    setupBasic();
 
     if(args.size() == 3){
         float val = getValue(args[2]);
         setupDC(val);
     }else{
         string flow = args[2];
-        if(flow == "DC" || flow == "dc"){
+        if(flow == "DC" || flow == "dc" || flow == "Dc" || flow == "dC"){
             setupDC(
                 getValue(args[3]) // voltage
             );
         }else if(flow.size() > 4){ //checks if "flow" is long enough to be SIN(* where * is any character
             voltageWaveform.setupWaveform(this, args, extraInfo);
+
+            //initialize voltage value to voltage at start time (extraInfo[1] = startTime)
+            updateVals(extraInfo[1]);
+
             types.push_back(componentType::timeUpdatable);
+        }else{
+            std::cerr << "Invalid netlist: The syntax of voltage source is incorrect." <<std::endl;
+            exit(1);
         }
     }
 }
 
-VoltageSource::VoltageSource(string _name, float _voltage, int n1, int n2)
-    :Component{_name}{
-    setupBasic(n1, n2);
-    setupDC(_voltage);
-}
+void VoltageSource::setupBasic(){
+    
+	nodalVoltages = {0,0};
 
-void VoltageSource::setupBasic(int n1, int n2){
-    nodes.push_back(n1);
-    nodes.push_back(n2);
     types.push_back(componentType::voltageSource);
 }
 
@@ -58,3 +59,10 @@ vector<int> VoltageSource::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+float VoltageSource::ivAtNode(int n) const{
+	return 1;
+};
+float VoltageSource::divAtNode(int n, int dn) const{
+	return 1;
+};

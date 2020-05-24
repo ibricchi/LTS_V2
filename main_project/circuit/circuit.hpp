@@ -10,6 +10,19 @@
 using namespace std;
 using namespace Eigen;
 
+struct nodeCompPair{
+    int n;
+    vector<int> extraNodes;
+    Component* comp;
+
+    float IV() const{
+        return comp->ivAtNode(n);
+    }
+    float DIV(float dn) const{
+        return comp->divAtNode(n, dn);
+    }
+};
+
 class Circuit
 {
 protected:
@@ -20,17 +33,27 @@ protected:
     vector<Component*> conductanceSources{};
     vector<Component*> vcUpdatables{};
     vector<Component*> timeUpdatables{};
+    vector<Component*> nonVoltageSources{};
+    vector<Component*> nonLinears{};
+
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
     float currentTime;
-    float simulationTime; //time when simulation ends
+    float tStart;
+    float simulationTime; //time when simulation ends (TSTOP)
     float timeStep;
+    float maxTimeStep;
+    float tStep; //printing incremement for csv output
     bool hasNonLinear;
     MatrixXf A;
     MatrixXf A_inv;
     VectorXf b;
     VectorXf x;
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
+
+    // non-linear analysis vectors;
+    vector<nodeCompPair> nodalFunctions{};
+
 public:
     // default constructor for initializing empty object
     Circuit();
@@ -49,6 +72,15 @@ public:
     float getCurrentTime() const;
     void setCurrentTime(float _currentTime);
 
+    float getTStart() const;
+    void setTStart(float _tStart);
+
+    float getMaxTimeStep() const;
+    void setMaxTimeStep(float _maxTimeStep);
+
+    float getTStep() const;
+    float setTStep(float _tStep);
+
     float getSimulationTime() const;
     void setSimulationTime(float _simulationTime);
 
@@ -59,14 +91,14 @@ public:
     void setHasNonLinearComponents(bool _hasNonLinearComponents);
 
     // returns references to prevent inefficient copying
+    vector<Component*>& getComponentsRef();
+    Component* getLastComponent();
     vector<Component*>& getVoltageSourcesRef();
     vector<Component*>& getCurrentSourcesRef();
     vector<Component*>& getConductanceSourcesRef();
     vector<Component*>& getVCUpdatablesRef();
     vector<Component*>& getTimeUpdatablesRef();
-
-    // operator overload to add ability to read from iostream to set up circuit
-    void operator<<(istream& input);
+    vector<Component*>& getNonLinearsRef();
 
     // template function to add component, the class must have a constructor with the intputs as in the function bellow
     // template <class comp>
@@ -97,16 +129,35 @@ public:
             case componentType::timeUpdatable:
                 timeUpdatables.push_back(newComp);
                 break;
+            case componentType::nonVoltageSource:
+                nonVoltageSources.push_back(newComp);
+                break;
+            case componentType::nonLinear:
+                nonLinears.push_back(newComp);
+                hasNonLinear = true;
+                break;
             default:
+                cerr << "The component " << name << " has no supported componentType" <<endl;
+                exit(1);
                 break;
             }
         }
         components.push_back(newComp);
     }
 
+    // non linear setup
+    void nlSetup();
+
     // operation to create A
     void setupA();
+
+    // non linear A
+    void nonLinearA();
+
     MatrixXf getA() const;
+
+    // helper function for current controlled sources
+    int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
 
     // compute inverse of A
     void computeA_inv();
@@ -114,6 +165,10 @@ public:
 
     // operation to adjust B
     void adjustB();
+
+    // non linear b
+    void nonLinearB();
+
     VectorXf getB() const;
 
     // operation to assign meaning to the result vector x
@@ -122,7 +177,15 @@ public:
 
     // A_inv must exist for this to work
     void computeX();
+
+    void computeNLX(float gamma);
+
+    void setX(VectorXf newX);
+    
     VectorXf getX() const;
+
+    // update nodal voltages
+    void updateNodalVoltages();
 };
 
 #endif

@@ -7,14 +7,14 @@
 Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
-    int n1 = stoi(args[0]);
-    int n2 = stoi(args[1]);
+	nodes = processNodes({args[0], args[1]});
+
+	nodalVoltages = {0,0};
+
     float val = getValue(args[2]);
 	int order = 1;
 
 	subComponents = 2;
-	nodes.push_back(n1);
-	nodes.push_back(n2);	
 	compCurrent = 0;
 	prevCurrent = 0; // previous comp_current
 	prevVoltage = 0;
@@ -23,30 +23,13 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	if(order==1){ //Conductance of the capacitor will be the same as the companion model even at T=0 
 		compConductance = (2.0f*val)/extraInfo[0];
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/constructor");
 	}
 
 	types.push_back(componentType::conductanceSource);
 	types.push_back(componentType::currentSource);
 	types.push_back(componentType::vcUpdatable);
-}
-
-Capacitor::Capacitor(string _name,float c, int n1, int n2, float timeStep, int order)
-	:Component{_name}, capacitance{c}{
-	subComponents = 2;	
-	nodes.push_back(n1);
-	nodes.push_back(n2);	
-	compCurrent = 0;
-	
-	if(order==1){ //Conductance of the capacitor will be the same as the companion model even at T=0 
-		compConductance = (2.0f*c)/timeStep;
-	}else{
-		throw unsupportedIntegrationMethodOrderException();
-	}
-
-	types.push_back(componentType::conductanceSource);
-	types.push_back(componentType::currentSource);
-	types.push_back(componentType::vcUpdatable);
+	types.push_back(componentType::nonVoltageSource);
 }
 
 float Capacitor::getConductance() const{
@@ -63,7 +46,7 @@ float Capacitor::getTotalCurrent(float voltage, int order){
 		prevTotalCurrent = res;
 		return res;	
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrent");
 	}
 }
 
@@ -78,7 +61,7 @@ void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
 	//	prev_current = comp_current;		
 		compVoltage = newVoltage;
 	}else{
-		throw unsupportedIntegrationMethodOrderException();
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
 	}
 		
 }
@@ -88,3 +71,10 @@ vector<int> Capacitor::getNodes() const{
     res.push_back(nodes.at(1));
     return res;
 }
+
+float Capacitor::ivAtNode(int n) const{
+	return 1;
+};
+float Capacitor::divAtNode(int n, int dn) const{
+	return 1;
+};

@@ -6,13 +6,19 @@
 
 using namespace std;
 
-class notSupportedByComponentException : public exception
+class NotSupportedByComponentException : public exception
 {
 private:
-    string message = "This method is not supported by the component";
+    const string exceptionType = "This method is not supported by the component.";
+    string exceptionLocation;
 public:
+    NotSupportedByComponentException(string location = "Unknown")
+        : exceptionLocation{location}
+    {}
+
     const char * what () const throw () override
     {
+        string message = exceptionType + "Location: " + exceptionLocation;
     	return message.c_str();
     }
 };

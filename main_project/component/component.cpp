@@ -1,4 +1,4 @@
-#include <CustomExceptionClasses/notSupportedByComponentException.hpp>
+#include <iostream>
 
 #include "component.hpp"
 
@@ -12,36 +12,60 @@ Component::~Component(){}
 // this allows to call an error if ever a function that shouldn't be returning a voltage or current or conductance
 // is asked for one
 float Component::getVoltage() const{
-    throw notSupportedByComponentException();
+	cerr << "Tried to call getVoltage from a component that doesn't support it" <<endl;
+	exit(1);
 }
 
 float Component::getCurrent() const{
-   throw notSupportedByComponentException();
+   	cerr << "Tried to call getCurrent from a component that doesn't support it" <<endl;
+	exit(1);
 }
 
 float Component::getTotalCurrent(float voltage,int order){
-	throw notSupportedByComponentException();
+	cerr << "Tried to call getTotalCurrent from a component that doesn't support it" <<endl;
+	exit(1);
 }
 
 float Component::getConductance() const{
-    throw notSupportedByComponentException();
+    cerr << "Tried to call getConductance from a component that doesn't support it" <<endl;
+	exit(1);
+}
+
+float Component::getGain() const{
+	cerr << "Tried to call getGain from a component that doesn't support it" <<endl;
+	exit(1);
+}
+
+string Component::getVsName() const{
+	cerr << "Tried to call getVSName from a component that doesn't support it" <<endl;
+	exit(1);
 }
 
 void Component::updateVals(float newVoltage, float newCurrent, int order){
-    throw notSupportedByComponentException();
+    cerr << "Tried to call updateVals from a component that doesn't support it" <<endl;
+	exit(1);
 }
 
-void Component::updateVals(float time){
-    throw notSupportedByComponentException();
+void Component::updateVals(float time_or_voltage){
+    cerr << "Tried to call updateVals from a component that doesn't support it" <<endl;
+	exit(1);
+}
+
+void Component::addParam(int paramId, float paramValue){
+	cerr << "Tried to call addParam from a component that doesn't support it" <<endl;
+	exit(1);
+}
+
+string Component::getModelName() const{
+	cerr << "Tried to call getModelName from a component that doesn't support it" <<endl;
+	exit(1);
 }
 
 string Component::getName() const{
     return name;
 }
 
-
-// helper function to parse string with units into float
-float Component::getValue(string val) const{
+float Component::getValue(string val){
 	string units{};
 	float base{};//base number
 	float mult{};//what we multiply the number by
@@ -103,6 +127,31 @@ float Component::getValue(string val) const{
 	}
 }
 
+vector<int> Component::processNodes(vector<string> rawNodes){
+    vector<int> nodeNumbers{};
+    for(auto& node : rawNodes){
+        if(node == "0"){
+            nodeNumbers.push_back(0);
+        }else if(node[0] == 'n' || node[0] == 'N'){
+			if(stoi(node.substr(1)) == 0){
+				cerr << "A zero (ground) node cannot start with N" <<endl;
+				exit(1);
+			}
+            nodeNumbers.push_back(stoi(node.substr(1))); //remove leading N
+        }else{
+            cerr << "A specified node is invalid. A node must either be 0 or have the format N123" <<endl;
+            exit(1);
+        }
+    }
+    return nodeNumbers;
+}
+
 vector<componentType> Component::getTypes() const{
 	return types;
+}
+
+// functions for non linear
+// set functions
+void Component::setNodalVoltages(vector<float> v){
+    nodalVoltages = v;
 }

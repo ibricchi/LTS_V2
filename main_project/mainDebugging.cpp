@@ -16,25 +16,35 @@
 #include <component/voltageSource.cpp>
 #include <component/currentSource.cpp>
 #include <component/waveform.cpp>
+#include <component/currentControlledSource.cpp>
+#include <component/voltageControlledSource.cpp>
+#include <component/currentControlledVoltageSource.cpp>
+#include <component/currentControlledCurrentSource.cpp>
+#include <component/voltageControlledVoltageSource.cpp>
+#include <component/voltageControlledCurrentSource.cpp>
+#include <component/diode.cpp>
+#include <component/bjt.cpp>
 
 #include <input/input.cpp>
 
 #include <output/output.cpp>
 #include <output/linearAnalysis.cpp>
+#include <output/nonLinearAnalysis.cpp>
 
 using namespace std;
 
-// for debugging only
 void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
-    buffer << "Ib 1 0 SIN(0 1 1)" << endl;
-    buffer << "R1 1 0 1" << endl;
+    buffer << "V1 1 0 SIN(0 1 10)" << endl;
+    buffer << "V1 2 0 7" << endl;
+    buffer << "R1 2 3 1" << endl;
+    buffer << "Q1 3 1 0" << endl;
 }
 
 int main(){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.02; //seconds
+    float timeStep = 0.0001; //seconds
     float simulationTime = 1; //seconds
     
     // setup circuit
@@ -49,5 +59,3 @@ int main(){
     // run simulation
     outputCSV(c, outputFileName, timeStep, simulationTime);
 }
-
-
