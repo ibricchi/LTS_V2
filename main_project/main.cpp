@@ -39,6 +39,8 @@ void testCircuit3(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "V1 1 0 SIN(0 1 10)" << endl;
     buffer << "Q1 2 1 0" << endl;
+    buffer << "R1 2 3 1k" << endl;
+    buffer << "V2 3 0 1" << endl;
 }
 
 int main(int argc, char **argv){
@@ -66,7 +68,7 @@ int main(int argc, char **argv){
     setupBasic(c, timeStep);
     
     stringstream buffer;
-    testCircuit2(buffer);
+    testCircuit3(buffer);
 
     readSpice(c, buffer);
     // readSpice(c, cin); //use this if want to read from txt file
