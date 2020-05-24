@@ -46,33 +46,15 @@ void outputCSV(Circuit& c, string outputFileName){
         if(typeid(*gs) != typeid(Resistor)){
             continue; //don't want to display current through the companion model's resistor
         }
-        outputFile << ",i_R" + gs->getName();
+        outputFile << ",i_" + gs->getName();
     }
     //voltage sources
     for(const auto &vs : voltageSources){
-        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
-            outputFile << ",i_E" + vs->getName();
-        }else if(typeid(*vs) == typeid(CurrentControlledVoltageSource)){
-            outputFile << ",i_H" + vs->getName();
-        }else if(typeid(*vs) == typeid(OpAmp)){
-            outputFile << ",i_X" + vs->getName();
-        }else{ // normal/independent voltage sources
-            outputFile << ",i_V" + vs->getName();
-        }
+        outputFile << ",i_" + vs->getName();
     }
     //current sources + other components
     for(const auto &cs : currentSources){
-        if(typeid(*cs) == typeid(Capacitor)){
-            outputFile << ",i_C" + cs->getName();
-        }else if(typeid(*cs) == typeid(Inductor)){
-            outputFile << ",i_L" + cs->getName();
-        }else if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
-            outputFile << ",i_G" + cs->getName();
-        }else if(typeid(*cs) == typeid(CurrentControlledCurrentSource)){
-            outputFile << ",i_F" + cs->getName();
-        }else{ //component = currentSource
-            outputFile << ",i_I" + cs->getName();
-        }
+        outputFile << ",i_" + cs->getName();
     }
     outputFile << "\n";
     

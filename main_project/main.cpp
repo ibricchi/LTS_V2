@@ -51,7 +51,7 @@ void testCircuit7(stringstream& buffer){
     buffer << "R1 2 3 1" << endl;
     buffer << "Q1 3 1 0" << endl;
 }
-void testCircuit8(stringstream& buffer){
+void testCircuit(stringstream& buffer){
     buffer << "ExampleCircuit8" << endl;
     buffer << "I1 N1 0 PWL(0 10 .1 10 .101 0)" <<endl;
     buffer << "R1 N1 0 1" <<endl;
@@ -61,7 +61,7 @@ void testCircuit8(stringstream& buffer){
     buffer << ".tran 0.1 0.5 0 0.0001s" <<endl;
     buffer << ".end" <<endl;
 }
-void testCircuit(stringstream& buffer){
+void testCircuit9(stringstream& buffer){
     buffer << "ExampleCircuit9" << endl;
     buffer << "V1 N1 0 20" << endl;
     buffer << "R1 N2 N3 2k" << endl;
