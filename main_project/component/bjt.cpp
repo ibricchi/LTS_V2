@@ -14,7 +14,7 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     int NB = stoi(args[n::B]);
     int NE = stoi(args[n::E]);
 
-    nodalVoltages = {0,0};
+    nodalVoltages = {0,0,0};
 
     nodes.push_back(NC);
     nodes.push_back(NB);
@@ -101,6 +101,7 @@ float BJT::divAtNode(int nin, int dnin) const{
             switch(dn){
                 // partial derivatives of:
                 // IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR)
+                // S*(exp((B-E)/T) - exp((B-C)/T)*(1+1/R) + 1/R)
                 case n::C:
                     conductance = IS/VT*exp(VBC/VT)*(1+1/BR);
                     break;
@@ -108,7 +109,7 @@ float BJT::divAtNode(int nin, int dnin) const{
                     conductance = IS/VT*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR));
                     break;
                 case n::E:
-                    conductance = IS/VT*exp(VBE/VT);
+                    conductance = -IS/VT*exp(VBE/VT);
                     break;
             }
             break;
@@ -116,6 +117,7 @@ float BJT::divAtNode(int nin, int dnin) const{
             switch(dn){
                 // partial derivatives of:
                 // IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
+                // S*(1/F*(exp((B-E)/T)-1) + 1/R*(exp((B-C)/T)-1))
                 case n::C:
                     conductance = -IS/VT/BR*exp(VBC/VT);
                     break;
@@ -123,7 +125,7 @@ float BJT::divAtNode(int nin, int dnin) const{
                     conductance = IS/VT*(exp(VBE/VT)/BF + exp(VBC/VT)/BR);
                     break;
                 case n::E:
-                    conductance = IS/VT/BF*exp(VBE/VT);
+                    conductance = -IS/VT/BF*exp(VBE/VT);
                     break;
             }
             break;
@@ -131,11 +133,12 @@ float BJT::divAtNode(int nin, int dnin) const{
             switch(dn){
                 // partial derivatives of:
                 // -IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
+                // -S*(-exp((B-C)/T) + exp((B-E)/T)*(1+1/F) - 1/F)
                 case n::C:
-                    conductance = IS/VT*exp(VBC/VT);
+                    conductance = -IS/VT*exp(VBC/VT);
                     break;
                 case n::B:
-                    conductance = IS/VT*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF));
+                    conductance = -IS/VT*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF));
                     break;
                 case n::E:
                     conductance = IS/VT*exp(VBE/VT)*(1+1/BF);
