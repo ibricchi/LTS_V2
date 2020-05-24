@@ -15,6 +15,7 @@
 #include <component/currentControlledVoltageSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
 #include <component/currentControlledCurrentSource.hpp>
+#include <component/opamp.hpp>
 
 #include "input.hpp"
 
@@ -205,6 +206,8 @@ void readSpice(Circuit& c, istream& file){
             c.addComponent<VoltageControlledCurrentSource>(name, args);
         }else if(compTypeC == "F" || compTypeC == "f"){
             c.addComponent<CurrentControlledCurrentSource>(name, args);
+        }else if(compTypeC == "X" || compTypeC == "x"){
+            c.addComponent<OpAmp>(name, args);
         }else{
             cerr << "Unsuported netlist statement. Statement: " << compTypeC <<endl;
             exit(1);

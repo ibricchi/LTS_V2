@@ -14,4 +14,5 @@ add_library(component
     currentControlledCurrentSource.cpp
     diode.cpp
     bjt.cpp
+    opamp.cpp
 )

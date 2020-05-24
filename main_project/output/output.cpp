@@ -11,6 +11,7 @@
 #include <component/currentControlledVoltageSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
 #include <component/currentControlledCurrentSource.hpp>
+#include <component/opamp.hpp>
 
 #include "linearAnalysis.hpp"
 #include "nonLinearAnalysis.hpp"
@@ -53,6 +54,8 @@ void outputCSV(Circuit& c, string outputFileName){
             outputFile << ",i_E" + vs->getName();
         }else if(typeid(*vs) == typeid(CurrentControlledVoltageSource)){
             outputFile << ",i_H" + vs->getName();
+        }else if(typeid(*vs) == typeid(OpAmp)){
+            outputFile << ",i_X" + vs->getName();
         }else{ // normal/independent voltage sources
             outputFile << ",i_V" + vs->getName();
         }

@@ -15,6 +15,7 @@
 #include <component/currentControlledVoltageSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
 #include <component/currentControlledCurrentSource.hpp>
+#include <component/opamp.hpp>
 
 using namespace std;
 using namespace Eigen;
@@ -180,6 +181,31 @@ void Circuit::setupA()
     for (int i{}; i < voltageSources.size(); i++)
     {
         const auto &vs = voltageSources.at(i);
+
+        //slightly different for ideal opamp
+        if(typeid(*vs) == typeid(OpAmp)){
+            nodes = vs->getNodes();
+            int node1 = nodes.at(0); //Nin+
+            int node2 = nodes.at(1); //Nin-
+            int node3 = nodes.at(2); //Nout
+
+            if (node1 != 0)
+            {
+                A(highestNodeNumber + i, node1 - 1) = 1;
+            }
+
+            if (node2 != 0)
+            {
+                A(highestNodeNumber + i, node2 - 1) = -1;
+            }
+
+            if (node3 != 0)
+            {
+                A(node3 - 1, highestNodeNumber + i) = 1;
+            }
+
+            continue; //Rest doesn't apply to ideal opamps
+        }
 
         nodes = vs->getNodes();
         int node1 = nodes.at(0);
@@ -355,7 +381,7 @@ void Circuit::adjustB()
     {
         auto vs = voltageSources.at(j);
 
-        if(typeid(*vs) == typeid(VoltageControlledVoltageSource) || typeid(*vs) == typeid(CurrentControlledVoltageSource)){
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource) || typeid(*vs) == typeid(CurrentControlledVoltageSource) || typeid(*vs) == typeid(OpAmp)){
             continue;
         }else{ // normal/independent voltage sources
             b(i) = vs->getVoltage();
