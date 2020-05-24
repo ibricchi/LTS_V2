@@ -45,10 +45,10 @@ protected:
     float maxTimeStep;
     float tStep; //printing incremement for csv output
     bool hasNonLinear;
-    MatrixXf A;
-    MatrixXf A_inv;
-    VectorXf b;
-    VectorXf x;
+    MatrixXd A;
+    MatrixXd A_inv;
+    VectorXd b;
+    VectorXd x;
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
 
     // non-linear analysis vectors;
@@ -154,14 +154,14 @@ public:
     // non linear A
     void nonLinearA();
 
-    MatrixXf getA() const;
+    MatrixXd getA() const;
 
     // helper function for current controlled sources
     int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
 
     // compute inverse of A
     void computeA_inv();
-    MatrixXf getA_inv() const;
+    MatrixXd getA_inv() const;
 
     // operation to adjust B
     void adjustB();
@@ -169,7 +169,7 @@ public:
     // non linear b
     void nonLinearB();
 
-    VectorXf getB() const;
+    VectorXd getB() const;
 
     // operation to assign meaning to the result vector x
     void setupXMeaning();
@@ -180,9 +180,9 @@ public:
 
     void computeNLX(float gamma);
 
-    void setX(VectorXf newX);
+    void setX(VectorXd newX);
     
-    VectorXf getX() const;
+    VectorXd getX() const;
 
     // update nodal voltages
     void updateNodalVoltages();

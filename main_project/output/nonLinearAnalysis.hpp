@@ -6,6 +6,6 @@
 
 void nonLinearSetup(Circuit& c);
 string runNonLinearTransience(Circuit& c, float t);
-bool matrixDiffBellowThreshold(MatrixXf& m1, MatrixXf& m2, float d);
+bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d);
 
 #endif

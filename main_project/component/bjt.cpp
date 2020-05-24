@@ -13,7 +13,7 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});
 
-    nodalVoltages = {0,0};
+    nodalVoltages = {0,0,0};
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
@@ -58,7 +58,6 @@ void BJT::SetupValues(float _BF, float _IS, bool _hasVAF, float _VAF){
 float BJT::ivAtNode(int nin) const{
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
-    double VCE = (nodalVoltages[n::C] - nodalVoltages[n::E]);
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -83,7 +82,6 @@ float BJT::ivAtNode(int nin) const{
 float BJT::divAtNode(int nin, int dnin) const{
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
-    double VCE = (nodalVoltages[n::C] - nodalVoltages[n::E]);
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -96,6 +94,7 @@ float BJT::divAtNode(int nin, int dnin) const{
             switch(dn){
                 // partial derivatives of:
                 // IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR)
+                // S*(exp((B-E)/T) - exp((B-C)/T)*(1+1/R) + 1/R)
                 case n::C:
                     conductance = IS/VT*exp(VBC/VT)*(1+1/BR);
                     break;
@@ -111,7 +110,7 @@ float BJT::divAtNode(int nin, int dnin) const{
             switch(dn){
                 // partial derivatives of:
                 // IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
-                // IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
+                // S*(1/F*(exp((B-E)/T)-1) + 1/R*(exp((B-C)/T)-1))
                 case n::C:
                     conductance = -IS/VT/BR*exp(VBC/VT);
                     break;
@@ -127,6 +126,7 @@ float BJT::divAtNode(int nin, int dnin) const{
             switch(dn){
                 // partial derivatives of:
                 // -IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
+                // -S*(-exp((B-C)/T) + exp((B-E)/T)*(1+1/F) - 1/F)
                 case n::C:
                     conductance = -IS/VT*exp(VBC/VT);
                     break;
