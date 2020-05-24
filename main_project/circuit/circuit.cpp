@@ -418,9 +418,8 @@ void Circuit::nonLinearB(){
         if(n1 != 0) b(n1-1) += x[i];
         if(n2 != 0) b(n2-1) -= x[i];
         // move this part into the IV thing later
-        b(i) -= voltageSources.at(j)->getVoltage();
+        b(i) += voltageSources.at(j)->getVoltage();
     }
-    b *= -1;
 };
 
 VectorXd Circuit::getB() const
