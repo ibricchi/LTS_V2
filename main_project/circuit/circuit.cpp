@@ -109,7 +109,7 @@ void Circuit::nlSetup(){
     int nvc = nonVoltageSources.size();
     int vsc = voltageSources.size();
 
-    x = VectorXf::Zero(highestNodeNumber + vsc);
+    x = VectorXd::Zero(highestNodeNumber + vsc);
 
     // sets up nodalFunctions vector
     // very similar to the setup of A in linear analysis
@@ -132,7 +132,7 @@ void Circuit::nlSetup(){
 // setupA definition
 void Circuit::setupA()
 {
-    A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
+    A = MatrixXd::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
     vector<int> nodes{};
 
     //constructing conductance part
@@ -241,12 +241,12 @@ void Circuit::setupA()
 }
 
 void Circuit::nonLinearA(){
-    A = MatrixXf::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
+    A = MatrixXd::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
 
     // setup currents from non voltage source components
     int n{};
     vector<int> extraNodes{};
-    float conductance{};
+    double conductance{};
     for(const nodeCompPair ncp : nodalFunctions){
         n = ncp.n;
         extraNodes = ncp.extraNodes;
@@ -284,7 +284,7 @@ void Circuit::nonLinearA(){
     }
 }
 
-MatrixXf Circuit::getA() const
+MatrixXd Circuit::getA() const
 {
     return A;
 }
@@ -301,14 +301,14 @@ void Circuit::computeA_inv(){
     A_inv = A.inverse();
 }
 
-MatrixXf Circuit::getA_inv() const{
+MatrixXd Circuit::getA_inv() const{
     return A_inv;
 }
 
 // setupB definition
 void Circuit::adjustB()
 {
-    b = VectorXf::Zero(highestNodeNumber + voltageSources.size());
+    b = VectorXd::Zero(highestNodeNumber + voltageSources.size());
 
     //adding currents
     for (const auto &cs : currentSources)
@@ -348,16 +348,18 @@ void Circuit::adjustB()
 }
 
 void Circuit::nonLinearB(){
-    b = VectorXf::Zero(highestNodeNumber + voltageSources.size());
+    b = VectorXd::Zero(highestNodeNumber + voltageSources.size());
 
     int n, n1, n2;
     vector<int> nodes, extraNodes;
 
+    double current;
     // setup currents from non voltage source components
     for(const nodeCompPair ncp : nodalFunctions){
         n = ncp.n;
         extraNodes = ncp.extraNodes;
-        b(n-1) += ncp.IV();
+        current = ncp.IV();
+        b(n-1) += current;
     }
 
     //adding voltages
@@ -375,7 +377,7 @@ void Circuit::nonLinearB(){
     }
 };
 
-VectorXf Circuit::getB() const
+VectorXd Circuit::getB() const
 {
     return b;
 }
@@ -408,11 +410,11 @@ void Circuit::computeNLX(float gamma){
     x -= gamma * A_inv * b;
 }
 
-void Circuit::setX(VectorXf newX){
+void Circuit::setX(VectorXd newX){
     x = newX;
 }
 
-VectorXf Circuit::getX() const{
+VectorXd Circuit::getX() const{
     return x;
 }
 

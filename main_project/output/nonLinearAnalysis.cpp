@@ -26,9 +26,9 @@ string runNonLinearTransience(Circuit& c, float t){
     float threshold = 0.1;
 
     c.updateNodalVoltages();
-    VectorXf startX = c.getX();
-    MatrixXf currentX = c.getX();
-    MatrixXf newX = c.getX();
+    VectorXd startX = c.getX();
+    VectorXd currentX = c.getX();
+    VectorXd newX = c.getX();
 
     IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
     // cout << newX.format(CleanFmt) << endl << endl;
@@ -60,10 +60,10 @@ string runNonLinearTransience(Circuit& c, float t){
         cout << c.getA().format(CleanFmt) << endl << endl;
         cout << c.getA_inv().format(CleanFmt) << endl << endl;
         cout << c.getB().format(CleanFmt) << endl << endl;
-        cout << currentX.format(CleanFmt) << endl << endl;
+        // cout << currentX.format(CleanFmt) << endl << endl;
         cout << newX.format(CleanFmt) << endl << endl;
 
-        if(t > 0.0691){
+        if(t >= 0.058100){
             count++;
         }
 
@@ -106,7 +106,7 @@ string runNonLinearTransience(Circuit& c, float t){
 };
 
 // both matrixes are assumed to be x:1 matrixes with same x
-bool matrixDiffBellowThreshold(MatrixXf& m1, MatrixXf& m2, float d){
+bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
     for(int i = 0; i < m1.rows(); i++){
         //cout << m1(i) << " " << m2(i) << endl << endl;
         if(abs(m1(i) - m2(i)) > d){
