@@ -3,8 +3,6 @@
 #include <circuit/circuit.hpp>
 #include <Eigen/Dense>
 #include <component/component.hpp>
-#include <component/capacitor.hpp>
-#include <component/inductor.hpp>
 
 #include "nonLinearAnalysis.hpp"
 
@@ -46,13 +44,13 @@ string runNonLinearTransience(Circuit& c, float t){
         currentX = newX;
         newX = c.getX();
 
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
-        // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
+        IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
+        cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
         // cout << c.getA_inv().format(CleanFmt) << endl << endl;
-        // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
+        cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
         // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
-        // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
+        cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
 
         if(t >= 0.058100){
             count++;
@@ -99,7 +97,7 @@ string runNonLinearTransience(Circuit& c, float t){
 // both matrixes are assumed to be x:1 matrixes with same x
 bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
     for(int i = 0; i < m1.rows(); i++){
-        //cout << m1(i) << " " << m2(i) << endl << endl;
+        cout << m1(i) << " " << m2(i) << endl << endl;
         if(abs(m1(i) - m2(i)) > d){
             return false;
         }
