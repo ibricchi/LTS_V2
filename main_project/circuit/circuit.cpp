@@ -454,7 +454,7 @@ void Circuit::computeX(){
 }
 
 void Circuit::computeNLX(float gamma){
-    x -= gamma * A_inv * b;
+    x = gamma * A_inv * b;
 }
 
 void Circuit::setX(VectorXd newX){
