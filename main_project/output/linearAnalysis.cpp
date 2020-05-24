@@ -28,7 +28,7 @@ string runLinearTransience(Circuit& c, float t){
     string outLine{};
     //compute x for the current timestep
     c.computeX();
-    VectorXf x = c.getX();
+    VectorXd x = c.getX();
 
     //output current time 
     c.setCurrentTime(t);
