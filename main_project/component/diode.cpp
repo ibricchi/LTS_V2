@@ -53,7 +53,7 @@ void Diode::SetupValues(float _IS, float _N, float _VT){
 float Diode::ivAtNode(int n) const{
     float v = nodalVoltages[0] - nodalVoltages[1];
     double current = IS * (exp(v/N/VT) - 1) * (1-v/VT);
-    if(n == nodes[1]){
+    if(n != nodes[1]){
         current*=-1;
     }
     return (float)current;
