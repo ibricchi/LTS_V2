@@ -63,7 +63,7 @@ float BJT::ivAtNode(int nin) const{
 
     double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
     double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
-    double IC = BF*IBF-BR*IBR;
+    double IC1 = BF*IBF-BR*IBR;
 
     double GPF = IFS/BF*exp(VBE/VT)/VT;
     double GPR = IRS/BR*exp(VBC/VT)/VT;
@@ -74,7 +74,7 @@ float BJT::ivAtNode(int nin) const{
 
     double IBFEQ = IBF - GPF*VBE;
     double IBREQ = IBR - GPR*VBC;
-    double ICEQ = IC - GMF*VBE + GMR*VBC - GO*VCE;
+    double ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
 
     double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
     double IB = IBREQ + IBFEQ;
