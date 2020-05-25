@@ -412,11 +412,6 @@ void Circuit::nonLinearB(){
     //adding voltages
     for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
     {
-        nodes = voltageSources[j]->getNodes();
-        n1 = nodes[0];
-        n2 = nodes[1];
-        if(n1 != 0) b(n1-1) += x[i];
-        if(n2 != 0) b(n2-1) -= x[i];
         // move this part into the IV thing later
         b(i) += voltageSources.at(j)->getVoltage();
     }
