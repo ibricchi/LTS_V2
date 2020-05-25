@@ -19,35 +19,54 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::nonLinear);
 }
 
+void Mosfet::addParam(int paramId, float paramValue){
+    switch(static_cast<mosfetParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
+        case mosfetParamType::ISat:
+            ISat = paramValue;
+            break;
+        case mosfetParamType::K:
+            K = paramValue;
+            break;
+        case mosfetParamType::VA:
+            VA = paramValue;
+            break;
+        case mosfetParamType::VT:
+            VT = paramValue;
+            break;
+    }
+}
+
 float Mosfet::ivAtNode(int nin) const{
-    double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
+    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
+    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
 
-    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
-    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+    float IS, GM, GO;
 
-    double GPF = IFS/BF*exp(VBE/VT)/VT;
-    double GPR = IRS/BR*exp(VBC/VT)/VT;
-
-    double GMF = BF*GPF;
-    double GMR = BR*GPR;
-
-    double IBFEQ = IBF-GPF*VBE;
-    double IBREQ = IBR-GPR*VBC;
-    double ICEQ = BF*IBF-BR*IBR;
-
-    double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
-    double IB = IBREQ + IBFEQ;
-    double IE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
+    if(VGS - VT < 0){
+        IS = 0;
+        GM = 0;
+        GO = 0;
+    }else if(VGS-VT < VDS){
+        IS = K/2*(VGS-VT)*();
+        GM = sqrt(2*K*IS);
+        GO = hasVA?IS/VA:0;
+    }else if(-VSD <= -VSG-VT){
+        IS = K*((VSG-VT)-VSD/2)*VSD;
+        GM = K*VSD;
+        GO = K*((VSG-VT)-VSD);
+    }else{
+        cerr << "mosfet in a non supported state" << endl;
+        exit(1);
+    }
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
-    int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
+    int n = nin==nodes[n::D]?n::D:(nin==nodes[n::G]?n::G:n::S);
 
     double current;
     switch(n){
-        case n::C:
-            current = IC;
+        case n::D:
+            current = IS-GM*VSG;
             break;
         case n::B:
             current = IB;
@@ -61,19 +80,27 @@ float Mosfet::ivAtNode(int nin) const{
 };
 
 float Mosfet::divAtNode(int nin, int dnin) const{
-    double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
+    double VSG = (nodalVoltages[n::S] - nodalVoltages[n::G]);
+    double VSD = (nodalVoltages[n::S] - nodalVoltages[n::D]);
 
-    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
-    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+    float IS, GM, GO;
 
-    double GPF = IFS/BF*exp(VBE/VT)/VT;
-    double GPR = IRS/BR*exp(VBC/VT)/VT;
-
-    double GMF = BF*GPF;
-    double GMR = BR*GPR;
-
-    double GO = 0; // implement later only for early voltage
+    if(VSG - VT < 0){
+        IS = 0;
+        GM = 0;
+        GO = 0;
+    }else if(-VSG-VT < -VSD){
+        IS = K/2*(VSG-VT)*(VSG-VT);
+        GM = sqrt(2*K*IS);
+        GO = hasVA?IS/VA:0;
+    }else if(-VSD <= -VSG-VT){
+        IS = K*((VSG-VT)-VSD/2)*VSD;
+        GM = K*VSD;
+        GO = K*((VSG-VT)-VSD);
+    }else{
+        cerr << "mosfet in a non supported state" << endl;
+        exit(1);
+    }
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on

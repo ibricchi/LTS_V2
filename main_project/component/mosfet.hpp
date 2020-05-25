@@ -8,10 +8,11 @@
 
 class Mosfet: public Component{
 private:
-    bool hasVAF;
-    float BF, AF, IRS, IFS, VAF;
-    float BR = 1.0;
-    float VT = 0.025;
+    float K = 2e-5;
+    float VT = 0;
+    float ISat = 1e-14;
+    float VA = 1; // really should be infinite but won't be used unless hasVA is true
+    bool hasVA = false;
 
     // don't know if I could replace with enum
     enum n{
@@ -23,8 +24,9 @@ private:
     void SetupValues();
 public:
     Mosfet(string _name, vector<string> args, vector<float> extraInfo);
-    Mosfet(string _name, float r, int n1, int n2);
     ~Mosfet() = default;
+
+    void addParam(int paramId, float paramValue) override;
 
     float ivAtNode(int n1) const override;
     float divAtNode(int n1, int dn) const override;
