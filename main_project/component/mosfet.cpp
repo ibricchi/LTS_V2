@@ -11,49 +11,12 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
     // Order: C, B, E
-    nodes = processNodes({args[n::C], args[n::B], args[n::E]});
+    nodes = processNodes({args[n::D], args[n::G], args[n::S]});
 
     nodalVoltages = {0,0,0};
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
-
-    switch (args.size())
-    {
-    case 3:
-        SetupValues();
-        break;
-    case 4:
-        SetupValues(
-            stof(args[3])
-        );
-        break;
-    case 5:
-        SetupValues(
-            stof(args[3]),
-            stof(args[4])
-        );
-        break;
-    case 6:
-        SetupValues(
-            stof(args[3]),
-            stof(args[4]),
-            true,
-            stof(args[5])
-        );
-        break;
-    default:
-        break;
-    }
-}
-
-void Mosfet::SetupValues(float _BF, float _IFS, bool _hasVAF, float _VAF){
-    BF = _BF;
-    AF = BF/(1+BF);
-    IFS = _IFS;
-    IRS = _IFS;
-    hasVAF = _hasVAF;
-    VAF = _VAF;
 }
 
 float Mosfet::ivAtNode(int nin) const{
