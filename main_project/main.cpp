@@ -59,8 +59,8 @@ void testCircuit(stringstream& buffer){
     buffer << "R1 N1 0 1" <<endl;
     buffer << "R2 n1 n2 1k" <<endl;
     buffer << "R3 n2 0 100k" <<endl;
-    buffer << ".tran 0.0001 0.2 0 0.0001s" <<endl;
     buffer << "C1 n2 0 0.00001" <<endl;
+    buffer << ".tran 0.0001 0.2 0 0.0001s" <<endl;
     buffer << ".end" <<endl;
 }
 void testCircuit9(stringstream& buffer){

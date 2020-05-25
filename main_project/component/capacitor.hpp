@@ -12,6 +12,7 @@ private:
 	float prevVoltage; //Voltage across the Capacitor in the previous iteration.
 	float prevCurrent;
 	float prevTotalCurrent;
+	float timeStep; //used to update compConductance
 
 public:
 	Capacitor(string name, vector<string> args, vector<float> extraInfo);
@@ -25,6 +26,8 @@ public:
 	float getCurrent() const override;
 	float getTotalCurrent(float voltage, int order = 1) override;
 	void updateVals(float newVoltage, float newCurrent, int order) override; //Called at the end of every iteration, after calculating node voltages and component currents.
+	void setTimeStep(float _timeStep) override;
+	void initCompCurrent(float _voltage);
 };
 
 #endif
