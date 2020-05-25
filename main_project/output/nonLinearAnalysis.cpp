@@ -86,22 +86,6 @@ string runNonLinearTransience(Circuit& c, float t){
         comp->updateVals(t+c.getTimeStep());
     }
 
-    vector<int> nodes;
-    
-    //update components based on current voltage/current
-    float v1{}, v2{}, currentVoltage{}, currentCurrent{};
-    for(const auto &up : vcUpdatables){
-        nodes = up->getNodes();
-
-        v1 = nodes.at(0) == 0 ? 0 : newX(nodes.at(0)-1);
-        v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
-        currentVoltage = v1 - v2;
-
-        //currentCurrent = currentVoltage * up->getConductance();
-
-        up->updateVals(currentVoltage, 0, 1);
-    }
-
     return outLine;
     
 };
