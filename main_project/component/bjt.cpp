@@ -78,13 +78,13 @@ float BJT::ivAtNode(int nin) const{
     double current;
     switch(n){
         case n::C:
-            current = IC;
+            current = -IC;
             break;
         case n::B:
-            current = IB;
+            current = -IB;
             break;
         case n::E:
-            current = -IE;
+            current = IE;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
