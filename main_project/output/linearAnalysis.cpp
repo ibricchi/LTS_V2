@@ -6,9 +6,16 @@
 #include <component/inductor.hpp>
 #include <component/currentSource.hpp>
 
+#include <iostream> //testing only
+
 #include "linearAnalysis.hpp"
 
-//these don't change during simulation with linear components
+void linearDCSetup(Circuit& c){
+    c.setupA(true);
+    c.adjustB(true);
+    c.computeA_inv();
+}
+
 void linearSetup(Circuit& c){
     c.setupA();
     c.adjustB();
@@ -96,14 +103,16 @@ string runLinearTransience(Circuit& c, float t){
         v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 
-        //currentCurrent = currentVoltage * up->getConductance();
-        
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
-        // cout << b.format(CleanFmt) << endl << endl;
-        // cout << x.format(CleanFmt) << endl <<endl;
-
         up->updateVals(currentVoltage, 0, 1);
+
+
+        cout <<endl<<endl;
+        cout << "time: " << t <<endl;
+        cout << "voltage: " << currentVoltage <<endl;
+        cout << "conductance: " << up->getConductance() <<endl;
+        cout << "current: " << up->getCurrent() <<endl;
+        cout << "total current: " << up->getTotalCurrent(currentVoltage) <<endl;
+        cout <<endl<<endl;
     }
 
     //update b for calculations at next timestep

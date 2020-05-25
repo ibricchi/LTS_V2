@@ -45,6 +45,8 @@ protected:
     float maxTimeStep;
     float tStep; //printing incremement for csv output
     bool hasNonLinear;
+<<<<<<< HEAD
+    int inductorNumber;
     MatrixXd A;
     MatrixXd A_inv;
     VectorXd b;
@@ -89,6 +91,8 @@ public:
 
     bool hasNonLinearComponents() const;
     void setHasNonLinearComponents(bool _hasNonLinearComponents);
+
+    void incrementInductorNumber();
 
     // returns references to prevent inefficient copying
     vector<Component*>& getComponentsRef();
@@ -149,7 +153,7 @@ public:
     void nlSetup();
 
     // operation to create A
-    void setupA();
+    void setupA(bool dc = false);
 
     // non linear A
     void nonLinearA();
@@ -164,7 +168,7 @@ public:
     MatrixXd getA_inv() const;
 
     // operation to adjust B
-    void adjustB();
+    void adjustB(bool dc = false);
 
     // non linear b
     void nonLinearB();

@@ -189,6 +189,7 @@ void readSpice(Circuit& c, istream& file){
 		}else if(compTypeC == "L" || compTypeC == "l"){
             // + - inductance
 			c.addComponent<Inductor>(name, args);
+            c.incrementInductorNumber(); //Used for DC operating point analysis
 		}else if(compTypeC == "C" || compTypeC == "c"){
             // + - capacitance
 			c.addComponent<Capacitor>(name,args);

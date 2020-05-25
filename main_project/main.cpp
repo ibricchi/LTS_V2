@@ -24,6 +24,7 @@ void testCircuit1(stringstream& buffer){
     buffer << "R1 2 3 1" << endl;
     buffer << "Q1 3 1 0" << endl;
 }
+
 void testCircuit2(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "R1 1 3 4.7k" << endl;
@@ -33,6 +34,7 @@ void testCircuit2(stringstream& buffer){
     buffer << "V2 1 0 5" << endl;
     buffer << "Q1 2 3 4" << endl;
     buffer << "R4 1 0 1k" << endl;
+
 }
 void testCircuit3(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
@@ -41,6 +43,7 @@ void testCircuit3(stringstream& buffer){
     buffer << "R1 2 3 1k" << endl;
     buffer << "V2 3 0 1" << endl;
 }
+<<<<<<< HEAD
 
 
 void testCircuit7(stringstream& buffer){
@@ -73,10 +76,17 @@ void testCircuit9(stringstream& buffer){
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
+    float timeStep = 0.0001; //seconds
+    float simulationTime = 0.001; //seconds
     if(argc > 1){
         outputFileName = argv[1];
     }
-
+    if(argc > 2){
+        timeStep = (float)atof(argv[2]);
+    }
+    if(argc > 3){
+        simulationTime = (float)atof(argv[3]);
+    }
     // setup circuit
     Circuit c{};
     

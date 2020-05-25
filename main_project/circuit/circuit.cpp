@@ -1,7 +1,3 @@
-#include <iostream>
-#include <Eigen/Dense>
-#include <vector>
-
 #include "circuit.hpp"
 
 #include <component/enums.hpp>
@@ -99,6 +95,10 @@ void Circuit::setHasNonLinearComponents(bool _hasNonLinearComponents){
     hasNonLinear = _hasNonLinearComponents;
 }
 
+void Circuit::incrementInductorNumber(){
+    inductorNumber++;
+}
+
 vector<Component*>& Circuit::getComponentsRef(){
     return components;
 }
@@ -152,15 +152,23 @@ void Circuit::nlSetup(){
 }
 
 // setupA definition
-void Circuit::setupA()
+void Circuit::setupA(bool dc)
 {
-    A = MatrixXd::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
+    int extraZeroVSNumber = dc ? inductorNumber : 0;
+    A = MatrixXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber, highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
     vector<int> nodes{};
 
     //constructing conductance part
     for (const auto &comp : conductanceSources)
     {
-        const float conductance = comp->getConductance();
+        //Replace capacitors/inductors with open circuit for DC operating point analysis
+        if(dc && (typeid(*comp) == typeid(Capacitor) || typeid(*comp) == typeid(Inductor))){
+            //Capacitor is open circuit at DC => don't contribute conductance
+            //Inductor is short circuit at DC => equivalent to zero voltage source (added after all normal voltage sources)
+            continue; 
+        }
+
+        float conductance = comp->getConductance();
         nodes = comp->getNodes();
 
         for (int i = 0; i < nodes.size(); i++)
@@ -243,6 +251,32 @@ void Circuit::setupA()
             int controllingVsIndex = getVoltageSourceIndexByName(vs->getVsName(), voltageSources);
 
             A(highestNodeNumber + i, highestNodeNumber + controllingVsIndex) -= gain;
+        }
+    }
+
+    //Important that the following loop comes after all normal voltage sources have already been added!
+    if(dc){
+        int i = voltageSources.size(); //Add zero voltage sources after normal voltage sources
+        for(const auto& comp : vcUpdatables){
+            if(typeid(*comp) == typeid(Inductor)){
+                //add zero voltage source to represent short circuit
+                nodes = comp->getNodes();
+                int node1 = nodes.at(0);
+                int node2 = nodes.at(1);
+
+                if (node1 != 0)
+                {
+                    A(node1 - 1, highestNodeNumber + i) = 1;
+                    A(highestNodeNumber + i, node1 - 1) = 1;
+                }
+
+                if (node2 != 0)
+                {
+                    A(node2 - 1, highestNodeNumber + i) = -1;
+                    A(highestNodeNumber + i, node2 - 1) = -1;
+                }
+            }
+            i++;
         }
     }
 
@@ -353,13 +387,17 @@ MatrixXd Circuit::getA_inv() const{
 }
 
 // setupB definition
-void Circuit::adjustB()
+void Circuit::adjustB(bool dc)
 {
-    b = VectorXd::Zero(highestNodeNumber + voltageSources.size());
-
+    int extraZeroVSNumber = dc ? inductorNumber : 0;
+    b = VectorXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
     //adding currents
     for (const auto &cs : currentSources)
     {
+        if(dc && (typeid(*cs) == typeid(Capacitor) || typeid(*cs) == typeid(Inductor))){
+            continue; // Open/short circuit at DC => Don't contribute currents
+        }
+
         //dependent current sources don't contribute to the b vector
         if(typeid(*cs) == typeid(CurrentControlledCurrentSource) || typeid(*cs) == typeid(VoltageControlledCurrentSource)){ 
             continue;
