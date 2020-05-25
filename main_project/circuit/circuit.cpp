@@ -406,7 +406,7 @@ void Circuit::nonLinearB(){
         n = ncp.n;
         extraNodes = ncp.extraNodes;
         current = ncp.IV();
-        b(n-1) += current;
+        b(n-1) -= current;
     }
 
     //adding voltages
