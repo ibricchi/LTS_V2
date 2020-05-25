@@ -11,14 +11,16 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 
 	nodalVoltages = {0,0};
 
-    float val = getValue(args[2]);
 	int order = 1;
 	subComponents = 2;
 	compCurrent = 0;
 	prevTotalCurrent=0;
 
+	inductance = getValue(args[2]);
+	timeStep = extraInfo[0];
+
 	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
-		compConductance = extraInfo[0]/(2.0*val);
+		compConductance = timeStep/(2.0*inductance);
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/constructor");
 	}
@@ -55,8 +57,15 @@ void Inductor::updateVals(float newVoltage, float newCurrent, int order){
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/updateVals");
 	}
-		
 }
+
+void Inductor::setTimeStep(float _timeStep){
+	timeStep = _timeStep;
+
+	//use the new timeStep to update conductance
+	compConductance = timeStep/(2.0*inductance);
+}
+
 vector<int> Inductor::getNodes() const{
     vector<int> res{};
     res.push_back(nodes.at(0));

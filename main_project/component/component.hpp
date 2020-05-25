@@ -49,6 +49,9 @@ public:
     // this should be used to update the time of the time dependant components or update nonlinear components (passing voltage)
     virtual void updateVals(float time_or_voltage);
 
+    // this should be used to set a new timestep for capacitors/inductors
+    virtual void setTimeStep(float _timeStep);
+
     //used to add additional parameters to components after construction
     virtual void addParam(int paramId, float paramValue);
 
