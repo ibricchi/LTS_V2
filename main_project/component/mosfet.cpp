@@ -51,7 +51,7 @@ float Mosfet::ivAtNode(int nin) const{
     }else if(VGS-VT < VDS){
         ID = K * (VGS-VT)*(VGS-VT) * hasVA?(1 + VDS/VA):1;
         GM = sqrt(2*K*ID);
-        GO = hasVA?IS/VA:0;
+        GO = hasVA?ID/VA:0;
     }else if(VDS <= VGS-VT){
         ID = K * ((VGS-VT)-VDS/2)*VDS;
         GM = K*VDS;
@@ -94,7 +94,7 @@ float Mosfet::divAtNode(int nin, int dnin) const{
     }else if(VGS-VT < VDS){
         ID = K * (VGS-VT)*(VGS-VT) * hasVA?(1 + VDS/VA):1;
         GM = sqrt(2*K*ID);
-        GO = hasVA?IS/VA:0;
+        GO = hasVA?ID/VA:0;
     }else if(VDS <= VGS-VT){
         ID = K * ((VGS-VT)-VDS/2)*VDS;
         GM = K*VDS;

@@ -6,7 +6,7 @@ R1 N3 N2 1k
 K1 N3 N2 N1 m
 R2 N1 0 1k
 *
-.model NMOS m
+.model m NMOS ()
 *
 .tran 0.1 1 0 0.000001
 .end
