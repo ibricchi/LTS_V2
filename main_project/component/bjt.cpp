@@ -73,7 +73,7 @@ float BJT::ivAtNode(int nin) const{
     double IBREQ = IBR-GPR*VBC;
     double ICEQ = BF*IBF-BR*IBR;
 
-    double IC = ICEQ + IBREQ + GMF*VBE - GMR*VBC;
+    double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
     double IB = IBREQ + IBFEQ;
     double IE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
 
@@ -111,10 +111,6 @@ float BJT::divAtNode(int nin, int dnin) const{
     double GMR = BR*GPR;
 
     double GO = 0; // implement later only for early voltage
-
-    double IBFEQ = IBF-GPF*VBE;
-    double IBREQ = IBR-GPR*VBC;
-    double ICEQ = BF*IBF-BR*IBR;
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
