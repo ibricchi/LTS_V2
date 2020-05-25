@@ -116,6 +116,10 @@ float BJT::divAtNode(int nin, int dnin) const{
     double IBREQ = IBR-GPR*VBC;
     double ICEQ = BF*IBF-BR*IBR;
 
+    double DIC = ICEQ + IBREQ + GMF*VBE - GMR*VBC;
+    double DIB = IBREQ + IBFEQ;
+    double DIE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
+
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
@@ -125,9 +129,6 @@ float BJT::divAtNode(int nin, int dnin) const{
     switch(n){
         case n::C:
             switch(dn){
-                // partial derivatives of:
-                // IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR)
-                // S*(exp((B-E)/T) - exp((B-C)/T)*(1+1/R) + 1/R)
                 case n::C:
                     conductance = GPR + GO;
                     break;
@@ -141,9 +142,6 @@ float BJT::divAtNode(int nin, int dnin) const{
             break;
         case n::B:
             switch(dn){
-                // partial derivatives of:
-                // IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
-                // S*(1/F*(exp((B-E)/T)-1) + 1/R*(exp((B-C)/T)-1))
                 case n::C:
                     conductance = -GPR;
                     break;
@@ -157,9 +155,6 @@ float BJT::divAtNode(int nin, int dnin) const{
             break;
         case n::E:
             switch(dn){
-                // partial derivatives of:
-                // -IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
-                // -S*(-exp((B-C)/T) + exp((B-E)/T)*(1+1/F) - 1/F)
                 case n::C:
                     conductance = -GO;
                     break;
