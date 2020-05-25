@@ -44,7 +44,6 @@ struct ModelStatement{
     };
     const unordered_map<string, mosfetParamType> mosfetParamTable = {
         {"K", mosfetParamType::K},
-        {"ISat", mosfetParamType::ISat},
         {"VT", mosfetParamType::VT},
         {"VA", mosfetParamType::VA}
     };

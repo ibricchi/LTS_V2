@@ -22,9 +22,6 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
 
 void Mosfet::addParam(int paramId, float paramValue){
     switch(static_cast<mosfetParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
-        case mosfetParamType::ISat:
-            ISat = paramValue;
-            break;
         case mosfetParamType::K:
             K = paramValue;
             break;
@@ -71,7 +68,7 @@ float Mosfet::ivAtNode(int nin) const{
     double current;
     switch(n){
         case n::D:
-            current = ID+GM*VGS;
+            current = ID-GM*VGS;
             break;
         case n::G:
             current = 0;
