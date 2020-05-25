@@ -21,7 +21,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     string outLine{};
 
-    float threshold = 0.1;
+    float threshold = .001;
 
     // c.updateNodalVoltages();
     VectorXd startX = c.getX();
@@ -37,6 +37,11 @@ string runNonLinearTransience(Circuit& c, float t){
     float gamma = 0.1;
 
     do{
+        if(count > 500){
+            cerr << "Newton Raphson count too big" <<endl;
+            exit(1);
+        }
+
         // if(count > maxCount){
         //     c.setX(startX);
         //     c.updateNodalVoltages();
@@ -64,9 +69,9 @@ string runNonLinearTransience(Circuit& c, float t){
         // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
         // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
 
-        if(t >= 0.009780){
-            count++;
-        }
+        // if(t >= 0.009780){
+        //     count++;
+        // }
 
         count++;
     }
