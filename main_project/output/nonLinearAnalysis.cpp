@@ -37,16 +37,16 @@ string runNonLinearTransience(Circuit& c, float t){
     float gamma = 0.1;
 
     do{
-        if(count > maxCount){
-            c.setX(startX);
-            c.updateNodalVoltages();
+        // if(count > maxCount){
+        //     c.setX(startX);
+        //     c.updateNodalVoltages();
             
-            VectorXd currentX = c.getX();
-            VectorXd newX = c.getX();
+        //     VectorXd currentX = c.getX();
+        //     VectorXd newX = c.getX();
 
-            gamma *= 0.9;
-            maxCount += 1;
-        }
+        //     gamma *= 0.9;
+        //     maxCount += 1;
+        // }
         // cout << newX.format(CleanFmt) << endl << endl;
         c.nonLinearA();
         c.computeA_inv();
