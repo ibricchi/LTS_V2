@@ -47,11 +47,12 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     }
 }
 
-void BJT::SetupValues(float _BF, float _IFS, bool _hasVAF, float _VAF){
+void BJT::SetupValues(float _BF, float _IS, bool _hasVAF, float _VAF){
     BF = _BF;
     AF = BF/(1+BF);
-    IFS = _IFS;
-    IRS = _IFS;
+    IS = _IS;
+    IFS = _IS;
+    IRS = _IS;
     hasVAF = _hasVAF;
     VAF = _VAF;
 }
@@ -60,22 +61,15 @@ float BJT::ivAtNode(int nin) const{
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
 
-    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
-    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+    double GCC = -IRS/VT*exp(VBC/VT);
+    double GCB = AF*IFS/VT*exp(VBE/VT);
 
-    double GPF = IFS/BF*exp(VBE/VT)/VT;
-    double GPR = IRS/BR*exp(VBC/VT)/VT;
+    double GBB = AR*IRS/VT*exp(VBC/VT);
+    double GBC = -IFS/VT*exp(VBE/VT);
 
-    double GMF = BF*GPF;
-    double GMR = BR*GPR;
-
-    double IBFEQ = IBF-GPF*VBE;
-    double IBREQ = IBR-GPR*VBC;
-    double ICEQ = BF*IBF-BR*IBR;
-
-    double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
-    double IB = IBREQ + IBFEQ;
-    double IE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
+    double IB = -IRS*(exp(VBC/VT)-1) + AF*IFS*(exp(VBE/VT)-1) - GCC*VBC - GCB*VBE;
+    double IC = AR*IRS*(exp(VBC/VT)-1) -IFS*(exp(VBE/VT)-1) - GBC*VBC - GBB*VBE;
+    double IE = IB + IC;
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -101,16 +95,17 @@ float BJT::divAtNode(int nin, int dnin) const{
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
 
-    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
-    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+    double GCC = -IRS/VT*exp(VBC/VT);
+    double GCB = AF*IFS/VT*exp(VBE/VT);
+    double GCE = GCC + GCB;
 
-    double GPF = IFS/BF*exp(VBE/VT)/VT;
-    double GPR = IRS/BR*exp(VBC/VT)/VT;
+    double GBC = -IFS/VT*exp(VBE/VT);
+    double GBB = AR*IRS/VT*exp(VBC/VT);
+    double GBE = GBB + GBC;
 
-    double GMF = BF*GPF;
-    double GMR = BR*GPR;
-
-    double GO = 0; // implement later only for early voltage
+    double GEC = GCC + GBC;
+    double GEB = GCB + GBB;
+    double GEE = GCC + GCB + GBC + GBB;
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -122,39 +117,39 @@ float BJT::divAtNode(int nin, int dnin) const{
         case n::C:
             switch(dn){
                 case n::C:
-                    conductance = GPR + GO;
+                    conductance = -GCC;
                     break;
                 case n::B:
-                    conductance = -GPR;
+                    conductance = -GCB;
                     break;
                 case n::E:
-                    conductance = -GO;
+                    conductance = GCE;
                     break;
             }
             break;
         case n::B:
             switch(dn){
                 case n::C:
-                    conductance = -GPR;
+                    conductance = -GBC;
                     break;
                 case n::B:
-                    conductance = GPR + GPF;
+                    conductance = -GBB;
                     break;
                 case n::E:
-                    conductance = -GPF;
+                    conductance = GBE;
                     break;
             }
             break;
         case n::E:
             switch(dn){
                 case n::C:
-                    conductance = -GO;
+                    conductance = GEC;
                     break;
                 case n::B:
-                    conductance = -GPF;
+                    conductance = GEB;
                     break;
                 case n::E:
-                    conductance = GO + GPF;
+                    conductance = -GEE;
                     break;
             }
             break;

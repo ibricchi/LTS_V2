@@ -9,8 +9,9 @@
 class BJT: public Component{
 private:
     bool hasVAF;
-    float BF, AF, IRS, IFS, VAF;
+    float BF, AF, IS, IRS, IFS, VAF;
     float BR = 1.0;
+    float AR = BR/(1+BR);
     float VT = 0.025;
 
     // don't know if I could replace with enum
@@ -20,7 +21,7 @@ private:
         E = 2
     };
 
-    void SetupValues(float BF = 100, float IFS = 1e-16, bool hasVAF = false, float VAF = 100);
+    void SetupValues(float BF = 100, float IS = 1e-16, bool hasVAF = false, float VAF = 100);
 public:
     BJT(string _name, vector<string> args, vector<float> extraInfo);
     BJT(string _name, float r, int n1, int n2);
