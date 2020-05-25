@@ -10,8 +10,7 @@ using namespace std;
 Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
-    modelName = args[args.size()-1];
-
+    modelName = (args.size()>3) ? args[3] : "";
     // Order: C, B, E
     nodes = processNodes({args[n::D], args[n::G], args[n::S]});
 
@@ -36,6 +35,10 @@ void Mosfet::addParam(int paramId, float paramValue){
             VT = paramValue;
             break;
     }
+}
+
+string Mosfet::getModelName() const{
+    return modelName;
 }
 
 float Mosfet::ivAtNode(int nin) const{
