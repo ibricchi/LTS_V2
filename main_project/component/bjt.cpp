@@ -59,19 +59,22 @@ void BJT::SetupValues(float _BF, float _IFS, bool _hasVAF, float _VAF){
 float BJT::ivAtNode(int nin) const{
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
+    double VCE = 0; //temporary
 
     double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
     double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+    double IC = BF*IBF-BR*IBR;
 
     double GPF = IFS/BF*exp(VBE/VT)/VT;
     double GPR = IRS/BR*exp(VBC/VT)/VT;
 
     double GMF = BF*GPF;
     double GMR = BR*GPR;
+    double GO = 0; //temporary
 
-    double IBFEQ = IBF-GPF*VBE;
-    double IBREQ = IBR-GPR*VBC;
-    double ICEQ = BF*IBF-BR*IBR;
+    double IBFEQ = IBF - GPF*VBE;
+    double IBREQ = IBR - GPR*VBC;
+    double ICEQ = IC - GMF*VBE + GMR*VBC - GO*VCE;
 
     double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
     double IB = IBREQ + IBFEQ;
