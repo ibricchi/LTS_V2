@@ -116,10 +116,6 @@ float BJT::divAtNode(int nin, int dnin) const{
     double IBREQ = IBR-GPR*VBC;
     double ICEQ = BF*IBF-BR*IBR;
 
-    double DIC = ICEQ + IBREQ + GMF*VBE - GMR*VBC;
-    double DIB = IBREQ + IBFEQ;
-    double DIE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
-
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
