@@ -21,7 +21,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     string outLine{};
 
-    float threshold = 2;
+    float threshold = .001;
 
     // c.updateNodalVoltages();
     VectorXd startX = c.getX();
