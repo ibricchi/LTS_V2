@@ -10,6 +10,8 @@ using namespace std;
 Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
+    modelName = args[args.size()-1];
+
     // Order: C, B, E
     nodes = processNodes({args[n::D], args[n::G], args[n::S]});
 
@@ -40,20 +42,20 @@ float Mosfet::ivAtNode(int nin) const{
     double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
     double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
 
-    float IS, GM, GO;
+    float ID, GM, GO;
 
     if(VGS - VT < 0){
-        IS = 0;
+        ID = 0;
         GM = 0;
         GO = 0;
     }else if(VGS-VT < VDS){
-        IS = K/2*(VGS-VT)*();
-        GM = sqrt(2*K*IS);
+        ID = K * (VGS-VT)*(VGS-VT) * hasVA?(1 + VDS/VA):1;
+        GM = sqrt(2*K*ID);
         GO = hasVA?IS/VA:0;
-    }else if(-VSD <= -VSG-VT){
-        IS = K*((VSG-VT)-VSD/2)*VSD;
-        GM = K*VSD;
-        GO = K*((VSG-VT)-VSD);
+    }else if(VDS <= VGS-VT){
+        ID = K * ((VGS-VT)-VDS/2)*VDS;
+        GM = K*VDS;
+        GO = K*((VGS-VT)-VDS);
     }else{
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
@@ -66,13 +68,13 @@ float Mosfet::ivAtNode(int nin) const{
     double current;
     switch(n){
         case n::D:
-            current = IS-GM*VSG;
+            current = ID+GM*VGS;
             break;
-        case n::B:
-            current = IB;
+        case n::G:
+            current = 0;
             break;
-        case n::E:
-            current = -IE;
+        case n::S:
+            current = -ID+GM*VGS;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
@@ -80,23 +82,23 @@ float Mosfet::ivAtNode(int nin) const{
 };
 
 float Mosfet::divAtNode(int nin, int dnin) const{
-    double VSG = (nodalVoltages[n::S] - nodalVoltages[n::G]);
-    double VSD = (nodalVoltages[n::S] - nodalVoltages[n::D]);
+    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
+    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
 
-    float IS, GM, GO;
+    float ID, GM, GO;
 
-    if(VSG - VT < 0){
-        IS = 0;
+    if(VGS - VT < 0){
+        ID = 0;
         GM = 0;
         GO = 0;
-    }else if(-VSG-VT < -VSD){
-        IS = K/2*(VSG-VT)*(VSG-VT);
-        GM = sqrt(2*K*IS);
+    }else if(VGS-VT < VDS){
+        ID = K * (VGS-VT)*(VGS-VT) * hasVA?(1 + VDS/VA):1;
+        GM = sqrt(2*K*ID);
         GO = hasVA?IS/VA:0;
-    }else if(-VSD <= -VSG-VT){
-        IS = K*((VSG-VT)-VSD/2)*VSD;
-        GM = K*VSD;
-        GO = K*((VSG-VT)-VSD);
+    }else if(VDS <= VGS-VT){
+        ID = K * ((VGS-VT)-VDS/2)*VDS;
+        GM = K*VDS;
+        GO = K*((VGS-VT)-VDS);
     }else{
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
@@ -104,47 +106,47 @@ float Mosfet::divAtNode(int nin, int dnin) const{
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
-    int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
-    int dn = dnin==nodes[n::C]?n::C:(dnin==nodes[n::B]?n::B:n::E);
+    int n = nin==nodes[n::D]?n::D:(nin==nodes[n::G]?n::G:n::S);
+    int dn = dnin==nodes[n::D]?n::D:(dnin==nodes[n::G]?n::G:n::S);
 
     double conductance;
     switch(n){
-        case n::C:
+        case n::D:
             switch(dn){
-                case n::C:
-                    conductance = GPR + GO;
+                case n::D:
+                    conductance = GO;
                     break;
-                case n::B:
-                    conductance = -GPR;
+                case n::G:
+                    conductance = -GO - GM;
                     break;
-                case n::E:
-                    conductance = -GO;
+                case n::S:
+                    conductance = GM;
                     break;
             }
             break;
-        case n::B:
+        case n::G:
             switch(dn){
-                case n::C:
-                    conductance = -GPR;
+                case n::D:
+                    conductance = 0;
                     break;
-                case n::B:
-                    conductance = GPR + GPF;
+                case n::G:
+                    conductance = 0;
                     break;
-                case n::E:
-                    conductance = -GPF;
+                case n::S:
+                    conductance = 0;
                     break;
             }
             break;
-        case n::E:
+        case n::S:
             switch(dn){
-                case n::C:
+                case n::D:
                     conductance = -GO;
                     break;
-                case n::B:
-                    conductance = -GPF;
+                case n::G:
+                    conductance = GO + GM;
                     break;
-                case n::E:
-                    conductance = GO + GPF;
+                case n::S:
+                    conductance = -GM;
                     break;
             }
             break;
