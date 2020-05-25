@@ -4,6 +4,8 @@
 
 #include "capacitor.hpp"
 
+#include <iostream> //testing
+
 Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
@@ -18,10 +20,13 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	prevCurrent = 0; // previous comp_current
 	prevVoltage = 0;
 	prevTotalCurrent =0;
-	compVoltage = 9.9;
+	compCurrent = 0;
+	capacitance = val;
+	timeStep = extraInfo[0];
+	
 	if(order==1){ //Conductance of the capacitor will be the same as the companion model even at T=0 
-		compConductance = (2.0f*val)/extraInfo[0];
-		compCurrent = compConductance * compVoltage;
+		compConductance = (2.0f*capacitance)/timeStep;
+		//compCurrent = compConductance * compVoltage;
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/constructor");
 	}
@@ -62,9 +67,20 @@ void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
 		compVoltage = newVoltage;
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
-	}
-		
+	}	
 }
+
+void Capacitor::setTimeStep(float _timeStep){
+	timeStep = _timeStep;
+	
+	//use the new timeStep to update conductance
+	compConductance = (2.0f*capacitance)/timeStep;
+}
+
+void Capacitor::initCompCurrent(float _current){
+compCurrent = _current;
+}
+
 vector<int> Capacitor::getNodes() const{
     vector<int> res{};
     res.push_back(nodes.at(0));
@@ -74,7 +90,7 @@ vector<int> Capacitor::getNodes() const{
 
 float Capacitor::ivAtNode(int n) const{
 	return 1;
-};
+}
 float Capacitor::divAtNode(int n, int dn) const{
 	return 1;
-};
+}

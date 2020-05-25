@@ -242,5 +242,11 @@ void readSpice(Circuit& c, istream& file){
         }
     }
 
+    //add timestep from tran params to capacitor/inductor
+    auto vcUpdatables = c.getVCUpdatablesRef();
+    for(const auto &comp : vcUpdatables){
+        comp->setTimeStep(c.getTStep()); //CAREFULL: Currently we are using the printing interval (tStep) as the static timestep. This is likely going to change for a dynamic timestep
+    }
+
     c.setHighestNodeNumber(maxNode);
 }

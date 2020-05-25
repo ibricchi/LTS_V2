@@ -9,7 +9,7 @@
 using namespace std;
 
 // for debugging only
-void testCircuit1(stringstream& buffer){
+void testCircuit15(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
     buffer << "Q1 2 1 0" << endl;
     buffer << "D1 2 3" << endl;
@@ -57,7 +57,7 @@ void testCircuit(stringstream& buffer){
     buffer << "R2 n1 n2 1k" <<endl;
     buffer << "R3 n2 0 100k" <<endl;
     buffer << "C1 n2 0 0.00001" <<endl;
-    buffer << ".tran 0.1 0.5 0 0.0001s" <<endl;
+    buffer << ".tran 0.0001 0.2 0 0.0001s" <<endl;
     buffer << ".end" <<endl;
 }
 void testCircuit9(stringstream& buffer){
@@ -81,7 +81,7 @@ int main(int argc, char **argv){
     Circuit c{};
     
     stringstream buffer;
-    testCircuit3(buffer);
+    testCircuit(buffer);
 
     readSpice(c, buffer);
     // readSpice(c, cin); //use this if want to read from txt file
