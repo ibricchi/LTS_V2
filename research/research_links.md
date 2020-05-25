@@ -105,4 +105,10 @@ This link is the best resource I could find, it has a break down of everything t
 
 ## SPICE2: A computer program to simulate semiconductor circuits
 Written by the original developer of SPICE. It contains lots of detail but is a little outdated.  
-<https://www2.eecs.berkeley.edu/Pubs/TechRpts/1975/ERL-m-520.pdf>  
+<https://www2.eecs.berkeley.edu/Pubs/TechRpts/1975/ERL-m-520.pdf>
+
+---
+
+## Newton Raphson for DC circuits
+Break down of how Newton raphson is used to derrive equivalent circuits and, then how to use those circuits in calculations
+<http://qucs.sourceforge.net/tech/node16.html>
