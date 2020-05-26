@@ -24,6 +24,7 @@
 #include <component/voltageControlledCurrentSource.cpp>
 #include <component/diode.cpp>
 #include <component/bjt.cpp>
+#include <component/mosfet.cpp>
 #include <component/opamp.cpp>
 
 #include <input/input.cpp>

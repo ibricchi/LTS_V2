@@ -37,22 +37,11 @@ string runNonLinearTransience(Circuit& c, float t){
     float gamma = 0.1;
 
     do{
-        if(count > 500){
+        if(count > maxCount){
             cerr << "Newton Raphson count too big" <<endl;
             exit(1);
         }
 
-        // if(count > maxCount){
-        //     c.setX(startX);
-        //     c.updateNodalVoltages();
-            
-        //     VectorXd currentX = c.getX();
-        //     VectorXd newX = c.getX();
-
-        //     gamma *= 0.9;
-        //     maxCount += 1;
-        // }
-        // cout << newX.format(CleanFmt) << endl << endl;
         c.nonLinearA();
         c.computeA_inv();
         c.nonLinearB();
@@ -61,17 +50,13 @@ string runNonLinearTransience(Circuit& c, float t){
         currentX = newX;
         newX = c.getX();
 
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
-        // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
+        IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
+        cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
         // cout << c.getA_inv().format(CleanFmt) << endl << endl;
-        // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
+        cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
         // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
         // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
-
-        // if(t >= 0.009780){
-        //     count++;
-        // }
 
         count++;
     }

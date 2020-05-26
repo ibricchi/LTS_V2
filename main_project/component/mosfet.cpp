@@ -26,6 +26,7 @@ void Mosfet::addParam(int paramId, float paramValue){
             K = paramValue;
             break;
         case mosfetParamType::VA:
+            hasVA=true;
             VA = paramValue;
             break;
         case mosfetParamType::VT:
@@ -43,18 +44,22 @@ float Mosfet::ivAtNode(int nin) const{
     double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
 
     float ID, GM, GO;
+    ID = 0;
 
-    if(VGS - VT < 0){
+    if(VGS-VT<0){
         ID = 0;
         GM = 0;
         GO = 0;
-    }else if(VGS-VT < VDS){
-        ID = K * (VGS-VT)*(VGS-VT) * hasVA?(1 + VDS/VA):1;
+    }else if(VGS-VT<VDS){
+        ID = K * pow(VGS-VT, 2) * (1 + VDS/VA);
+        // ID = K * (VGS-VT)*(VGS-VT) *(1 + VDS/VA);
         GM = sqrt(2*K*ID);
-        GO = hasVA?ID/VA:0;
+        GO = ID/VA;
     }else if(VDS <= VGS-VT){
-        ID = K * ((VGS-VT)-VDS/2)*VDS;
+        //id = k * (2 * (vgs - vt) * vds - pow(vds, 2));
+        ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
+        // k * ((vgs - vt) - vds);
         GO = K*((VGS-VT)-VDS);
     }else{
         cerr << "mosfet in a non supported state" << endl;
@@ -68,13 +73,13 @@ float Mosfet::ivAtNode(int nin) const{
     double current;
     switch(n){
         case n::D:
-            current = ID-GM*VGS;
+            current = ID-GM*VGS-GO*VDS;
             break;
         case n::G:
             current = 0;
             break;
         case n::S:
-            current = -ID+GM*VGS;
+            current = -(ID-GM*VGS-GO*VDS);
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
@@ -92,11 +97,12 @@ float Mosfet::divAtNode(int nin, int dnin) const{
         GM = 0;
         GO = 0;
     }else if(VGS-VT < VDS){
-        ID = K * (VGS-VT)*(VGS-VT) * hasVA?(1 + VDS/VA):1;
+        ID = K * pow(VGS-VT, 2) * (1 + VDS/VA);
+        // ID = K * (VGS-VT)*(VGS-VT) *(1 + VDS/VA);
         GM = sqrt(2*K*ID);
-        GO = hasVA?ID/VA:0;
+        GO = ID/VA;
     }else if(VDS <= VGS-VT){
-        ID = K * ((VGS-VT)-VDS/2)*VDS;
+        ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
     }else{
@@ -117,10 +123,10 @@ float Mosfet::divAtNode(int nin, int dnin) const{
                     conductance = GO;
                     break;
                 case n::G:
-                    conductance = -GO - GM;
+                    conductance = GM;
                     break;
                 case n::S:
-                    conductance = GM;
+                    conductance = -GO-GM;
                     break;
             }
             break;
@@ -143,10 +149,10 @@ float Mosfet::divAtNode(int nin, int dnin) const{
                     conductance = -GO;
                     break;
                 case n::G:
-                    conductance = GO + GM;
+                    conductance = -GM;
                     break;
                 case n::S:
-                    conductance = -GM;
+                    conductance = GO+GM;
                     break;
             }
             break;
