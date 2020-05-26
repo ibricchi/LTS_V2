@@ -1,11 +1,14 @@
-Simple FET
+Dependent source test
 *
-V1 N3 0 SIN(0 5 5)
-V2 N1 0 20
-R1 N1 N2 1k
-M1 N2 N3 0 nm
+V1 N001 0 12
+R1 N001 N003 1k
+R2 N002 0 1k
+R3 N003 0 1k
+E1 N002 N003 N001 N003 2
 *
-.model nm NMOS (VA=100)
+*Diode is not connected to the rest of the circuit
+*It is just here to test the dependent sources in a nonlinear simulation
+D1 N4 N4 
 *
-.tran 0.0001 1 0 0.0001
+.tran 0.0001 .5 0 1
 .end
