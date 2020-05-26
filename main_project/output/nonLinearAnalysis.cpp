@@ -3,8 +3,6 @@
 #include <circuit/circuit.hpp>
 #include <Eigen/Dense>
 #include <component/component.hpp>
-#include <component/capacitor.hpp>
-#include <component/inductor.hpp>
 
 #include "nonLinearAnalysis.hpp"
 
@@ -23,31 +21,27 @@ string runNonLinearTransience(Circuit& c, float t){
 
     string outLine{};
 
-    float threshold = 0.1;
+    float threshold = .001;
 
-    c.updateNodalVoltages();
+    // c.updateNodalVoltages();
     VectorXd startX = c.getX();
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
 
-    IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
     // cout << newX.format(CleanFmt) << endl << endl;
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
     int maxCount = 5;
     float gamma = 0.1;
+
     do{
-        // cout << newX.format(CleanFmt) << endl << endl;
         if(count > maxCount){
-            count = 0;
-            gamma *= 0.9;
-            c.setX(startX);
-            c.updateNodalVoltages();
-            currentX = c.getX();
-            newX = c.getX();
-            maxCount += 1;
+            cerr << "Newton Raphson count too big" <<endl;
+            exit(1);
         }
+
         c.nonLinearA();
         c.computeA_inv();
         c.nonLinearB();
@@ -56,16 +50,13 @@ string runNonLinearTransience(Circuit& c, float t){
         currentX = newX;
         newX = c.getX();
 
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << c.getA().format(CleanFmt) << endl << endl;
+        IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
+        cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
         // cout << c.getA_inv().format(CleanFmt) << endl << endl;
-        // cout << c.getB().format(CleanFmt) << endl << endl;
-        // cout << currentX.format(CleanFmt) << endl << endl;
-        // cout << newX.format(CleanFmt) << endl << endl;
-
-        if(t >= 0.058100){
-            count++;
-        }
+        cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
+        // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
+        // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
 
         count++;
     }
@@ -85,22 +76,6 @@ string runNonLinearTransience(Circuit& c, float t){
         comp->updateVals(t+c.getTimeStep());
     }
 
-    vector<int> nodes;
-    
-    //update components based on current voltage/current
-    float v1{}, v2{}, currentVoltage{}, currentCurrent{};
-    for(const auto &up : vcUpdatables){
-        nodes = up->getNodes();
-
-        v1 = nodes.at(0) == 0 ? 0 : newX(nodes.at(0)-1);
-        v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
-        currentVoltage = v1 - v2;
-
-        //currentCurrent = currentVoltage * up->getConductance();
-
-        up->updateVals(currentVoltage, 0, 1);
-    }
-
     return outLine;
     
 };
@@ -108,7 +83,7 @@ string runNonLinearTransience(Circuit& c, float t){
 // both matrixes are assumed to be x:1 matrixes with same x
 bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
     for(int i = 0; i < m1.rows(); i++){
-        //cout << m1(i) << " " << m2(i) << endl << endl;
+        // cout << m1(i) << " " << m2(i) << endl << endl;
         if(abs(m1(i) - m2(i)) > d){
             return false;
         }

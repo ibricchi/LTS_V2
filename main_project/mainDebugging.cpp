@@ -24,6 +24,8 @@
 #include <component/voltageControlledCurrentSource.cpp>
 #include <component/diode.cpp>
 #include <component/bjt.cpp>
+#include <component/mosfet.cpp>
+#include <component/opamp.cpp>
 
 #include <input/input.cpp>
 
@@ -33,32 +35,19 @@
 
 using namespace std;
 
-void testCircuit(stringstream& buffer){
-    buffer << "ExampleCircuit1" << endl;
-    buffer << "R1 1 3 4.7k" << endl;
-    buffer << "R2 3 0 1k" << endl;
-    buffer << "R3 1 2 4.7k" << endl;
-    buffer << "V1 3 0 sin(0 0.1 10)" << endl;
-    buffer << "V2 1 0 5" << endl;
-    buffer << "Q1 2 3 4" << endl;
-    buffer << "R4 1 0 1k" << endl;
-}
-
-int main(){
+int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
-    float timeStep = 0.0001; //seconds
-    float simulationTime = 1; //seconds
-    
+
     // setup circuit
     Circuit c{};
-    setupBasic(c, timeStep);
-
-    stringstream buffer;
-    testCircuit(buffer);
-
-    readSpice(c, buffer);
+    
+    // stringstream buffer;
+    // testCircuit3(buffer);
+    // readSpice(c, buffer);
+    
+    readSpice(c, cin); //use this if want to read from txt file
 
     // run simulation
-    outputCSV(c, outputFileName, timeStep, simulationTime);
+    outputCSV(c, outputFileName);
 }

@@ -47,10 +47,11 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     }
 }
 
-void BJT::SetupValues(float _BF, float _IS, bool _hasVAF, float _VAF){
+void BJT::SetupValues(float _BF, float _IFS, bool _hasVAF, float _VAF){
     BF = _BF;
     AF = BF/(1+BF);
-    IS = _IS;
+    IFS = _IFS;
+    IRS = _IFS;
     hasVAF = _hasVAF;
     VAF = _VAF;
 }
@@ -58,6 +59,26 @@ void BJT::SetupValues(float _BF, float _IS, bool _hasVAF, float _VAF){
 float BJT::ivAtNode(int nin) const{
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
+    double VCE = 0; //temporary
+
+    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
+    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+    double IC1 = BF*IBF-BR*IBR;
+
+    double GPF = IFS/BF*exp(VBE/VT)/VT;
+    double GPR = IRS/BR*exp(VBC/VT)/VT;
+
+    double GMF = BF*GPF;
+    double GMR = BR*GPR;
+    double GO = 0; //temporary
+
+    double IBFEQ = IBF - GPF*VBE;
+    double IBREQ = IBR - GPR*VBC;
+    double ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
+
+    double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
+    double IB = IBREQ + IBFEQ;
+    double IE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -66,13 +87,13 @@ float BJT::ivAtNode(int nin) const{
     double current;
     switch(n){
         case n::C:
-            current = IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR);
+            current = IC;
             break;
         case n::B:
-            current = IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
+            current = IB;
             break;
         case n::E:
-            current = -IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
+            current = -IE;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
@@ -83,6 +104,17 @@ float BJT::divAtNode(int nin, int dnin) const{
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
 
+    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
+    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+
+    double GPF = IFS/BF*exp(VBE/VT)/VT;
+    double GPR = IRS/BR*exp(VBC/VT)/VT;
+
+    double GMF = BF*GPF;
+    double GMR = BR*GPR;
+
+    double GO = 0; // implement later only for early voltage
+
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
@@ -92,49 +124,40 @@ float BJT::divAtNode(int nin, int dnin) const{
     switch(n){
         case n::C:
             switch(dn){
-                // partial derivatives of:
-                // IS*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR) + 1/BR)
-                // S*(exp((B-E)/T) - exp((B-C)/T)*(1+1/R) + 1/R)
                 case n::C:
-                    conductance = IS/VT*exp(VBC/VT)*(1+1/BR);
+                    conductance = GPR + GO;
                     break;
                 case n::B:
-                    conductance = IS/VT*(exp(VBE/VT) - exp(VBC/VT)*(1+1/BR));
+                    conductance = -GPR;
                     break;
                 case n::E:
-                    conductance = -IS/VT*exp(VBE/VT);
+                    conductance = -GO;
                     break;
             }
             break;
         case n::B:
             switch(dn){
-                // partial derivatives of:
-                // IS*(1/BF*(exp(VBE/VT)-1) + 1/BR*(exp(VBC/VT)-1));
-                // S*(1/F*(exp((B-E)/T)-1) + 1/R*(exp((B-C)/T)-1))
                 case n::C:
-                    conductance = -IS/VT/BR*exp(VBC/VT);
+                    conductance = -GPR;
                     break;
                 case n::B:
-                    conductance = IS/VT*(exp(VBE/VT)/BF + exp(VBC/VT)/BR);
+                    conductance = GPR + GPF;
                     break;
                 case n::E:
-                    conductance = -IS/VT/BF*exp(VBE/VT);
+                    conductance = -GPF;
                     break;
             }
             break;
         case n::E:
             switch(dn){
-                // partial derivatives of:
-                // -IS*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF) - 1/BF);
-                // -S*(-exp((B-C)/T) + exp((B-E)/T)*(1+1/F) - 1/F)
                 case n::C:
-                    conductance = -IS/VT*exp(VBC/VT);
+                    conductance = -GO;
                     break;
                 case n::B:
-                    conductance = -IS/VT*(-exp(VBC/VT) + exp(VBE/VT)*(1+1/BF));
+                    conductance = -GPF;
                     break;
                 case n::E:
-                    conductance = IS/VT*exp(VBE/VT)*(1+1/BF);
+                    conductance = GO + GPF;
                     break;
             }
             break;

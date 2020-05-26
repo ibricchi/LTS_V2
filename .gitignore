@@ -64,3 +64,5 @@ main_project/LTS_V2
 Tests/performanceTests/linearTransientTest
 Tests/performanceTests/CSVTester
 Tests/performanceTests/output/
+main_project/gprof_out.txt
+main_project/LTS_V2_GPROF

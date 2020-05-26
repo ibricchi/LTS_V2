@@ -406,21 +406,14 @@ void Circuit::nonLinearB(){
         n = ncp.n;
         extraNodes = ncp.extraNodes;
         current = ncp.IV();
-        b(n-1) += current;
+        b(n-1) -= current;
     }
 
     //adding voltages
     for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
     {
-        nodes = voltageSources[j]->getNodes();
-        n1 = nodes[0];
-        n2 = nodes[1];
-        if(n1 != 0) b(n1-1) += x[i];
-        if(n2 != 0) b(n2-1) -= x[i];
         // move this part into the IV thing later
-        b(i) -= voltageSources.at(j)->getVoltage();
-        b(i) += (n1 == 0? 0 : x[n1-1]);
-        b(i) -= (n2 == 0? 0 : x[n2-1]);
+        b(i) += voltageSources.at(j)->getVoltage();
     }
 };
 
@@ -454,7 +447,7 @@ void Circuit::computeX(){
 }
 
 void Circuit::computeNLX(float gamma){
-    x -= gamma * A_inv * b;
+    x = A_inv * b;
 }
 
 void Circuit::setX(VectorXd newX){
