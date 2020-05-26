@@ -64,6 +64,9 @@ void outputCSV(Circuit& c, string outputFileName){
 }
 
 void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulationTime){
+    //TESTING ONLY!!!
+    c.setHasNonLinearComponents(true);
+    
     string outLine{};
     if(!c.hasNonLinearComponents()){
         linearSetup(c); //compute A, b, A_inv, xMeaning

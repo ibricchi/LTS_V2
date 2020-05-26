@@ -499,20 +499,12 @@ void Circuit::nonLinearB(){
     //adding voltages
     for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
     {
-        auto vs = voltageSources.at(j);
+        const auto &vs = voltageSources.at(j);
 
         if(typeid(*vs) == typeid(VoltageControlledVoltageSource) || typeid(*vs) == typeid(CurrentControlledVoltageSource) || typeid(*vs) == typeid(OpAmp)){
             continue;
         }else{ // normal/independent voltage sources
-            nodes = vs->getNodes();
-            n1 = nodes[0];
-            n2 = nodes[1];
-            if(n1 != 0) b(n1-1) += x[i];
-            if(n2 != 0) b(n2-1) -= x[i];
-            // move this part into the IV thing later
-            b(i) -= vs->getVoltage();
-            b(i) += (n1 == 0? 0 : x[n1-1]);
-            b(i) -= (n2 == 0? 0 : x[n2-1]);
+            b(i) += vs->getVoltage();
         }        
     }
 };
