@@ -10,10 +10,10 @@ VoltageControlledVoltageSource::VoltageControlledVoltageSource(string name, vect
 }
 
 float VoltageControlledVoltageSource::ivAtNode(int n) const{
-    cerr << "ivAtNode not implemented in dependent source" <<endl;
+    cerr << "ivAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }
 float VoltageControlledVoltageSource::divAtNode(int n, int dn) const{
-    cerr << "divAtNode not implemented in dependent source" <<endl;
+    cerr << "divAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }
