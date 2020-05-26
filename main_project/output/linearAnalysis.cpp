@@ -96,13 +96,6 @@ string runLinearTransience(Circuit& c, float t){
         v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 
-        //currentCurrent = currentVoltage * up->getConductance();
-        
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
-        // cout << b.format(CleanFmt) << endl << endl;
-        // cout << x.format(CleanFmt) << endl <<endl;
-
         up->updateVals(currentVoltage, 0, 1);
     }
 

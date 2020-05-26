@@ -313,6 +313,31 @@ void Circuit::nonLinearA(){
     {
         const auto &vs = voltageSources.at(i);
 
+        //slightly different for ideal opamp
+        if(typeid(*vs) == typeid(OpAmp)){
+            nodes = vs->getNodes();
+            int node1 = nodes.at(0); //Nin+
+            int node2 = nodes.at(1); //Nin-
+            int node3 = nodes.at(2); //Nout
+
+            if (node1 != 0)
+            {
+                A(highestNodeNumber + i, node1 - 1) = 1;
+            }
+
+            if (node2 != 0)
+            {
+                A(highestNodeNumber + i, node2 - 1) = -1;
+            }
+
+            if (node3 != 0)
+            {
+                A(node3 - 1, highestNodeNumber + i) = 1;
+            }
+
+            continue; //Rest doesn't apply to ideal opamps
+        }
+
         nodes = vs->getNodes();
         const int node1 = nodes.at(0);
         const int node2 = nodes.at(1);
@@ -327,6 +352,68 @@ void Circuit::nonLinearA(){
         {
             A(node2 - 1, highestNodeNumber + i) += -1;
             A(highestNodeNumber + i, node2 - 1) += -1; //different when dealing with dependent sources
+        }
+
+        // need to add additional values when controlled sources
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
+            float gain = vs->getGain();
+            int nodeC1 = nodes.at(2);
+            int nodeC2 = nodes.at(3);
+
+            if (nodeC1 != 0)
+            {
+                A(highestNodeNumber + i, nodeC1 - 1) -= gain;
+            }
+
+            if (nodeC2 != 0)
+            {
+                A(highestNodeNumber + i, nodeC2 - 1) += gain;
+            }
+        }else if(typeid(*vs) == typeid(CurrentControlledVoltageSource)){
+                float gain = vs->getGain();
+                int controllingVsIndex = getVoltageSourceIndexByName(vs->getVsName(), voltageSources);
+
+                A(highestNodeNumber + i, highestNodeNumber + controllingVsIndex) -= gain;
+        }
+    }
+
+    //dependent current sources
+    for(const auto& cs : currentSources){
+        if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
+            nodes = cs->getNodes();
+            int node1 = nodes.at(0);
+            int node2 = nodes.at(1);
+            int nodeC1 = nodes.at(2);
+            int nodeC2 = nodes.at(3);
+            
+            float gain = cs->getGain();
+            
+            if(node1 != 0 && nodeC1 != 0){
+                A(node1 - 1, nodeC1 - 1) += gain;
+            }
+            if(node1 != 0 && nodeC2 != 0){
+                A(node1 - 1, nodeC2 - 1) -= gain;
+            }
+            if(node2 != 0 && nodeC1 != 0){
+                A(node2 - 1, nodeC1 - 1) -= gain;
+            }
+            if(node2 != 0 && nodeC2 != 0){
+                A(node2 - 1, nodeC2 - 1) += gain;
+            }
+        }else if(typeid(*cs) == typeid(CurrentControlledCurrentSource)){
+            nodes = cs->getNodes();
+            int node1 = nodes.at(0);
+            int node2 = nodes.at(1);
+
+            float gain = cs->getGain();
+            int controllingVsIndex = getVoltageSourceIndexByName(cs->getVsName(), voltageSources);
+
+            if(node1 != 0){
+                A(node1 - 1, highestNodeNumber + controllingVsIndex) += gain;
+            }
+            if(node2 != 0){
+                A(node2 - 1, highestNodeNumber + controllingVsIndex) -= gain;
+            }
         }
     }
 }
@@ -412,8 +499,13 @@ void Circuit::nonLinearB(){
     //adding voltages
     for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
     {
-        // move this part into the IV thing later
-        b(i) += voltageSources.at(j)->getVoltage();
+        const auto &vs = voltageSources.at(j);
+
+        if(typeid(*vs) == typeid(VoltageControlledVoltageSource) || typeid(*vs) == typeid(CurrentControlledVoltageSource) || typeid(*vs) == typeid(OpAmp)){
+            continue;
+        }else{ // normal/independent voltage sources
+            b(i) += vs->getVoltage();
+        }        
     }
 };
 

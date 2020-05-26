@@ -8,7 +8,7 @@ OpAmp::OpAmp(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
     nodes = processNodes({args[0], args[1], args[2]});
-
+    
     nodalVoltages = {0, 0, 0};
 
     modelName = args[3]; //Not used for now => Assumed to be ideal

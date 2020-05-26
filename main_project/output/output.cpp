@@ -23,7 +23,6 @@ void outputCSV(Circuit& c, string outputFileName){
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
-    c.setHasNonLinearComponents(true);
 
     //get simulation parameters from circuit
     float timeStep = c.getTStep(); //Change once we have implemented a dynamic timestep (Currently we are using the printing step tStep as the static timestep)
