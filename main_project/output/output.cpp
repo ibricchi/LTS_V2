@@ -42,30 +42,9 @@ void outputCSV(Circuit& c, string outputFileName){
     for(int i{1}; i<=highestNodeNumber; i++){
         outputFile << ",v_" + to_string(i);
     }
-
-    //this currently only works for nonlinear analysis (need the one below for linear)
-    if(c.hasNonLinearComponents()){
-        for(const auto &comp : components){
-            outputFile << ",i_" + comp->getName();
-        }
-    }else{
-        //conductance sources
-        for(const auto &gs : conductanceSources){
-            if(typeid(*gs) != typeid(Resistor)){
-                continue; //don't want to display current through the companion model's resistor
-            }
-            outputFile << ",i_" + gs->getName();
-        }
-        //voltage sources
-        for(const auto &vs : voltageSources){
-            outputFile << ",i_" + vs->getName();
-        }
-        //current sources + other components
-        for(const auto &cs : currentSources){
-            outputFile << ",i_" + cs->getName();
-        }
+    for(const auto &comp : components){
+        outputFile << ",i_" + comp->getName();
     }
-    
     outputFile << "\n";
     
     runAnalysis(c, outputFile, timeStep, simulationTime);

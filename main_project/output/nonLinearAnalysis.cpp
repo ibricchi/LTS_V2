@@ -75,10 +75,6 @@ string runNonLinearTransience(Circuit& c, float t){
         outLine += "," + to_string(newX(i));
     }
 
-    //output current through resistors
-    vector<int> nodes{};
-    float v1{}, v2{};
-
     //output component currents
     for(const auto &comp : components){
         outLine += "," + to_string(comp->getTotalCurrent(newX));
@@ -92,10 +88,10 @@ string runNonLinearTransience(Circuit& c, float t){
     //update components based on current voltage/current
     float currentVoltage{}, currentCurrent{};
     for(const auto &up : vcUpdatables){
-        nodes = up->getNodes();
+        auto nodes = up->getNodes();
 
-        v1 = nodes.at(0) == 0 ? 0 : newX(nodes.at(0)-1);
-        v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
+        float v1 = nodes.at(0) == 0 ? 0 : newX(nodes.at(0)-1);
+        float v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 
         up->updateVals(currentVoltage, 0, 1);

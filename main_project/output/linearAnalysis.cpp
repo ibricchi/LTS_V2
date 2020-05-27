@@ -45,54 +45,10 @@ string runLinearTransience(Circuit& c, float t){
         outLine += "," + to_string(x(i));
     }
 
-    // float current{};
-    // //output component currents
-    // for(const auto &comp : components){
-    //     outLine += "," + to_string(comp->getTotalCurrent(x));
-    // }
-
-    // //output current through resistors
-    vector<int> nodes{};
-    float voltage{}, v1{}, v2{};
-    float current{};
-    for(const auto &gs : conductanceSources){
-        if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor)){
-            continue; //don't want to display current through the companion model's resistor
-        }
-        
-        nodes = gs->getNodes();
-
-        v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
-        v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
-        voltage = v1 - v2;
-
-        current = voltage * gs->getConductance();
-
-        outLine += "," + to_string(current);
+    //output component currents
+    for(const auto &comp : components){
+        outLine += "," + to_string(comp->getTotalCurrent(x));
     }
-
-    //output current through voltage sources
-    for(int i{}; i<voltageSources.size(); i++){
-        current = x(highestNodeNumber+i);
-
-        outLine += "," + to_string(current);
-    }
-
-    //output current through current sources/other components
-    for(const auto &cs : currentSources){
-        if((typeid(*cs) == typeid(Capacitor)) || typeid(*cs) == typeid(Inductor)){ //component = inductor/capacitor
-         	// nodes = cs->getNodes();
-		    // v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
-        	// v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);  
-		
-		outLine += "," + to_string(cs->getTotalCurrent(x));
-        }else if(typeid(*cs) == typeid(CurrentSource)){
-            outLine += "," + to_string(cs->getCurrent());
-        }else{
-            outLine += ",NotImplemented";
-        }
-    }
-
     
     // update components before next calculation of b
     for(const auto &comp : timeUpdatables){
@@ -102,10 +58,10 @@ string runLinearTransience(Circuit& c, float t){
     //update components based on current voltage/current
     float currentVoltage{}, currentCurrent{};
     for(const auto &up : vcUpdatables){
-        nodes = up->getNodes();
+        auto nodes = up->getNodes();
 
-        v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
-        v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
+        float v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
+        float v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 
         up->updateVals(currentVoltage, 0, 1);
