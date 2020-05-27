@@ -62,7 +62,12 @@ vector<int> VoltageSource::getNodes() const{
 
 float VoltageSource::ivAtNode(int n) const{
 	return 1;
-};
+}
 float VoltageSource::divAtNode(int n, int dn) const{
 	return 1;
-};
+}
+
+float VoltageSource::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+    //get from x vector
+    return nanf("");
+}

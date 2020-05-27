@@ -24,6 +24,8 @@ public:
     float divAtNode(int n1, int dn) const override;
 
     vector<int> getNodes() const override;
+
+    float getTotalCurrent(const VectorXd &x, float voltage = 0, int order = 1)  override;
 };
 
 #endif

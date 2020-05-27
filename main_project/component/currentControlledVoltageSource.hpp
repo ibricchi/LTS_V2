@@ -13,6 +13,8 @@ public:
 
     float ivAtNode(int n) const override;
     float divAtNode(int n, int dn) const override;
+
+    float getTotalCurrent(const VectorXd &x, float voltage = 0, int order = 1)  override;
 };
 
 #endif

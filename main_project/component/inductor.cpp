@@ -39,7 +39,9 @@ float Inductor::getCurrent() const{
 	return -compCurrent; //So it's in the right direction, as current source points towards negative.
 }
 
-float Inductor::getTotalCurrent(float voltage, int order){
+float Inductor::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+	voltage = nodalVoltages[0] - nodalVoltages[1];
+
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance + compConductance*compVoltage +prevTotalCurrent;
 		prevTotalCurrent = res;
@@ -75,7 +77,7 @@ vector<int> Inductor::getNodes() const{
 
 float Inductor::ivAtNode(int n) const{
 	return 1;
-};
+}
 float Inductor::divAtNode(int n, int dn) const{
 	return 1;
-};
+}

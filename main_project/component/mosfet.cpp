@@ -82,7 +82,7 @@ float Mosfet::ivAtNode(int nin) const{
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
     return current;
-};
+}
 
 float Mosfet::divAtNode(int nin, int dnin) const{
     double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
@@ -157,8 +157,13 @@ float Mosfet::divAtNode(int nin, int dnin) const{
 
     // cout << "n: " << n << " dn: " << dn << " conductance: " << conductance << endl << endl;
     return conductance;
-};
+}
 
 vector<int> Mosfet::getNodes() const{
     return nodes;
+}
+
+float Mosfet::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+    //current through dependent current source + through current source + through resistor
+    return nanf("");
 }

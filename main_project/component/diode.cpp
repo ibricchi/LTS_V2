@@ -57,7 +57,7 @@ float Diode::ivAtNode(int n) const{
         current*=-1;
     }
     return (float)current;
-};
+}
 
 float Diode::divAtNode(int n, int dn) const{
     float v = nodalVoltages[0] - nodalVoltages[1];
@@ -65,9 +65,14 @@ float Diode::divAtNode(int n, int dn) const{
     if(n != dn){
         conductance *= -1;
     }
-    return (float) conductance;
-};
+    return (float)conductance;
+}
 
 vector<int> Diode::getNodes() const{
     return nodes;
+}
+
+float Diode::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+    //current through current source and current through resistor
+    return nanf("");
 }

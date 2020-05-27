@@ -14,11 +14,14 @@ void linearSetup(Circuit& c){
     c.setupA();
     c.adjustB();
     c.computeA_inv();
+    c.computeX();
+    c.updateNodalVoltages();
     // c.setupXMeaning(); //not really using this right now
 }
 
 string runLinearTransience(Circuit& c, float t){
     //get references to the components stored inside the circuit
+    vector<Component*> components = c.getComponentsRef();
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
@@ -42,7 +45,13 @@ string runLinearTransience(Circuit& c, float t){
         outLine += "," + to_string(x(i));
     }
 
-    //output current through resistors
+    // float current{};
+    // //output component currents
+    // for(const auto &comp : components){
+    //     outLine += "," + to_string(comp->getTotalCurrent(x));
+    // }
+
+    // //output current through resistors
     vector<int> nodes{};
     float voltage{}, v1{}, v2{};
     float current{};
@@ -72,11 +81,11 @@ string runLinearTransience(Circuit& c, float t){
     //output current through current sources/other components
     for(const auto &cs : currentSources){
         if((typeid(*cs) == typeid(Capacitor)) || typeid(*cs) == typeid(Inductor)){ //component = inductor/capacitor
-         	nodes = cs->getNodes();
-		    v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
-        	v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);  
+         	// nodes = cs->getNodes();
+		    // v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
+        	// v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);  
 		
-		outLine += "," + to_string(cs->getTotalCurrent(v1-v2));
+		outLine += "," + to_string(cs->getTotalCurrent(x));
         }else if(typeid(*cs) == typeid(CurrentSource)){
             outLine += "," + to_string(cs->getCurrent());
         }else{

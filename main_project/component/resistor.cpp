@@ -33,9 +33,15 @@ vector<int> Resistor::getNodes() const{
 // get the IV characteristics of a component given two nodes
 float Resistor::ivAtNode(int n1) const{
     return 0;
-};
+}
 
 // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
 float Resistor::divAtNode(int n1, int dn) const{
     return conductance * (n1==nodes[0]?-1:1) * (dn==nodes[0]?-1:1);
-};
+}
+
+float Resistor::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+    voltage = nodalVoltages[0] - nodalVoltages[1];
+
+    return conductance*voltage;
+}

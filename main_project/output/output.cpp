@@ -20,6 +20,7 @@
 
 void outputCSV(Circuit& c, string outputFileName){
     //get references to the components stored inside the circuit
+    vector<Component*> components = c.getComponentsRef();
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
@@ -41,21 +42,30 @@ void outputCSV(Circuit& c, string outputFileName){
     for(int i{1}; i<=highestNodeNumber; i++){
         outputFile << ",v_" + to_string(i);
     }
-    //conductance sources
-    for(const auto &gs : conductanceSources){
-        if(typeid(*gs) != typeid(Resistor)){
-            continue; //don't want to display current through the companion model's resistor
+
+    //this currently only works for nonlinear analysis (need the one below for linear)
+    if(c.hasNonLinearComponents()){
+        for(const auto &comp : components){
+            outputFile << ",i_" + comp->getName();
         }
-        outputFile << ",i_" + gs->getName();
+    }else{
+        //conductance sources
+        for(const auto &gs : conductanceSources){
+            if(typeid(*gs) != typeid(Resistor)){
+                continue; //don't want to display current through the companion model's resistor
+            }
+            outputFile << ",i_" + gs->getName();
+        }
+        //voltage sources
+        for(const auto &vs : voltageSources){
+            outputFile << ",i_" + vs->getName();
+        }
+        //current sources + other components
+        for(const auto &cs : currentSources){
+            outputFile << ",i_" + cs->getName();
+        }
     }
-    //voltage sources
-    for(const auto &vs : voltageSources){
-        outputFile << ",i_" + vs->getName();
-    }
-    //current sources + other components
-    for(const auto &cs : currentSources){
-        outputFile << ",i_" + cs->getName();
-    }
+    
     outputFile << "\n";
     
     runAnalysis(c, outputFile, timeStep, simulationTime);
@@ -64,6 +74,8 @@ void outputCSV(Circuit& c, string outputFileName){
 }
 
 void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulationTime){
+    // c.setHasNonLinearComponents(true); //TESTING ONLY
+    
     string outLine{};
     if(!c.hasNonLinearComponents()){
         linearSetup(c); //compute A, b, A_inv, xMeaning

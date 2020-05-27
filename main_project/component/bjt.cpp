@@ -98,7 +98,7 @@ float BJT::ivAtNode(int nin) const{
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
     return current;
-};
+}
 
 float BJT::divAtNode(int nin, int dnin) const{
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
@@ -165,8 +165,12 @@ float BJT::divAtNode(int nin, int dnin) const{
 
     // cout << "n: " << n << " dn: " << dn << " conductance: " << conductance << endl << endl;
     return conductance;
-};
+}
 
 vector<int> BJT::getNodes() const{
     return nodes;
+}
+
+float BJT::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+    return nanf("");
 }
