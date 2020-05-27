@@ -156,9 +156,6 @@ public:
 
     MatrixXd getA() const;
 
-    // helper function for current controlled sources
-    int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
-
     // compute inverse of A
     void computeA_inv();
     MatrixXd getA_inv() const;
@@ -186,6 +183,13 @@ public:
 
     // update nodal voltages
     void updateNodalVoltages();
+
+    //connects a current controlled source with the voltage source that the controlling current flows through
+    //the index of the voltage source (in the voltageSources vector) is stored in the nodes vector as node3
+    void setupCurrentControlledSources(Circuit &c);
+
+    // helper function for current controlled sources
+    int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
 };
 
 #endif

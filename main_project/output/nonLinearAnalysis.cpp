@@ -7,6 +7,7 @@
 #include "nonLinearAnalysis.hpp"
 
 void nonLinearSetup(Circuit& c){
+    c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
     c.nlSetup();
 };
 

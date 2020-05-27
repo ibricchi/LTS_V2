@@ -160,3 +160,7 @@ vector<componentType> Component::getTypes() const{
 void Component::setNodalVoltages(vector<float> v){
     nodalVoltages = v;
 }
+
+void Component::appendToNodes(int nodeToAppend){
+	nodes.push_back(nodeToAppend);
+}

@@ -10,6 +10,7 @@
 
 //these don't change during simulation with linear components
 void linearSetup(Circuit& c){
+    c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
     c.setupA();
     c.adjustB();
     c.computeA_inv();

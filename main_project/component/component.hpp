@@ -63,6 +63,9 @@ public:
     vector<int> processNodes(vector<string> rawNodes);
     
     vector<componentType> getTypes() const;
+
+    //appends a node to the nodes vector
+    void appendToNodes(int nodeToAppend);
 };
 
 #endif
