@@ -63,6 +63,9 @@ public:
     vector<int> processNodes(vector<string> rawNodes);
     
     vector<componentType> getTypes() const;
+
+//Initialises compCurrent for DC bias capacitors and inductors
+    virtual void initCompCurrent(float _voltage_or_current);
 };
 
 #endif

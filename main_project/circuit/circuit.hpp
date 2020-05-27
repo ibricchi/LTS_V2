@@ -45,7 +45,6 @@ protected:
     float maxTimeStep;
     float tStep; //printing incremement for csv output
     bool hasNonLinear;
-<<<<<<< HEAD
     int inductorNumber;
     MatrixXd A;
     MatrixXd A_inv;

@@ -70,6 +70,10 @@ string Component::getName() const{
     return name;
 }
 
+void Component::initCompCurrent(float _voltage_or_current){
+cerr << "Tried to call initCompCurrent from a component that doesn't support it" << endl;
+}
+
 float Component::getValue(string val){
 	string units{};
 	float base{};//base number

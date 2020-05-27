@@ -69,6 +69,8 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         //DC operating point analysis. Results are not written to CSV file.
         linearDCSetup(c);
         runLinearTransience(c, -1);
+	//c.setupXMeaning();	
+	cerr << c.getX() << endl;
         // linearDCSetup(c);
         // runLinearTransience(c, -1);
         // cout << c.getB() <<endl<<endl; //testing only
@@ -77,6 +79,7 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         // for(auto & el : c.getXMeaning()){
         //     cout << el <<endl;
         // }
+	
 
         linearSetup(c);
         for(float t = 0; t<=simulationTime; t += timeStep){

@@ -68,6 +68,7 @@ void Inductor::setTimeStep(float _timeStep){
 
 void Inductor::initCompCurrent(float _current){
 compCurrent = _current;
+prevTotalCurrent = _current;
 }
 
 vector<int> Inductor::getNodes() const{

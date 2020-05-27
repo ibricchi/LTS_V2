@@ -62,7 +62,7 @@ void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
 		compCurrent = (2.0f*compConductance*newVoltage) - compCurrent; //From trapezoid companion circuit diagram for capacitor. newVoltage = Vn, 		
 			
 		compVoltage = newVoltage;
-	}
+	}else{
 		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
 	}	
 }
@@ -75,7 +75,10 @@ void Capacitor::setTimeStep(float _timeStep){
 }
 
 void Capacitor::initCompCurrent(float _voltage){ //_voltage corresponds to the DC bias voltage across the capacitor
+compVoltage = _voltage;
 compCurrent = compConductance * _voltage;
+prevTotalCurrent = 0;
+//cerr << "Comp Current: " << compCurrent << " ." << endl;
 }
 
 vector<int> Capacitor::getNodes() const{

@@ -79,8 +79,7 @@ string runLinearTransience(Circuit& c, float t){
          	nodes = cs->getNodes();
 		    v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
         	v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);  
-		
-		outLine += "," + to_string(cs->getTotalCurrent(v1-v2));
+		outLine += "," + to_string(cs->getTotalCurrent(v1-v2)); //if(t==-1){cerr << outLine << endl;}
         }else if(typeid(*cs) == typeid(CurrentSource)){
             outLine += "," + to_string(cs->getCurrent());
         }else{
@@ -96,14 +95,30 @@ string runLinearTransience(Circuit& c, float t){
     
     //update components based on current voltage/current
     float currentVoltage{}, currentCurrent{};
-    for(const auto &up : vcUpdatables){
+    int numberOfInductors =0;
+    int whichInductor = 0; //Starts count from zero, so if whichInductor == 3, it's on the 4th inductor, variable shows which inductor is being referred to in the following for
+	if(t==-1){for(const auto &potentialInductor:vcUpdatables){if(typeid(*potentialInductor) == typeid(Inductor)){numberOfInductors++;}}}//Counts how many inductors there are    
+for(const auto &up : vcUpdatables){
         nodes = up->getNodes();
 
         v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
         v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
-
-        up->updateVals(currentVoltage, 0, 1);
+//These next lines initialise the compCurrent values of capacitors and inductors based on DC bias values of voltage and current
+		if(t==-1){
+			cerr << "T=-1" << endl;
+			cerr << "Number of inductors: " << numberOfInductors << endl;
+			if(typeid(*up)==typeid(Capacitor)){
+				up->initCompCurrent(currentVoltage);
+			}else if(typeid(*up)==typeid(Inductor)){
+				//cerr << c.getXMeaning().size() << endl;				
+				cerr << c.getX()[c.getX().size()-numberOfInductors+whichInductor] << endl;
+				up->initCompCurrent(c.getX()[c.getX().size()-numberOfInductors+whichInductor]);
+				whichInductor++;
+				//for(int n=0;n<c.getXMeaning().size();n++){cerr << c.getXMeaning().at(n) << endl;}	
+			}	
+		}
+       
 
 
         cout <<endl<<endl;
@@ -111,8 +126,12 @@ string runLinearTransience(Circuit& c, float t){
         cout << "voltage: " << currentVoltage <<endl;
         cout << "conductance: " << up->getConductance() <<endl;
         cout << "current: " << up->getCurrent() <<endl;
-        cout << "total current: " << up->getTotalCurrent(currentVoltage) <<endl;
+        //cout << "total current: " << up->getTotalCurrent(currentVoltage) <<endl;
         cout <<endl<<endl;
+//Must be run after getTotalCurrent
+	 up->updateVals(currentVoltage, 0, 1);
+
+
     }
 
     //update b for calculations at next timestep
