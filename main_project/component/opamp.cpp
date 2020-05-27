@@ -34,7 +34,7 @@ float OpAmp::divAtNode(int n1, int dn) const{
     exit(1);
 }
 
-float OpAmp::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+float OpAmp::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current at output of opamp (should be in x vector as ideal opamp behaves like voltage source)
     return nanf("");
 }

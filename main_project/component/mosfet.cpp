@@ -163,7 +163,7 @@ vector<int> Mosfet::getNodes() const{
     return nodes;
 }
 
-float Mosfet::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+float Mosfet::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current through dependent current source + through current source + through resistor
     return nanf("");
 }

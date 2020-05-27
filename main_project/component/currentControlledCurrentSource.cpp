@@ -16,7 +16,7 @@ float CurrentControlledCurrentSource::divAtNode(int n, int dn) const{
     return 0;
 }
 
-float CurrentControlledCurrentSource::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+float CurrentControlledCurrentSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //need to get controlling current and then mulitply by gain
     return nanf("");
 }

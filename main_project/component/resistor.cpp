@@ -40,7 +40,7 @@ float Resistor::divAtNode(int n1, int dn) const{
     return conductance * (n1==nodes[0]?-1:1) * (dn==nodes[0]?-1:1);
 }
 
-float Resistor::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+float Resistor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     voltage = nodalVoltages[0] - nodalVoltages[1];
 
     return conductance*voltage;

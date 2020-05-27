@@ -171,6 +171,6 @@ vector<int> BJT::getNodes() const{
     return nodes;
 }
 
-float BJT::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+float BJT::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     return nanf("");
 }

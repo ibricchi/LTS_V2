@@ -16,7 +16,7 @@ float VoltageControlledCurrentSource::divAtNode(int n, int dn) const{
     return 0;
 }
 
-float VoltageControlledCurrentSource::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+float VoltageControlledCurrentSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     float controllingVoltage = nodalVoltages[2] - nodalVoltages[3];
     
     return gain*controllingVoltage;

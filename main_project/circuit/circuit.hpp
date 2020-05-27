@@ -109,6 +109,7 @@ public:
         // we can change it to a vector of strings if we need non float data later on
         extraInfo.push_back(getTStep());//extraInfo[0] is timeStep of circuit (currently the printing step tStep is used as the static timestep)
         extraInfo.push_back(getCurrentTime());//extraInfo[1] is current time of circuit
+        extraInfo.push_back(voltageSources.size()); //idx of voltageSource inside voltageSources vector (the value will have no meaning if the component is not a voltageSource)
         comp* newComp = new comp(name, args, extraInfo);
         vector<componentType> types = newComp->getTypes();
         for(auto type : types){

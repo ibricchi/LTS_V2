@@ -47,7 +47,7 @@ string runLinearTransience(Circuit& c, float t){
 
     //output component currents
     for(const auto &comp : components){
-        outLine += "," + to_string(comp->getTotalCurrent(x));
+        outLine += "," + to_string(comp->getTotalCurrent(x, highestNodeNumber));
     }
     
     // update components before next calculation of b

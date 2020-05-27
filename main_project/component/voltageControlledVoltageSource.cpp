@@ -18,7 +18,7 @@ float VoltageControlledVoltageSource::divAtNode(int n, int dn) const{
     exit(1);
 }
 
-float VoltageControlledVoltageSource::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+float VoltageControlledVoltageSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current should be found in x vector as voltage source
     return nanf("");
 }

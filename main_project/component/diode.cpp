@@ -72,7 +72,7 @@ vector<int> Diode::getNodes() const{
     return nodes;
 }
 
-float Diode::getTotalCurrent(const VectorXd &x, float voltage, int order) {
+float Diode::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current through current source and current through resistor
     return nanf("");
 }

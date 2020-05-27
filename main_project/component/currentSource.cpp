@@ -70,6 +70,6 @@ float CurrentSource::divAtNode(int n1, int dn) const{
 	return 0;
 }
 
-float CurrentSource::getTotalCurrent(const VectorXd &x, float voltage, int order){
+float CurrentSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order){
     return current;
 }

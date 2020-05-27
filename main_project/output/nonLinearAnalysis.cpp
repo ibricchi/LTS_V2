@@ -77,7 +77,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     //output component currents
     for(const auto &comp : components){
-        outLine += "," + to_string(comp->getTotalCurrent(newX));
+        outLine += "," + to_string(comp->getTotalCurrent(newX, highestNodeNumber));
     }
 
     // update components before next calculation of b
