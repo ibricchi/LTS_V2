@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <cmath>
 #include <circuit/circuit.hpp>
 #include <Eigen/Dense>
 #include <component/component.hpp>
@@ -25,10 +26,10 @@ string runNonLinearTransience(Circuit& c, float t){
     //forms a row in the csv file
     string outLine{};
 
-    float threshold = .001;
+    const float threshold = .001;
 
     // c.updateNodalVoltages();
-    VectorXd startX = c.getX();
+    // VectorXd startX = c.getX();
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
 
@@ -99,7 +100,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     return outLine;
     
-};
+}
 
 // both matrixes are assumed to be x:1 matrixes with same x
 bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
@@ -110,4 +111,94 @@ bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
         }
     }
     return true;
+}
+
+void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumStep, float threshold){
+    //DC bias is reached when Newton-Raphson converges and alpha is 1
+
+    float alpha = 1; //factor that the source values are multiplied by
+    float step = 0.1; //step that alpha is increases by (after firstConvergingAlpha has been found)
+    float firstConvergingAlpha = nanf(""); //determined while decreasing alpha from 1 during first iteration
+    VectorXd lastConvergingX;
+
+    int count{};
+    VectorXd startX = c.getX();
+    VectorXd currentX = c.getX();
+    VectorXd newX = c.getX();
+    
+    do{
+        //reset count
+        count = 0;
+
+        do{
+            //check if step becomes too small
+            if(step < minimumStep){
+                cerr << "The DC bias point could not be determined: Minimum step size reached." <<endl;
+                exit(1);
+            }
+
+            //check for divergence 
+            if(count > maxIterationsPerSourceStep){
+                if(firstConvergingAlpha == nanf("")){
+                    //if first convergence has not been found yet 
+                    //=> decrease alpha and try again to find firstConvergingAlpha
+                    alpha /= 2;
+
+                    //reset circuit to starting values
+                    currentX = startX;
+                    c.setX(startX); //required for updateNodalVoltages to work
+                    c.updateNodalVoltages();
+                }else{
+                    //if a firstConvergingAlpha already exists (step was too big)
+                    //=> decrease step and try again
+                    step /= 2;
+                    alpha -= step; //reseting to last alpha and adding half old step = subtracting half old step from current alpha
+
+                    //reset circuit to last converging values
+                    currentX = lastConvergingX;
+                    c.setX(lastConvergingX); //required for updateNodalVoltages to work
+                    c.updateNodalVoltages();
+                }
+                count = 0;
+                continue;
+            }
+
+            c.nonLinearA();
+            c.computeA_inv();
+            c.nonLinearB(alpha);
+            c.computeNLX(0); //simply does A_inv*b (same as for linear x)
+            currentX = newX;
+            newX = c.getX();
+            c.updateNodalVoltages(); //update based on newX
+
+            count++;
+        }
+        while(!matrixDiffBellowThreshold(currentX, newX, threshold));
+
+        //check if current convergence is first convergence
+        if(firstConvergingAlpha == nanf("")){
+            firstConvergingAlpha = alpha;
+        }
+
+        //save current x as last converging x
+        lastConvergingX = newX;
+
+        //step up sources
+        alpha += step;
+    }while(alpha != 1);
+
+    //CHECK IF BELOW PART STILL CORRESPONDS TO NEW CAPACITOR/INDUCTOR IMPLEMENTATION
+
+    //initialize capacitors/inductors to DC bias point
+    float currentVoltage{};
+    auto vcUpdatables = c.getVCUpdatablesRef();
+    for(const auto &up : vcUpdatables){
+        auto nodes = up->getNodes();
+
+        float v1 = nodes.at(0) == 0 ? 0 : newX(nodes.at(0)-1);
+        float v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
+        currentVoltage = v1 - v2;
+
+        up->updateVals(currentVoltage, 0, 1);
+    }
 }

@@ -473,7 +473,7 @@ void Circuit::adjustB()
     }
 }
 
-void Circuit::nonLinearB(){
+void Circuit::nonLinearB(float alpha){
     b = VectorXd::Zero(highestNodeNumber + voltageSources.size());
 
     int n, n1, n2;
@@ -485,7 +485,7 @@ void Circuit::nonLinearB(){
         n = ncp.n;
         extraNodes = ncp.extraNodes;
         current = ncp.IV();
-        b(n-1) -= current;
+        b(n-1) -= current*alpha;
     }
 
     //adding voltages
@@ -496,7 +496,7 @@ void Circuit::nonLinearB(){
         if(typeid(*vs) == typeid(VoltageControlledVoltageSource) || typeid(*vs) == typeid(CurrentControlledVoltageSource) || typeid(*vs) == typeid(OpAmp)){
             continue;
         }else{ // normal/independent voltage sources
-            b(i) += vs->getVoltage();
+            b(i) += vs->getVoltage()*alpha;
         }        
     }
 };

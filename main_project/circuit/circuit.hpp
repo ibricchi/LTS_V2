@@ -165,7 +165,8 @@ public:
     void adjustB();
 
     // non linear b
-    void nonLinearB();
+    //alpha is the source value multiplier. It is 1 for normal operation and 0<=x<=1 for source stepping
+    void nonLinearB(float alpha = 1);
 
     VectorXd getB() const;
 
