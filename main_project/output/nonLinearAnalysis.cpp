@@ -113,6 +113,14 @@ bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
     return true;
 }
 
+
+/*
+    IMPORTANT: 
+    Continue by merging master into this branch. 
+    After master has been updated with DC biasing for linearAnalysis
+
+    Check IPad for further ideas and notes about source stepping algorithm
+*/
 void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumStep, float threshold){
     //DC bias is reached when Newton-Raphson converges and alpha is 1
 
