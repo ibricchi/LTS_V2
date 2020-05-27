@@ -14,7 +14,7 @@ void linearSetup(Circuit& c){
     c.setupA();
     c.adjustB();
     c.computeA_inv();
-    c.setupXMeaning();
+    // c.setupXMeaning(); //not really using this right now
 }
 
 string runLinearTransience(Circuit& c, float t){
@@ -26,13 +26,15 @@ string runLinearTransience(Circuit& c, float t){
     vector<Component*> timeUpdatables = c.getTimeUpdatablesRef();
     int highestNodeNumber = c.getHighestNodeNumber();
 
+    //forms a row in the csv file
     string outLine{};
+
     //compute x for the current timestep
     c.computeX();
     VectorXd x = c.getX();
 
     //output current time 
-    c.setCurrentTime(t);
+    c.setCurrentTime(t); // do we need this?
     outLine += to_string(t);
 
     //output node voltages

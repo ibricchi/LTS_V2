@@ -186,6 +186,7 @@ public:
 
     //connects a current controlled source with the voltage source that the controlling current flows through
     //the index of the voltage source (in the voltageSources vector) is stored in the nodes vector as node3
+    //IMPORTANT: Must call this method before constructing A the first time (application may crash otherwise)
     void setupCurrentControlledSources(Circuit &c);
 
     // helper function for current controlled sources
