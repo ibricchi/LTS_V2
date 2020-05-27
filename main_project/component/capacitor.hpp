@@ -7,9 +7,9 @@ class Capacitor: public Component{
 private:
 	float capacitance;
 	float compCurrent;//Value of the current source in the companion model
-	float compVoltage; //value of the voltage across the capacitor
+	float compVoltage; //Voltage across the Capacitor after the previous iteration has finished calculating.
 	float compConductance;//Conductance of the resistor in the companion model
-	float prevVoltage; //Voltage across the Capacitor in the previous iteration.
+	float prevVoltage; 
 	float prevCurrent;
 	float prevTotalCurrent;
 	float timeStep; //used to update compConductance
@@ -29,5 +29,6 @@ public:
 	void setTimeStep(float _timeStep) override;
 	void initCompCurrent(float _voltage);
 };
+	
 
 #endif

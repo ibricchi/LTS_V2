@@ -23,6 +23,7 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 	// prevVoltage = 0;
 	prevTotalCurrent =0;
 
+	compCurrent = 0;
 	capacitance = val;
 	timeStep = extraInfo[0];
 	
@@ -74,11 +75,12 @@ void Capacitor::setTimeStep(float _timeStep){
 	compConductance = (2.0f*capacitance)/timeStep;
 }
 
+
 void Capacitor::initCompCurrent(float _voltage){ //_voltage corresponds to the DC bias voltage across the capacitor
 compVoltage = _voltage;
 compCurrent = compConductance * _voltage;
 prevTotalCurrent = 0;
-//cerr << "Comp Current: " << compCurrent << " ." << endl;
+
 }
 
 vector<int> Capacitor::getNodes() const{
@@ -93,5 +95,4 @@ float Capacitor::ivAtNode(int n) const{
 }
 float Capacitor::divAtNode(int n, int dn) const{
 	return 1;
-
 }
