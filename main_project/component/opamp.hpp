@@ -16,6 +16,10 @@
 class OpAmp: public Component{
 private:
     string modelName;
+
+    //index of the voltageSource inside the voltageSources vector
+    //used for getTotalCurrent
+    int voltageSourcesIdx;
 public:
     OpAmp(string _name, vector<string> args, vector<float> extraInfo);
     ~OpAmp() = default;

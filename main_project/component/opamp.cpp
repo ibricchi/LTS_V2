@@ -9,6 +9,8 @@ OpAmp::OpAmp(string name, vector<string> args, vector<float> extraInfo)
 {
     nodes = processNodes({args[0], args[1], args[2]});
     
+    voltageSourcesIdx = extraInfo[2];
+
     nodalVoltages = {0, 0, 0};
 
     modelName = args[3]; //Not used for now => Assumed to be ideal
@@ -35,6 +37,5 @@ float OpAmp::divAtNode(int n1, int dn) const{
 }
 
 float OpAmp::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    //current at output of opamp (should be in x vector as ideal opamp behaves like voltage source)
-    return nanf("");
+    return x(highestNodeNumber+voltageSourcesIdx);
 }
