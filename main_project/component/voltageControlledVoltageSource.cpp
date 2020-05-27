@@ -6,6 +6,7 @@
 VoltageControlledVoltageSource::VoltageControlledVoltageSource(string name, vector<string> args, vector<float> extraInfo)
     :VoltageControlledSource(name, args, extraInfo)
 {
+    voltageSourcesIdx = extraInfo[2];
     types.push_back(componentType::voltageSource);
 }
 
@@ -19,6 +20,5 @@ float VoltageControlledVoltageSource::divAtNode(int n, int dn) const{
 }
 
 float VoltageControlledVoltageSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    //current should be found in x vector as voltage source
-    return nanf("");
+    return x(highestNodeNumber+voltageSourcesIdx);
 }

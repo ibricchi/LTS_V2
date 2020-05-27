@@ -7,6 +7,10 @@
 #include "voltageControlledSource.hpp"
 
 class VoltageControlledVoltageSource: public VoltageControlledSource{
+private:
+    //index of the voltageSource inside the voltageSources vector
+    //used for getTotalCurrent
+    int voltageSourcesIdx;
 public:
     VoltageControlledVoltageSource(string _name, vector<string> args, vector<float> extraInfo);
     ~VoltageControlledVoltageSource() = default;
