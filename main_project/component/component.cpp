@@ -21,11 +21,6 @@ float Component::getCurrent() const{
 	exit(1);
 }
 
-float Component::getTotalCurrent(float voltage,int order){
-	cerr << "Tried to call getTotalCurrent from a component that doesn't support it" <<endl;
-	exit(1);
-}
-
 float Component::getConductance() const{
     cerr << "Tried to call getConductance from a component that doesn't support it" <<endl;
 	exit(1);
@@ -163,4 +158,8 @@ vector<componentType> Component::getTypes() const{
 // set functions
 void Component::setNodalVoltages(vector<float> v){
     nodalVoltages = v;
+}
+
+void Component::appendToNodes(int nodeToAppend){
+	nodes.push_back(nodeToAppend);
 }

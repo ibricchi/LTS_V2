@@ -8,6 +8,8 @@ VoltageSource::VoltageSource(string name, vector<string> args, vector<float> ext
 {
     nodes = processNodes({args[0], args[1]});
 
+    voltageSourcesIdx = extraInfo[2];
+
     setupBasic();
 
     if(args.size() == 3){
@@ -34,7 +36,7 @@ VoltageSource::VoltageSource(string name, vector<string> args, vector<float> ext
 }
 
 void VoltageSource::setupBasic(){
-    
+
 	nodalVoltages = {0,0};
 
     types.push_back(componentType::voltageSource);
@@ -62,7 +64,11 @@ vector<int> VoltageSource::getNodes() const{
 
 float VoltageSource::ivAtNode(int n) const{
 	return 1;
-};
+}
 float VoltageSource::divAtNode(int n, int dn) const{
 	return 1;
-};
+}
+
+float VoltageSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    return x(highestNodeNumber+voltageSourcesIdx);
+}

@@ -4,10 +4,15 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <Eigen/Dense>
+
+#include <cmath> //temporarily for returning nanf("") => remove later on
 
 #include "enums.hpp"
 
+class Circuit; //forward declaration avoids problems with circular references
 using namespace std;
+using namespace Eigen;
 
 /*
     Acts as interface for circuit components
@@ -28,7 +33,12 @@ public:
     virtual float getConductance() const;
     virtual float getVoltage() const;
     virtual float getCurrent() const; //For complex components, this returns the current through the companion model's current source rather than through the whole component
-    virtual float getTotalCurrent(float voltage, int order = 1); //For complex components, this return the current through the whole component
+    
+    //get the total current that flows through a component
+    //this will be the current that is written to the csv file
+    //the current x vector must be passed as an argument (needed to get the current through voltage sources)
+    virtual float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  = 0;
+    
     virtual float getGain() const;
     virtual string getVsName() const;
     virtual string getModelName() const;
@@ -66,6 +76,8 @@ public:
 
 //Initialises compCurrent for DC bias capacitors and inductors
     virtual void initCompCurrent(float _voltage_or_current);
+    //appends a node to the nodes vector
+    void appendToNodes(int nodeToAppend);
 };
 
 #endif

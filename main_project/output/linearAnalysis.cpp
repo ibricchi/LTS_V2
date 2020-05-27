@@ -17,14 +17,18 @@ void linearDCSetup(Circuit& c){
 }
 
 void linearSetup(Circuit& c){
+    c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
     c.setupA();
     c.adjustB();
     c.computeA_inv();
-    c.setupXMeaning();
+    c.computeX();
+    c.updateNodalVoltages();
+    // c.setupXMeaning(); //not really using this right now
 }
 
 string runLinearTransience(Circuit& c, float t){
     //get references to the components stored inside the circuit
+    vector<Component*> components = c.getComponentsRef();
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
     vector<Component*> currentSources = c.getCurrentSourcesRef();
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
@@ -32,13 +36,15 @@ string runLinearTransience(Circuit& c, float t){
     vector<Component*> timeUpdatables = c.getTimeUpdatablesRef();
     int highestNodeNumber = c.getHighestNodeNumber();
 
+    //forms a row in the csv file
     string outLine{};
+
     //compute x for the current timestep
     c.computeX();
     VectorXd x = c.getX();
 
     //output current time 
-    c.setCurrentTime(t);
+    c.setCurrentTime(t); // do we need this?
     outLine += to_string(t);
 
     //output node voltages
@@ -46,6 +52,7 @@ string runLinearTransience(Circuit& c, float t){
         outLine += "," + to_string(x(i));
     }
 
+/*<<<<<<< HEAD
     //output current through resistors
     vector<int> nodes{};
     float voltage{}, v1{}, v2{};
@@ -85,8 +92,12 @@ string runLinearTransience(Circuit& c, float t){
         }else{
             outLine += ",NotImplemented";
         }
+======= */
+    //output component currents
+    for(const auto &comp : components){
+        outLine += "," + to_string(comp->getTotalCurrent(x, highestNodeNumber));
+//>>>>>>> 9ab0e24b37d360d395be5015391ecd7e45cb8b28
     }
-
     
     // update components before next calculation of b
     for(const auto &comp : timeUpdatables){
@@ -101,8 +112,8 @@ string runLinearTransience(Circuit& c, float t){
 for(const auto &up : vcUpdatables){
         nodes = up->getNodes();
 
-        v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
-        v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
+        float v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
+        float v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 //These next lines initialise the compCurrent values of capacitors and inductors based on DC bias values of voltage and current
 		if(t==-1){
@@ -130,8 +141,6 @@ for(const auto &up : vcUpdatables){
         cout <<endl<<endl;
 //Must be run after getTotalCurrent
 	 up->updateVals(currentVoltage, 0, 1);
-
-
     }
 
     //update b for calculations at next timestep

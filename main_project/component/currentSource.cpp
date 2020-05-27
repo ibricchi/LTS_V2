@@ -65,7 +65,11 @@ vector<int> CurrentSource::getNodes() const{
 // iv functions
 float CurrentSource::ivAtNode(int n1) const{
 	return current * (n1==nodes[0]?-1:1);
-};
+}
 float CurrentSource::divAtNode(int n1, int dn) const{
 	return 0;
-};
+}
+
+float CurrentSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order){
+    return current;
+}

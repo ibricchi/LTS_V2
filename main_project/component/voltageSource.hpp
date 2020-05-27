@@ -11,6 +11,10 @@ class VoltageSource: public Component{
 private:
     int sourceType;
 
+    //index of the voltageSource inside the voltageSources vector
+    //used for getTotalCurrent
+    int voltageSourcesIdx;
+
     //used for dc
     float voltage;
 
@@ -31,6 +35,8 @@ public:
     float getVoltage() const override;
 
     vector<int> getNodes() const override;
+
+    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

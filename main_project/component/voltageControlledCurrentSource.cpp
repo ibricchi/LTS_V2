@@ -10,10 +10,14 @@ VoltageControlledCurrentSource::VoltageControlledCurrentSource(string name, vect
 }
 
 float VoltageControlledCurrentSource::ivAtNode(int n) const{
-    cerr << "ivAtNode not implemented in dependent source" <<endl;
-    exit(1);
+    return 0;
 }
 float VoltageControlledCurrentSource::divAtNode(int n, int dn) const{
-    cerr << "divAtNode not implemented in dependent source" <<endl;
-    exit(1);
+    return 0;
+}
+
+float VoltageControlledCurrentSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    float controllingVoltage = nodalVoltages[2] - nodalVoltages[3];
+    
+    return gain*controllingVoltage;
 }

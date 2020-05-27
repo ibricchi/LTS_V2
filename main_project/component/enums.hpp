@@ -39,9 +39,10 @@ enum struct diodeParamType{
     // IBV //reverse bias breakdown current
 };
 enum struct mosfetParamType{
-    L, //length
-    W, //width
-    VAF //early voltage
+    K, // transconductance
+    ISat, // saturation current
+    VT, // theshold voltage
+    VA, // early voltage
 };
 enum struct bjtParamType{
     BF, //beta (common emitter current gain)

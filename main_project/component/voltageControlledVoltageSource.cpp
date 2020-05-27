@@ -6,14 +6,19 @@
 VoltageControlledVoltageSource::VoltageControlledVoltageSource(string name, vector<string> args, vector<float> extraInfo)
     :VoltageControlledSource(name, args, extraInfo)
 {
+    voltageSourcesIdx = extraInfo[2];
     types.push_back(componentType::voltageSource);
 }
 
 float VoltageControlledVoltageSource::ivAtNode(int n) const{
-    cerr << "ivAtNode not implemented in dependent source" <<endl;
+    cerr << "ivAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }
 float VoltageControlledVoltageSource::divAtNode(int n, int dn) const{
-    cerr << "divAtNode not implemented in dependent source" <<endl;
+    cerr << "divAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
+}
+
+float VoltageControlledVoltageSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    return x(highestNodeNumber+voltageSourcesIdx);
 }

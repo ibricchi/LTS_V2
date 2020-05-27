@@ -48,7 +48,9 @@ float Capacitor::getCurrent() const{
 	return compCurrent;
 }
 
-float Capacitor::getTotalCurrent(float voltage, int order){
+float Capacitor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+	voltage = nodalVoltages[0] - nodalVoltages[1];
+	
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
 		prevTotalCurrent = res;

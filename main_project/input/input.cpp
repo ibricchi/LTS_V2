@@ -11,6 +11,7 @@
 #include <component/enums.hpp>
 #include <component/diode.hpp>
 #include <component/bjt.hpp>
+#include <component/mosfet.hpp>
 #include <component/voltageControlledVoltageSource.hpp>
 #include <component/currentControlledVoltageSource.hpp>
 #include <component/voltageControlledCurrentSource.hpp>
@@ -197,8 +198,10 @@ void readSpice(Circuit& c, istream& file){
             // + - -> IS N VT
 			c.addComponent<Diode>(name,args);
 		}else if(compTypeC =="Q" || compTypeC == "q"){
-            // + - -> VB IS VAF
 			c.addComponent<BJT>(name,args);
+		}else if(compTypeC =="M" || compTypeC == "m"){
+            // D G S modelName
+			c.addComponent<Mosfet>(name,args);
 		}else if(compTypeC == "E" || compTypeC == "e"){
             c.addComponent<VoltageControlledVoltageSource>(name, args);
         }else if(compTypeC == "H" || compTypeC == "h"){

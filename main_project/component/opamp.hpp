@@ -16,6 +16,10 @@
 class OpAmp: public Component{
 private:
     string modelName;
+
+    //index of the voltageSource inside the voltageSources vector
+    //used for getTotalCurrent
+    int voltageSourcesIdx;
 public:
     OpAmp(string _name, vector<string> args, vector<float> extraInfo);
     ~OpAmp() = default;
@@ -24,6 +28,8 @@ public:
     float divAtNode(int n1, int dn) const override;
 
     vector<int> getNodes() const override;
+
+    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

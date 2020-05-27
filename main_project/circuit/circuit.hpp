@@ -112,6 +112,7 @@ public:
         // we can change it to a vector of strings if we need non float data later on
         extraInfo.push_back(getTStep());//extraInfo[0] is timeStep of circuit (currently the printing step tStep is used as the static timestep)
         extraInfo.push_back(getCurrentTime());//extraInfo[1] is current time of circuit
+        extraInfo.push_back(voltageSources.size()); //idx of voltageSource inside voltageSources vector (the value will have no meaning if the component is not a voltageSource)
         comp* newComp = new comp(name, args, extraInfo);
         vector<componentType> types = newComp->getTypes();
         for(auto type : types){
@@ -159,9 +160,6 @@ public:
 
     MatrixXd getA() const;
 
-    // helper function for current controlled sources
-    int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
-
     // compute inverse of A
     void computeA_inv();
     MatrixXd getA_inv() const;
@@ -189,6 +187,14 @@ public:
 
     // update nodal voltages
     void updateNodalVoltages();
+
+    //connects a current controlled source with the voltage source that the controlling current flows through
+    //the index of the voltage source (in the voltageSources vector) is stored in the nodes vector as node3
+    //IMPORTANT: Must call this method before constructing A the first time (application may crash otherwise)
+    void setupCurrentControlledSources(Circuit &c);
+
+    // helper function for current controlled sources
+    int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
 };
 
 #endif
