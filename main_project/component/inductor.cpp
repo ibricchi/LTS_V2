@@ -22,7 +22,7 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 
 	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
 		compConductance = timeStep/(2.0*inductance);
-		compCurrent = 
+		//compCurrent = 
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/constructor");
 	}

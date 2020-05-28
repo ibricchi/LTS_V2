@@ -8,7 +8,6 @@
 
 using namespace std;
 
-<<<<<<< HEAD
 // for debugging only
 void testCircuit15(stringstream& buffer){
     buffer << "ExampleCircuit1" << endl;
@@ -44,7 +43,6 @@ void testCircuit3(stringstream& buffer){
     buffer << "R1 2 3 1k" << endl;
     buffer << "V2 3 0 1" << endl;
 }
-<<<<<<< HEAD
 
 
 void testCircuit7(stringstream& buffer){
@@ -74,8 +72,6 @@ void testCircuit9(stringstream& buffer){
     buffer << ".end" <<endl;
 }
 
-=======
->>>>>>> 9ab0e24b37d360d395be5015391ecd7e45cb8b28
 int main(int argc, char **argv){
     //get optional input arguments
     string outputFileName = "out.csv";
@@ -93,11 +89,11 @@ int main(int argc, char **argv){
     // setup circuit
     Circuit c{};
     
-    // stringstream buffer;
-    // testCircuit3(buffer);
+     stringstream buffer;
+     testCircuit(buffer);
 
-    // readSpice(c, buffer);
-    readSpice(c, cin); //use this if want to read from txt file
+     readSpice(c, buffer);
+  //  readSpice(c, cin); //use this if want to read from txt file
 
     // run simulation
     outputCSV(c, outputFileName);

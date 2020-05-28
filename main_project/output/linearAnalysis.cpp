@@ -11,9 +11,12 @@
 #include "linearAnalysis.hpp"
 
 void linearDCSetup(Circuit& c){
+    c.setupCurrentControlledSources(c);//
     c.setupA(true);
     c.adjustB(true);
     c.computeA_inv();
+    c.computeX();//
+    c.updateNodalVoltages();//
 }
 
 void linearSetup(Circuit& c){
@@ -51,12 +54,13 @@ string runLinearTransience(Circuit& c, float t){
     for(int i{}; i<highestNodeNumber; i++){
         outLine += "," + to_string(x(i));
     }
-
-/*<<<<<<< HEAD
-    //output current through resistors
     vector<int> nodes{};
     float voltage{}, v1{}, v2{};
     float current{};
+/*<<<<<<< HEAD
+    //output current through resistors
+    
+    
     for(const auto &gs : conductanceSources){
         if(typeid(*gs) == typeid(Inductor) || typeid(*gs) == typeid(Capacitor)){
             continue; //don't want to display current through the companion model's resistor
