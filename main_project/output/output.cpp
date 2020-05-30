@@ -61,7 +61,7 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         linearDCSetup(c);
         runLinearTransience(c, -1);
 	//c.setupXMeaning();	
-	cerr << c.getX() << endl;
+	//cerr << c.getX() << endl;
         // linearDCSetup(c);
         // runLinearTransience(c, -1);
         // cout << c.getB() <<endl<<endl; //testing only

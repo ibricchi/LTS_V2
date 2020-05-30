@@ -99,6 +99,10 @@ void Circuit::incrementInductorNumber(){
     inductorNumber++;
 }
 
+int Circuit::getInductorNumber()const{
+return inductorNumber;
+}
+
 vector<Component*>& Circuit::getComponentsRef(){
     return components;
 }
@@ -154,6 +158,7 @@ void Circuit::nlSetup(){
 // setupA definition
 void Circuit::setupA(bool dc)
 {
+    //cerr <<"Inductor number: "<< inductorNumber << endl;
     int extraZeroVSNumber = dc ? inductorNumber : 0;
     A = MatrixXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber, highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
     vector<int> nodes{};
@@ -263,7 +268,8 @@ void Circuit::setupA(bool dc)
                 nodes = comp->getNodes();
                 int node1 = nodes.at(0);
                 int node2 = nodes.at(1);
-
+		//cerr << "Rows: " << A.rows() << " Columns: " << A.cols() << endl;
+		//cerr << (node1 - 1) << " " << highestNodeNumber + i << endl;
                 if (node1 != 0)
                 {
                     A(node1 - 1, highestNodeNumber + i) = 1;
@@ -275,8 +281,9 @@ void Circuit::setupA(bool dc)
                     A(node2 - 1, highestNodeNumber + i) = -1;
                     A(highestNodeNumber + i, node2 - 1) = -1;
                 }
-            }
-            i++;
+                i++;
+	}
+            
         }
     }
 

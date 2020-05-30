@@ -195,6 +195,8 @@ public:
 
     // helper function for current controlled sources
     int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
+
+    int getInductorNumber() const;
 };
 
 #endif
