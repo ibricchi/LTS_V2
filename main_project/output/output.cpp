@@ -59,18 +59,7 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
     if(!c.hasNonLinearComponents()){
         //DC operating point analysis. Results are not written to CSV file.
         linearDCSetup(c);
-        runLinearTransience(c, -1);
-	//c.setupXMeaning();	
-	//cerr << c.getX() << endl;
-        // linearDCSetup(c);
-        // runLinearTransience(c, -1);
-        // cout << c.getB() <<endl<<endl; //testing only
-        // cout << c.getA() <<endl;
-        // c.setupXMeaning();
-        // for(auto & el : c.getXMeaning()){
-        //     cout << el <<endl;
-        // }
-	
+        runLinearTransience(c, -1);	
 
         linearSetup(c);
         for(float t = 0; t<=simulationTime; t += timeStep){
@@ -81,6 +70,9 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
             outputFile << outLine << endl;
         }
     }else{
+        // linearDCSetup(c); //change name if can reuse like this
+        // initializeDcBias(c);
+
         nonLinearSetup(c);
         for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
             outLine = runNonLinearTransience(c, t); 

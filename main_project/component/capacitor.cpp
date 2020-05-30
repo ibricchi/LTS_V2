@@ -50,11 +50,11 @@ float Capacitor::getCurrent() const{
 
 float Capacitor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
 	voltage = nodalVoltages[0] - nodalVoltages[1];
-	cerr << "CapVoltage: " << voltage << endl;
+
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
 		prevTotalCurrent = res;
-		cerr << "TotalCapCurrent: " << res << endl;
+		
 		return res;	
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrent");

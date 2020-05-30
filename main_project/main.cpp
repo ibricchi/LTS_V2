@@ -92,8 +92,8 @@ int main(int argc, char **argv){
      stringstream buffer;
      testCircuit(buffer);
 
-     readSpice(c, buffer);
-  //  readSpice(c, cin); //use this if want to read from txt file
+    //  readSpice(c, buffer);
+    readSpice(c, cin); //use this if want to read from txt file
 
     // run simulation
     outputCSV(c, outputFileName);

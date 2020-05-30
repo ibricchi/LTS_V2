@@ -5,6 +5,8 @@
 #include <Eigen/Dense>
 #include <component/component.hpp>
 #include <component/voltageSource.hpp>
+#include <component/inductor.hpp>
+#include <component/capacitor.hpp>
 
 #include "nonLinearAnalysis.hpp"
 
@@ -113,14 +115,6 @@ bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
     return true;
 }
 
-
-/*
-    IMPORTANT: 
-    Continue by merging master into this branch. 
-    After master has been updated with DC biasing for linearAnalysis
-
-    Check IPad for further ideas and notes about source stepping algorithm
-*/
 void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumStep, float threshold){
     //DC bias is reached when Newton-Raphson converges and alpha is 1
 
@@ -139,6 +133,10 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         count = 0;
 
         do{
+            cout << "count: " << count <<endl;
+            cout << "step: " << step <<endl;
+            cout << "alpha: " << alpha <<endl;
+
             //check if step becomes too small
             if(step < minimumStep){
                 cerr << "The DC bias point could not be determined: Minimum step size reached." <<endl;
@@ -193,20 +191,28 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
 
         //step up sources
         alpha += step;
-    }while(alpha != 1);
-
-    //CHECK IF BELOW PART STILL CORRESPONDS TO NEW CAPACITOR/INDUCTOR IMPLEMENTATION
+    }while(alpha < 1);
 
     //initialize capacitors/inductors to DC bias point
-    float currentVoltage{};
     auto vcUpdatables = c.getVCUpdatablesRef();
+    int numberOfInductors = c.getInductorNumber();
+    int whichInductor = 0; //Starts count from zero, so if whichInductor == 3, it's on the 4th inductor, variable shows which inductor is being referred to in the following for    
     for(const auto &up : vcUpdatables){
         auto nodes = up->getNodes();
 
         float v1 = nodes.at(0) == 0 ? 0 : newX(nodes.at(0)-1);
         float v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
-        currentVoltage = v1 - v2;
+        float currentVoltage = v1 - v2;
 
+        //These next lines initialise the compCurrent values of capacitors and inductors based on DC bias values of voltage and current
+		
+        if(typeid(*up)==typeid(Capacitor)){
+            up->initCompCurrent(currentVoltage);
+        }else if(typeid(*up)==typeid(Inductor)){
+            up->initCompCurrent(newX[newX.size()-numberOfInductors+whichInductor]);
+            whichInductor++;
+        }	
+		
         up->updateVals(currentVoltage, 0, 1);
     }
 }
