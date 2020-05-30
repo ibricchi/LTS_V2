@@ -80,10 +80,9 @@ void Capacitor::setTimeStep(float _timeStep){
 
 
 void Capacitor::initCompCurrent(float _voltage){ //_voltage corresponds to the DC bias voltage across the capacitor
-compVoltage = _voltage;
-compCurrent = compConductance * _voltage;
-prevTotalCurrent = 0;
-
+	compVoltage = _voltage;
+	compCurrent = compConductance * _voltage;
+	prevTotalCurrent = 0;
 }
 
 vector<int> Capacitor::getNodes() const{

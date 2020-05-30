@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <CustomExceptionClasses/unsupportedIntegrationMethodOrderException.hpp>
-
+#include <iostream> //testing
 #include "inductor.hpp"
 
 Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
@@ -56,6 +56,7 @@ float Inductor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float 
 void Inductor::updateVals(float newVoltage, float newCurrent, int order){
 	if(order==1){ //using companion model for the trapezoid integration method.		
 		compCurrent =(2.0*compConductance*newVoltage)+compCurrent;
+
 		compVoltage = newVoltage;
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/updateVals");
@@ -70,20 +71,18 @@ void Inductor::setTimeStep(float _timeStep){
 }
 
 void Inductor::initCompCurrent(float _current){
-compCurrent = _current;
-prevTotalCurrent = _current;
+	compCurrent = _current;
+	prevTotalCurrent = _current;
 }
 
 vector<int> Inductor::getNodes() const{
-    vector<int> res{};
-    res.push_back(nodes.at(0));
-    res.push_back(nodes.at(1));
-    return res;
+    return nodes;
 }
 
 float Inductor::ivAtNode(int n) const{
-	return 1;
+	cout << compCurrent << endl;
+	return compCurrent * (n==nodes[0] ? 1 : -1);
 }
 float Inductor::divAtNode(int n, int dn) const{
-	return 1;
+	return compConductance;
 }

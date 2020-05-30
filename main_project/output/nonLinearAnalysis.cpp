@@ -68,6 +68,11 @@ string runNonLinearTransience(Circuit& c, float t){
         c.updateNodalVoltages(); //update based on newX
 
         count++;
+
+
+        // cout << endl<<endl;
+        // cout << c.getB();
+        // cout << endl<<endl;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
