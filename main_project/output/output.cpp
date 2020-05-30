@@ -70,8 +70,8 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
             outputFile << outLine << endl;
         }
     }else{
-        
-        initializeDcBias(c);
+        // nonLinearDCSetup(c);
+        // initializeDcBias(c);
 
         nonLinearSetup(c);
         for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps

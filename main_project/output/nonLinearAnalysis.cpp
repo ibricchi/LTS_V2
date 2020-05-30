@@ -12,11 +12,12 @@
 
 void nonLinearDCSetup(Circuit& c){
     c.setupCurrentControlledSources(c);
+    c.nlSetup();
     c.nonLinearA(true);
     c.nonLinearB(true);
     c.computeA_inv();
     c.computeNLX(0);
-    c.updateNodalVoltages();
+    // c.updateNodalVoltages();
 }
 
 void nonLinearSetup(Circuit& c){
@@ -136,6 +137,10 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
     VectorXd startX = c.getX();
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
+
+    cout << endl<<endl << "initial x: " <<endl;
+    cout << startX <<endl;
+    cout << endl<<endl;
     
     do{
         //reset count

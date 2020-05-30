@@ -268,8 +268,7 @@ void Circuit::setupA(bool isDc)
                 nodes = comp->getNodes();
                 int node1 = nodes.at(0);
                 int node2 = nodes.at(1);
-		//cerr << "Rows: " << A.rows() << " Columns: " << A.cols() << endl;
-		//cerr << (node1 - 1) << " " << highestNodeNumber + i << endl;
+
                 if (node1 != 0)
                 {
                     A(node1 - 1, highestNodeNumber + i) = 1;
@@ -282,8 +281,7 @@ void Circuit::setupA(bool isDc)
                     A(highestNodeNumber + i, node2 - 1) = -1;
                 }
                 i++;
-	}
-            
+	        }
         }
     }
 
@@ -511,7 +509,9 @@ MatrixXd Circuit::getA_inv() const{
 void Circuit::adjustB(bool isDc)
 {
     int extraZeroVSNumber = isDc ? inductorNumber : 0;
+    
     b = VectorXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
+    
     //adding currents
     for (const auto &cs : currentSources)
     {
