@@ -133,6 +133,7 @@ void Circuit::nlSetup(){
 void Circuit::setupA(bool dc)
 {
     int extraZeroVSNumber = dc ? inductorNumber : 0;
+
     A = MatrixXf::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber, highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
     vector<int> nodes{};
 
@@ -228,8 +229,8 @@ void Circuit::setupA(bool dc)
                     A(node2 - 1, highestNodeNumber + i) = -1;
                     A(highestNodeNumber + i, node2 - 1) = -1;
                 }
+                i++;
             }
-            i++;
         }
     }
 
