@@ -11,12 +11,12 @@
 #include "linearAnalysis.hpp"
 
 void linearDCSetup(Circuit& c){
-    c.setupCurrentControlledSources(c);//
+    c.setupCurrentControlledSources(c);
     c.setupA(true);
     c.adjustB(true);
     c.computeA_inv();
-    c.computeX();//
-    c.updateNodalVoltages();//
+    c.computeX();
+    c.updateNodalVoltages();
 }
 
 void linearSetup(Circuit& c){
@@ -60,8 +60,7 @@ string runLinearTransience(Circuit& c, float t){
     c.updateNodalVoltages();
 	//output component currents    
 	for(const auto &comp : components){
-        	outLine += "," + to_string(comp->getTotalCurrent(x, highestNodeNumber));
-
+        outLine += "," + to_string(comp->getTotalCurrent(x, highestNodeNumber));
     }
     
     // update components before next calculation of b

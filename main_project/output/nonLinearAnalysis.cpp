@@ -10,6 +10,15 @@
 
 #include "nonLinearAnalysis.hpp"
 
+void nonLinearDCSetup(Circuit& c){
+    c.setupCurrentControlledSources(c);
+    c.nonLinearA(true);
+    c.nonLinearB(true);
+    c.computeA_inv();
+    c.computeNLX(0);
+    c.updateNodalVoltages();
+}
+
 void nonLinearSetup(Circuit& c){
     c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
     c.nlSetup();
@@ -204,8 +213,11 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         float v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
         float currentVoltage = v1 - v2;
 
+        cout <<endl<<endl << "newX: " <<endl;
+        cout << newX;
+        cout <<endl<<endl;
+
         //These next lines initialise the compCurrent values of capacitors and inductors based on DC bias values of voltage and current
-		
         if(typeid(*up)==typeid(Capacitor)){
             up->initCompCurrent(currentVoltage);
         }else if(typeid(*up)==typeid(Inductor)){
@@ -213,6 +225,8 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             whichInductor++;
         }	
 		
+        //Need to call getTotalCurrent before updateVals
+        up->getTotalCurrent(newX, c.getHighestNodeNumber());
         up->updateVals(currentVoltage, 0, 1);
     }
 }

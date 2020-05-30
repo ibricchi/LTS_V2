@@ -153,10 +153,10 @@ public:
     void nlSetup();
 
     // operation to create A
-    void setupA(bool dc = false);
+    void setupA(bool isDc = false);
 
     // non linear A
-    void nonLinearA();
+    void nonLinearA(bool isDc = false);
 
     MatrixXd getA() const;
 
@@ -165,11 +165,11 @@ public:
     MatrixXd getA_inv() const;
 
     // operation to adjust B
-    void adjustB(bool dc = false);
+    void adjustB(bool isDc = false);
 
     // non linear b
     //alpha is the source value multiplier. It is 1 for normal operation and 0<=x<=1 for source stepping
-    void nonLinearB(float alpha = 1);
+    void nonLinearB(bool isDc = false, float alpha = 1);
 
     VectorXd getB() const;
 

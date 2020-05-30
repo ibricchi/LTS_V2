@@ -4,6 +4,7 @@
 #include <string>
 #include <circuit/circuit.hpp>
 
+void nonLinearDCSetup(Circuit& c);
 void nonLinearSetup(Circuit& c);
 string runNonLinearTransience(Circuit& c, float t);
 bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d);

@@ -156,10 +156,10 @@ void Circuit::nlSetup(){
 }
 
 // setupA definition
-void Circuit::setupA(bool dc)
+void Circuit::setupA(bool isDc)
 {
     //cerr <<"Inductor number: "<< inductorNumber << endl;
-    int extraZeroVSNumber = dc ? inductorNumber : 0;
+    int extraZeroVSNumber = isDc ? inductorNumber : 0;
     A = MatrixXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber, highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
     vector<int> nodes{};
 
@@ -167,7 +167,7 @@ void Circuit::setupA(bool dc)
     for (const auto &comp : conductanceSources)
     {
         //Replace capacitors/inductors with open circuit for DC operating point analysis
-        if(dc && (typeid(*comp) == typeid(Capacitor) || typeid(*comp) == typeid(Inductor))){
+        if(isDc && (typeid(*comp) == typeid(Capacitor) || typeid(*comp) == typeid(Inductor))){
             //Capacitor is open circuit at DC => don't contribute conductance
             //Inductor is short circuit at DC => equivalent to zero voltage source (added after all normal voltage sources)
             continue; 
@@ -260,7 +260,7 @@ void Circuit::setupA(bool dc)
     }
 
     //Important that the following loop comes after all normal voltage sources have already been added!
-    if(dc){
+    if(isDc){
         int i = voltageSources.size(); //Add zero voltage sources after normal voltage sources
         for(const auto& comp : vcUpdatables){
             if(typeid(*comp) == typeid(Inductor)){
@@ -328,14 +328,23 @@ void Circuit::setupA(bool dc)
     }
 }
 
-void Circuit::nonLinearA(){
-    A = MatrixXd::Zero(highestNodeNumber + voltageSources.size(), highestNodeNumber + voltageSources.size());
+void Circuit::nonLinearA(bool isDc){
+    int extraZeroVSNumber = isDc ? inductorNumber : 0;
+
+    A = MatrixXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber, highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
 
     // setup currents from non voltage source components
     int n{};
     vector<int> extraNodes{};
     double conductance{};
     for(const nodeCompPair ncp : nodalFunctions){
+        //Replace capacitors/inductors with open circuit for DC operating point analysis
+        if(isDc && (typeid(*ncp.comp) == typeid(Capacitor) || typeid(*ncp.comp) == typeid(Inductor))){
+            //Capacitor is open circuit at DC => don't contribute conductance
+            //Inductor is short circuit at DC => equivalent to zero voltage source (added after all normal voltage sources)
+            continue; 
+        }
+
         n = ncp.n;
         extraNodes = ncp.extraNodes;
 
@@ -418,6 +427,32 @@ void Circuit::nonLinearA(){
         }
     }
 
+    //Important that the following loop comes after all normal voltage sources have already been added!
+    if(isDc){
+        int i = voltageSources.size(); //Add zero voltage sources after normal voltage sources
+        for(const auto& comp : vcUpdatables){
+            if(typeid(*comp) == typeid(Inductor)){
+                //add zero voltage source to represent short circuit
+                nodes = comp->getNodes();
+                int node1 = nodes.at(0);
+                int node2 = nodes.at(1);
+
+                if (node1 != 0)
+                {
+                    A(node1 - 1, highestNodeNumber + i) = 1;
+                    A(highestNodeNumber + i, node1 - 1) = 1;
+                }
+
+                if (node2 != 0)
+                {
+                    A(node2 - 1, highestNodeNumber + i) = -1;
+                    A(highestNodeNumber + i, node2 - 1) = -1;
+                }
+                i++;
+            }
+        }
+    }
+
     //dependent current sources
     for(const auto& cs : currentSources){
         if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
@@ -473,14 +508,14 @@ MatrixXd Circuit::getA_inv() const{
 }
 
 // setupB definition
-void Circuit::adjustB(bool dc)
+void Circuit::adjustB(bool isDc)
 {
-    int extraZeroVSNumber = dc ? inductorNumber : 0;
+    int extraZeroVSNumber = isDc ? inductorNumber : 0;
     b = VectorXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
     //adding currents
     for (const auto &cs : currentSources)
     {
-        if(dc && (typeid(*cs) == typeid(Capacitor) || typeid(*cs) == typeid(Inductor))){
+        if(isDc && (typeid(*cs) == typeid(Capacitor) || typeid(*cs) == typeid(Inductor))){
             continue; // Open/short circuit at DC => Don't contribute currents
         }
 
@@ -518,8 +553,10 @@ void Circuit::adjustB(bool dc)
     }
 }
 
-void Circuit::nonLinearB(float alpha){
-    b = VectorXd::Zero(highestNodeNumber + voltageSources.size());
+void Circuit::nonLinearB(bool isDc, float alpha){
+    int extraZeroVSNumber = isDc ? inductorNumber : 0;
+
+    b = VectorXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
 
     int n, n1, n2;
     vector<int> nodes, extraNodes;
@@ -527,10 +564,20 @@ void Circuit::nonLinearB(float alpha){
     double current;
     // setup currents from non voltage source components
     for(const nodeCompPair ncp : nodalFunctions){
+         if(isDc && (typeid(*ncp.comp) == typeid(Capacitor) || typeid(*ncp.comp) == typeid(Inductor))){
+            continue; // Open/short circuit at DC => Don't contribute currents
+        }
+
         n = ncp.n;
         extraNodes = ncp.extraNodes;
         current = ncp.IV();
-        b(n-1) -= current*alpha;
+
+        //for source stepping (multiply all sources by alpha)
+        if(isDc && typeid(*ncp.comp) == typeid(CurrentSource)){
+            b(n-1) -= current*alpha;
+        }else{
+            b(n-1) -= current;
+        }
     }
 
     //adding voltages
