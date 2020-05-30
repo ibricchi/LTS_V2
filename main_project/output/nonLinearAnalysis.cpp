@@ -67,14 +67,6 @@ string runNonLinearTransience(Circuit& c, float t){
         newX = c.getX();
         c.updateNodalVoltages(); //update based on newX
 
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
-        // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
-        // cout << c.getA_inv().format(CleanFmt) << endl << endl;
-        // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
-        // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
-        // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
-
         count++;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
@@ -117,7 +109,6 @@ string runNonLinearTransience(Circuit& c, float t){
 // both matrixes are assumed to be x:1 matrixes with same x
 bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
     for(int i = 0; i < m1.rows(); i++){
-        // cout << m1(i) << " " << m2(i) << endl << endl;
         if(abs(m1(i) - m2(i)) > d){
             return false;
         }
@@ -183,9 +174,9 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
                 continue;
             }
 
-            c.nonLinearA();
+            c.nonLinearA(true);
             c.computeA_inv();
-            c.nonLinearB(alpha);
+            c.nonLinearB(true, alpha);
             c.computeNLX(0); //simply does A_inv*b (same as for linear x)
             currentX = newX;
             newX = c.getX();
