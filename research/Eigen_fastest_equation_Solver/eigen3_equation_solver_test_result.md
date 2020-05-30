@@ -18,8 +18,9 @@
 
 **Result comment:**  
 - Inverse method clearly wins when dealing with small matrices and lots of iterations
-- Inverse method is supposed to be slightly less accurate than the other methods. However, no difference between the results could be detected when comparing to 5 decimal places. Hence, the accuracy is sufficient for our needs and speed is more important. 
-- Reason why inverse method should be faster *(need to find source)*: The co_factor method for finding inverses doesn't require pivoting and is hence very efficient for small matrices. All other methods tested use pivoting which becomes more efficient as the matrix dimensions increase. 
+- Inverse method is supposed to be slightly less accurate than the other methods. However, no difference between the results could be detected when comparing to 5 decimal places. Hence, the accuracy is sufficient for our needs and speed is more important.  
+- Reason why inverse method should be faster *(need to find source)*: The co_factor method for finding inverses doesn't require pivoting and is hence very efficient for small matrices. All other methods tested use pivoting which becomes more efficient as the matrix dimensions increase.  
+<https://stackoverflow.com/questions/50909385/eigen-linear-solver-for-very-small-square-matrix>  
 
 **Further though:**  
 - The inverse method will only be the most efficient when the matrix dimensions are small

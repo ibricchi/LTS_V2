@@ -57,9 +57,27 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
     
     string outLine{};
     if(!c.hasNonLinearComponents()){
-        linearSetup(c); //compute A, b, A_inv, xMeaning
+        //DC operating point analysis. Results are not written to CSV file.
+        linearDCSetup(c);
+        runLinearTransience(c, -1);
+	//c.setupXMeaning();	
+	//cerr << c.getX() << endl;
+        // linearDCSetup(c);
+        // runLinearTransience(c, -1);
+        // cout << c.getB() <<endl<<endl; //testing only
+        // cout << c.getA() <<endl;
+        // c.setupXMeaning();
+        // for(auto & el : c.getXMeaning()){
+        //     cout << el <<endl;
+        // }
+	
+
+        linearSetup(c);
         for(float t = 0; t<=simulationTime; t += timeStep){
             outLine = runLinearTransience(c, t); 
+            // cout << c.getB() <<endl<<endl; //testing only
+            // cout << c.getA() <<endl;
+            // break;
             outputFile << outLine << endl;
         }
     }else{

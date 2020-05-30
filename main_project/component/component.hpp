@@ -74,6 +74,8 @@ public:
     
     vector<componentType> getTypes() const;
 
+//Initialises compCurrent for DC bias capacitors and inductors
+    virtual void initCompCurrent(float _voltage_or_current);
     //appends a node to the nodes vector
     void appendToNodes(int nodeToAppend);
 };
