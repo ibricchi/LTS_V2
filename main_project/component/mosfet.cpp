@@ -43,21 +43,21 @@ string Mosfet::getModelName() const{
 }
 
 double Mosfet::ivAtNode(int nin) const{
-    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
-    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
+    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
 
     float ID, GM, GO;
     ID = 0;
 
-    if(NMOS?(VGS<=VT):(VGS>=VT)){
+    if(VGS-VT<0){
         ID = 0;
         GM = 0;
         GO = 0;
-    }else if(NMOS?(VGS-VT<=VDS):(VGS-VT>=VDS)){
+    }else if(NMOS?(VGS-VT<VDS):(0<VDS+VGS+VT)){
         ID = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
         GM = sqrt(2*K*ID);
         GO = ID/VA;
-    }else if(NMOS?(VDS<=VGS-VT):(VDS>=VGS-VT)){
+    }else if(NMOS?(VDS <= VGS-VT):(VDS+VGS+VT<=0)){
         ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
@@ -87,20 +87,21 @@ double Mosfet::ivAtNode(int nin) const{
 }
 
 double Mosfet::divAtNode(int nin, int dnin) const{
-    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
-    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
+    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
 
     float ID, GM, GO;
+    ID = 0;
 
-    if(NMOS?(VGS<=VT):(VGS>=VT)){
+    if(VGS-VT<0){
         ID = 0;
         GM = 0;
         GO = 0;
-    }else if(NMOS?(VGS-VT<=VDS):(VGS-VT>=VDS)){
+    }else if(NMOS?(VGS-VT<VDS):(0<VDS+VGS+VT)){
         ID = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
         GM = sqrt(2*K*ID);
         GO = ID/VA;
-    }else if(NMOS?(VDS<=VGS-VT):(VDS>=VGS-VT)){
+    }else if(NMOS?(VDS <= VGS-VT):(VDS+VGS+VT<=0)){
         ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
