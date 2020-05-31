@@ -35,7 +35,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
-    int maxCount = 10; //reset to 500 after testing
+    int maxCount = 500;
     // float gamma = 0.1;
 
     do{
