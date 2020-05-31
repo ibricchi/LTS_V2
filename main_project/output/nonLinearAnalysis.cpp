@@ -125,13 +125,18 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         do{
             //check if step becomes too small
             if(step < minimumStep){
-                cerr << "The DC bias point could not be determined: Minimum step size reached." <<endl;
+                cerr << "The DC operating point could not be determined: Minimum step size reached." <<endl;
                 exit(1);
             }
 
             //check for divergence 
             if(count >= maxIterationsPerSourceStep){
                 if(firstConvergingAlpha == -1){
+                    if(alpha == 0){
+                        cerr << "The DC bias operating point could not be determined: Alpha cannot become smaller than 0." <<endl;
+                        exit(1);
+                    }
+
                     //if first convergence has not been found yet 
                     //=> decrease alpha and try again to find firstConvergingAlpha
                     alpha /= 2;
