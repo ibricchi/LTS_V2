@@ -26,8 +26,8 @@ public:
     BJT(string _name, float r, int n1, int n2);
     ~BJT() = default;
 
-    float ivAtNode(int n1) const override;
-    float divAtNode(int n1, int dn) const override;
+    double ivAtNode(int n1) const override;
+    double divAtNode(int n1, int dn) const override;
 
     vector<int> getNodes() const override;
 

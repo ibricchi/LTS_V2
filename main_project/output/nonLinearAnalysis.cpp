@@ -63,6 +63,9 @@ string runNonLinearTransience(Circuit& c, float t){
         c.updateNodalVoltages(); //update based on newX
 
         count++;
+
+        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        // cout << c.getA().format(CleanFmt) << endl << endl;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
@@ -124,9 +127,6 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
     VectorXd startX = c.getX();
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
-
-    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-    // cout << startX.format(CleanFmt) << endl << endl;
     
     do{
         //reset count
@@ -193,6 +193,10 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         alpha += step;
     }while(alpha < 1);
 
+    cout <<endl<<endl << "newX: " <<endl;
+    cout << newX;
+    cout <<endl<<endl;
+
     //initialize capacitors/inductors to DC bias point
     auto vcUpdatables = c.getVCUpdatablesRef();
     int numberOfInductors = c.getInductorNumber();
@@ -203,10 +207,6 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         float v1 = nodes.at(0) == 0 ? 0 : newX(nodes.at(0)-1);
         float v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
         float currentVoltage = v1 - v2;
-
-        cout <<endl<<endl << "newX: " <<endl;
-        cout << newX;
-        cout <<endl<<endl;
 
         //These next lines initialise the compCurrent values of capacitors and inductors based on DC bias values of voltage and current
         if(typeid(*up)==typeid(Capacitor)){

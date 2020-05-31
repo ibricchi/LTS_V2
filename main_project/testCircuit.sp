@@ -1,9 +1,11 @@
 Dependent source test
 *
-V1 N001 0 10
-R1 N002 N001 10k
-R2 N003 0 10k
-L1 N003 N002 100m
+V1 N002 0 20
+V2 N004 0 3
+R1 N001 N002 4k
+R2 N001 N003 1k
+R3 N001 0 4k
+D1 N003 N004
 *
-.tran 0.0001 .2 0 1
+.tran 0.0001 .002 0 1
 .end

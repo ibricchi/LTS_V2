@@ -2,6 +2,8 @@
 #include <vector>
 #include <cmath>
 
+#include <iostream> //testing only
+
 #include "diode.hpp"
 
 using namespace std;
@@ -50,22 +52,22 @@ void Diode::SetupValues(float _IS, float _N, float _VT){
     VT = _VT;
 }
 
-float Diode::ivAtNode(int n) const{
-    float v = nodalVoltages[0] - nodalVoltages[1];
-    double current = IS * (exp(v/N/VT) - 1) * (1-v/VT);
+double Diode::ivAtNode(int n) const{
+    double v = nodalVoltages[0] - nodalVoltages[1];
+    double current = (double)IS * (exp(v/N/VT) - 1) * (1-v/VT);
     if(n == nodes[1]){
         current*=-1;
     }
-    return (float)current;
+    return current;
 }
 
-float Diode::divAtNode(int n, int dn) const{
-    float v = nodalVoltages[0] - nodalVoltages[1];
-    double conductance = IS / N / VT * exp(v/N/VT);
+double Diode::divAtNode(int n, int dn) const{
+    double v = nodalVoltages[0] - nodalVoltages[1];
+    double conductance = (double)(IS / N / VT) * exp(v/N/VT);
     if(n != dn){
         conductance *= -1;
     }
-    return (float)conductance;
+    return conductance;
 }
 
 vector<int> Diode::getNodes() const{

@@ -9,10 +9,10 @@ CurrentControlledCurrentSource::CurrentControlledCurrentSource(string name, vect
     types.push_back(componentType::currentSource);
 }
 
-float CurrentControlledCurrentSource::ivAtNode(int n) const{
+double CurrentControlledCurrentSource::ivAtNode(int n) const{
     return 0;
 }
-float CurrentControlledCurrentSource::divAtNode(int n, int dn) const{
+double CurrentControlledCurrentSource::divAtNode(int n, int dn) const{
     return 0;
 }
 

@@ -15,10 +15,10 @@ struct nodeCompPair{
     vector<int> extraNodes;
     Component* comp;
 
-    float IV() const{
+    double IV() const{
         return comp->ivAtNode(n);
     }
-    float DIV(float dn) const{
+    double DIV(int dn) const{
         return comp->divAtNode(n, dn);
     }
 };

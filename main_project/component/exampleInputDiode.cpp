@@ -39,9 +39,9 @@ string ExampleInputDiode::getModelName() const{
     return modelName;
 }
 
-float ExampleInputDiode::ivAtNode(int n1) const{
+double ExampleInputDiode::ivAtNode(int n1) const{
     return 0.1; //incorrect, just for demonstration
 }
-float ExampleInputDiode::divAtNode(int n1, int dn) const{
+double ExampleInputDiode::divAtNode(int n1, int dn) const{
     return 0.1; //incorrect, just for demonstration
 }

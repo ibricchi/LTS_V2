@@ -39,7 +39,7 @@ string Mosfet::getModelName() const{
     return modelName;
 }
 
-float Mosfet::ivAtNode(int nin) const{
+double Mosfet::ivAtNode(int nin) const{
     double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
     double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
 
@@ -84,7 +84,7 @@ float Mosfet::ivAtNode(int nin) const{
     return current;
 }
 
-float Mosfet::divAtNode(int nin, int dnin) const{
+double Mosfet::divAtNode(int nin, int dnin) const{
     double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
     double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
 

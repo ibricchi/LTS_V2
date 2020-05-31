@@ -24,8 +24,8 @@ public:
     OpAmp(string _name, vector<string> args, vector<float> extraInfo);
     ~OpAmp() = default;
 
-    float ivAtNode(int n1) const override;
-    float divAtNode(int n1, int dn) const override;
+    double ivAtNode(int n1) const override;
+    double divAtNode(int n1, int dn) const override;
 
     vector<int> getNodes() const override;
 

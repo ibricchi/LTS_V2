@@ -92,9 +92,9 @@ vector<int> Capacitor::getNodes() const{
     return res;
 }
 
-float Capacitor::ivAtNode(int n) const{
+double Capacitor::ivAtNode(int n) const{
 	return compCurrent * (n==nodes[0] ? -1 : 1);
 }
-float Capacitor::divAtNode(int n, int dn) const{
+double Capacitor::divAtNode(int n, int dn) const{
 	return compConductance * (n==nodes[0] ? -1 : 1) * (dn==nodes[0] ? -1 : 1);
 }

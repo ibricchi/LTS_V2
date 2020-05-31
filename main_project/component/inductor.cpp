@@ -79,9 +79,9 @@ vector<int> Inductor::getNodes() const{
     return nodes;
 }
 
-float Inductor::ivAtNode(int n) const{
+double Inductor::ivAtNode(int n) const{
 	return compCurrent * (n==nodes[0] ? 1 : -1);
 }
-float Inductor::divAtNode(int n, int dn) const{
+double Inductor::divAtNode(int n, int dn) const{
 	return compConductance * (n==nodes[0] ? -1 : 1) * (dn==nodes[0] ? -1 : 1);
 }

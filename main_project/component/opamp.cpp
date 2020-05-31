@@ -25,13 +25,13 @@ vector<int> OpAmp::getNodes() const{
 }
 
 // get the IV characteristics of a component given two nodes
-float OpAmp::ivAtNode(int n1) const{
+double OpAmp::ivAtNode(int n1) const{
     cerr << "ivAtNode not implemented for opamp" <<endl;
     exit(1);
 }
 
 // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
-float OpAmp::divAtNode(int n1, int dn) const{
+double OpAmp::divAtNode(int n1, int dn) const{
     cerr << "divAtNode not implemented for opamp" <<endl;
     exit(1);
 }

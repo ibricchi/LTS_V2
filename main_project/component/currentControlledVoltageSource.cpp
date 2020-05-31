@@ -10,11 +10,11 @@ CurrentControlledVoltageSource::CurrentControlledVoltageSource(string name, vect
     types.push_back(componentType::voltageSource);
 }
 
-float CurrentControlledVoltageSource::ivAtNode(int n) const{
+double CurrentControlledVoltageSource::ivAtNode(int n) const{
     cerr << "ivAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }
-float CurrentControlledVoltageSource::divAtNode(int n, int dn) const{
+double CurrentControlledVoltageSource::divAtNode(int n, int dn) const{
     cerr << "divAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }

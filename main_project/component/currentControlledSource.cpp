@@ -24,11 +24,5 @@ string CurrentControlledSource::getVsName() const{
 }
 
 vector<int> CurrentControlledSource::getNodes() const{
-    // vector<int> res{};
-    // res.push_back(nodes.at(0));
-    // res.push_back(nodes.at(1));
-    // res.push_back(nodes.at(2));
-    // res.push_back(nodes.at(3));
-    // return res;
     return nodes;
 }
