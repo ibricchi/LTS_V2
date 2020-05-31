@@ -63,9 +63,6 @@ string runNonLinearTransience(Circuit& c, float t){
         c.updateNodalVoltages(); //update based on newX
 
         count++;
-
-        IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        cout << newX.format(CleanFmt) << endl << endl;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
@@ -128,9 +125,8 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
 
-    cout << endl<<endl << "initial x: " <<endl;
-    cout << startX <<endl;
-    cout << endl<<endl;
+    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+    // cout << startX.format(CleanFmt) << endl << endl;
     
     do{
         //reset count

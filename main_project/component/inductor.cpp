@@ -80,9 +80,8 @@ vector<int> Inductor::getNodes() const{
 }
 
 float Inductor::ivAtNode(int n) const{
-	cout << compCurrent << endl;
 	return compCurrent * (n==nodes[0] ? 1 : -1);
 }
 float Inductor::divAtNode(int n, int dn) const{
-	return compConductance;
+	return compConductance * (n==nodes[0] ? -1 : 1) * (dn==nodes[0] ? -1 : 1);
 }
