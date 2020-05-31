@@ -1,6 +1,6 @@
 Dependent source test
 *
-V1 N002 0 20
+V1 N002 0 40
 V2 N004 0 3
 R1 N001 N002 4k
 R2 N001 N003 1k

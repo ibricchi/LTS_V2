@@ -10,20 +10,10 @@
 
 #include "nonLinearAnalysis.hpp"
 
-void nonLinearDCSetup(Circuit& c){
-    c.setupCurrentControlledSources(c);
-    c.nlSetup();
-    c.nonLinearA(true);
-    c.nonLinearB(true);
-    c.computeA_inv();
-    c.computeNLX(0);
-    // c.updateNodalVoltages();
-}
-
 void nonLinearSetup(Circuit& c){
     c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
-    c.nlSetup();
-};
+    c.nlSetup(); //make x bigger by adding isDc option
+}
 
 string runNonLinearTransience(Circuit& c, float t){
     //get references to the components stored inside the circuit
@@ -45,8 +35,8 @@ string runNonLinearTransience(Circuit& c, float t){
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
-    int maxCount = 500;
-    float gamma = 0.1;
+    int maxCount = 10; //reset to 500 after testing
+    // float gamma = 0.1;
 
     do{
         if(count > maxCount){
@@ -57,7 +47,7 @@ string runNonLinearTransience(Circuit& c, float t){
         c.nonLinearA();
         c.computeA_inv();
         c.nonLinearB();
-        c.computeNLX(gamma); //simply does A_inv*b (same as for linear x)
+        c.computeNLX(0); //simply does A_inv*b (same as for linear x)
         currentX = newX;
         newX = c.getX();
         c.updateNodalVoltages(); //update based on newX
@@ -65,7 +55,7 @@ string runNonLinearTransience(Circuit& c, float t){
         count++;
 
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << c.getA().format(CleanFmt) << endl << endl;
+        // cout << c.getX().format(CleanFmt) << endl << endl;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
@@ -119,23 +109,23 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
     //DC bias is reached when Newton-Raphson converges and alpha is 1
 
     float alpha = 1; //factor that the source values are multiplied by
-    float step = 0.1; //step that alpha is increases by (after firstConvergingAlpha has been found)
-    float firstConvergingAlpha = nanf(""); //determined while decreasing alpha from 1 during first iteration
+    float step = 0.05; //step that alpha is increases by (after firstConvergingAlpha has been found)
+    float firstConvergingAlpha = -1; //determined while decreasing alpha from 1 during first iteration
     VectorXd lastConvergingX;
 
     int count{};
     VectorXd startX = c.getX();
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
-    
+     
     do{
         //reset count
         count = 0;
 
         do{
-            cout << "count: " << count <<endl;
-            cout << "step: " << step <<endl;
-            cout << "alpha: " << alpha <<endl;
+            // cout << "count: " << count <<endl;
+            // cout << "step: " << step <<endl;
+            // cout << "alpha: " << alpha <<endl<<endl;
 
             //check if step becomes too small
             if(step < minimumStep){
@@ -144,14 +134,15 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             }
 
             //check for divergence 
-            if(count > maxIterationsPerSourceStep){
-                if(firstConvergingAlpha == nanf("")){
+            if(count >= maxIterationsPerSourceStep){
+                if(firstConvergingAlpha == -1){
                     //if first convergence has not been found yet 
                     //=> decrease alpha and try again to find firstConvergingAlpha
                     alpha /= 2;
 
                     //reset circuit to starting values
                     currentX = startX;
+                    
                     c.setX(startX); //required for updateNodalVoltages to work
                     c.updateNodalVoltages();
                 }else{
@@ -177,13 +168,22 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             newX = c.getX();
             c.updateNodalVoltages(); //update based on newX
 
+            // cout <<endl<<endl << "newX: " <<endl;
+            // cout << newX;
+            // cout <<endl<<endl;
+            // cout << "currentX: " <<endl;
+            // cout << currentX;
+            // cout <<endl<<endl;
+
             count++;
         }
         while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
         //check if current convergence is first convergence
-        if(firstConvergingAlpha == nanf("")){
+        if(firstConvergingAlpha == -1){
             firstConvergingAlpha = alpha;
+
+            // cout << "first convergence" <<endl;
         }
 
         //save current x as last converging x
@@ -192,10 +192,6 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         //step up sources
         alpha += step;
     }while(alpha < 1);
-
-    cout <<endl<<endl << "newX: " <<endl;
-    cout << newX;
-    cout <<endl<<endl;
 
     //initialize capacitors/inductors to DC bias point
     auto vcUpdatables = c.getVCUpdatablesRef();
