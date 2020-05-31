@@ -16,6 +16,6 @@ double CurrentControlledCurrentSource::divAtNode(int n, int dn) const{
     return 0;
 }
 
-float CurrentControlledCurrentSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return x(highestNodeNumber+nodes[2]) * gain; //nodes[2] = idx of voltage source that the controlling current flows through
+string CurrentControlledCurrentSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    return to_string(x(highestNodeNumber+nodes[2]) * gain); //nodes[2] = idx of voltage source that the controlling current flows through
 }

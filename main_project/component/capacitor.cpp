@@ -48,16 +48,16 @@ float Capacitor::getCurrent() const{
 	return compCurrent;
 }
 
-float Capacitor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string Capacitor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
 	voltage = nodalVoltages[0] - nodalVoltages[1];
 
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
 		prevTotalCurrent = res;
 		
-		return res;	
+		return to_string(res);	
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrent");
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrentString");
 	}
 }
 

@@ -41,15 +41,15 @@ float Inductor::getCurrent() const{
 	return -compCurrent; //So it's in the right direction, as current source points towards negative.
 }
 
-float Inductor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string Inductor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
 	voltage = nodalVoltages[0] - nodalVoltages[1];
 
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance + compConductance*compVoltage +prevTotalCurrent; //
 		prevTotalCurrent = res;
-		return res; //negative as current flows from n1 to n2 of inductor
+		return to_string(res); //negative as current flows from n1 to n2 of inductor
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/getTotalCurrent");
+		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/getTotalCurrentString");
 	}
 }
 

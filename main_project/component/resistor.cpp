@@ -31,8 +31,8 @@ double Resistor::divAtNode(int n1, int dn) const{
     return conductance * (n1==nodes[0]?-1:1) * (dn==nodes[0]?-1:1);
 }
 
-float Resistor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string Resistor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     voltage = nodalVoltages[0] - nodalVoltages[1];
 
-    return conductance*voltage;
+    return to_string(conductance*voltage);
 }

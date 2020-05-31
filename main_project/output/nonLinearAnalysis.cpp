@@ -70,7 +70,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     //output component currents
     for(const auto &comp : components){
-        outLine += "," + to_string(comp->getTotalCurrent(newX, highestNodeNumber));
+        outLine += "," + comp->getTotalCurrentString(newX, highestNodeNumber);
     }
 
     // update components before next calculation of b
@@ -87,7 +87,7 @@ string runNonLinearTransience(Circuit& c, float t){
         float v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 
-        //Need to call getTotalCurrent before updateVals
+        //Need to call getTotalCurrentString before updateVals
         up->updateVals(currentVoltage, 0, 1);
     }
 
@@ -204,8 +204,8 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             whichInductor++;
         }	
 		
-        //Need to call getTotalCurrent before updateVals
-        up->getTotalCurrent(newX, c.getHighestNodeNumber());
+        //Need to call getTotalCurrentString before updateVals
+        up->getTotalCurrentString(newX, c.getHighestNodeNumber());
         up->updateVals(currentVoltage, 0, 1);
     }
 }

@@ -37,7 +37,7 @@ public:
     //get the total current that flows through a component
     //this will be the current that is written to the csv file
     //the current x vector must be passed as an argument (needed to get the current through voltage sources)
-    virtual float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  = 0;
+    virtual string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  = 0;
     
     virtual float getGain() const;
     virtual string getVsName() const;

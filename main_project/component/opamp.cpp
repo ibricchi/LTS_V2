@@ -31,6 +31,6 @@ double OpAmp::divAtNode(int n1, int dn) const{
     exit(1);
 }
 
-float OpAmp::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return x(highestNodeNumber+voltageSourcesIdx);
+string OpAmp::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    return to_string(x(highestNodeNumber+voltageSourcesIdx));
 }

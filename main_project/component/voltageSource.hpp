@@ -12,7 +12,7 @@ private:
     int sourceType;
 
     //index of the voltageSource inside the voltageSources vector
-    //used for getTotalCurrent
+    //used for getTotalCurrentString
     int voltageSourcesIdx;
 
     //used for dc
@@ -34,7 +34,7 @@ public:
 
     float getVoltage() const override;
 
-    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
+    string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

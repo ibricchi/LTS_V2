@@ -18,7 +18,7 @@ private:
     string modelName;
 
     //index of the voltageSource inside the voltageSources vector
-    //used for getTotalCurrent
+    //used for getTotalCurrentString
     int voltageSourcesIdx;
 public:
     OpAmp(string _name, vector<string> args, vector<float> extraInfo);
@@ -27,7 +27,7 @@ public:
     double ivAtNode(int n1) const override;
     double divAtNode(int n1, int dn) const override;
 
-    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
+    string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

@@ -55,7 +55,7 @@ string Diode::getModelName() const{
     return modelName;
 }
 
-float Diode::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string Diode::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current through current source and current through resistor
-    return nanf("");
+    return "not implemented";
 }

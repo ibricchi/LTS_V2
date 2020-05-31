@@ -18,7 +18,7 @@ public:
 
     float getConductance() const override;
 
-    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
+    string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

@@ -167,6 +167,7 @@ double BJT::divAtNode(int nin, int dnin) const{
     return conductance;
 }
 
-float BJT::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return nanf("");
+string BJT::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    return "not implemented";
+    //return comma seperated string with all 3 currents
 }

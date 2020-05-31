@@ -19,6 +19,6 @@ double VoltageControlledVoltageSource::divAtNode(int n, int dn) const{
     exit(1);
 }
 
-float VoltageControlledVoltageSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return x(highestNodeNumber+voltageSourcesIdx);
+string VoltageControlledVoltageSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    return to_string(x(highestNodeNumber+voltageSourcesIdx));
 }

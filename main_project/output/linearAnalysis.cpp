@@ -60,7 +60,7 @@ string runLinearTransience(Circuit& c, float t){
     c.updateNodalVoltages();
 	//output component currents    
 	for(const auto &comp : components){
-        outLine += "," + to_string(comp->getTotalCurrent(x, highestNodeNumber));
+        outLine += "," + comp->getTotalCurrentString(x, highestNodeNumber);
     }
     
     // update components before next calculation of b
@@ -94,10 +94,10 @@ string runLinearTransience(Circuit& c, float t){
         // cout << "voltage: " << currentVoltage <<endl;
         // cout << "conductance: " << up->getConductance() <<endl;
         // cout << "current: " << up->getCurrent() <<endl;
-        // //cout << "total current: " << up->getTotalCurrent(currentVoltage) <<endl;
+        // //cout << "total current: " << up->getTotalCurrentString(currentVoltage) <<endl;
         // cout <<endl<<endl;
 
-    //Must be run after getTotalCurrent
+    //Must be run after getTotalCurrentString
 	 up->updateVals(currentVoltage, 0, 1);
     }
 

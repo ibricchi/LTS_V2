@@ -162,7 +162,7 @@ double Mosfet::divAtNode(int nin, int dnin) const{
     return conductance;
 }
 
-float Mosfet::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current through dependent current source + through current source + through resistor
-    return nanf("");
+    return "not implemented";
 }
