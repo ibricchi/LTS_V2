@@ -53,15 +53,6 @@ float VoltageSource::getVoltage() const{
 void VoltageSource::updateVals(float time){
     voltage = voltageWaveform.updateVals(time);
 }
-
-//voltageSource is a two terminal device that has two nodes
-vector<int> VoltageSource::getNodes() const{
-    vector<int> res{};
-    res.push_back(nodes.at(0));
-    res.push_back(nodes.at(1));
-    return res;
-}
-
 double VoltageSource::ivAtNode(int n) const{
 	return 1;
 }

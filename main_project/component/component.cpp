@@ -11,6 +11,10 @@ Component::~Component(){}
 // these functions should by default throw error unless overwritten by another child class down the line
 // this allows to call an error if ever a function that shouldn't be returning a voltage or current or conductance
 // is asked for one
+vector<int> Component::getNodes() const{
+	return nodes;
+}
+
 float Component::getVoltage() const{
 	cerr << "Tried to call getVoltage from a component that doesn't support it" <<endl;
 	exit(1);

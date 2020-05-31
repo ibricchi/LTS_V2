@@ -18,7 +18,6 @@ public:
 	Capacitor(string name, vector<string> args, vector<float> extraInfo);
 	~Capacitor() = default;
 	float getConductance() const override;
-	vector<int> getNodes() const ;
 
 	double ivAtNode(int n1) const override;
     double divAtNode(int n1, int dn) const override;

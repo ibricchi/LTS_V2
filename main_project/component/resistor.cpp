@@ -21,15 +21,6 @@ float Resistor::getConductance() const{
     return conductance;
 }
 
-//resistor is a two terminal device that has two nodes
-//why not just return nodes?
-vector<int> Resistor::getNodes() const{
-    vector<int> res{};
-    res.push_back(nodes.at(0));
-    res.push_back(nodes.at(1));
-    return res;
-}
-
 // get the IV characteristics of a component given two nodes
 double Resistor::ivAtNode(int n1) const{
     return 0;

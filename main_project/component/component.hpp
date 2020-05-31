@@ -44,7 +44,7 @@ public:
     virtual string getModelName() const;
     
     string getName() const;
-    virtual vector<int> getNodes() const = 0;
+    vector<int> getNodes() const;
 
     // these are used for non linear analysis
     void setNodalVoltages(vector<float> v);

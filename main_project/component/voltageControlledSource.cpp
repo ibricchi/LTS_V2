@@ -17,8 +17,3 @@ VoltageControlledSource::~VoltageControlledSource(){}
 float VoltageControlledSource::getGain() const{
     return gain;
 }
-
-// 2 output nodes (N+, N-) and 2 controlling nodes (NC+, NC-)
-vector<int> VoltageControlledSource::getNodes() const{
-    return nodes;
-}

@@ -85,13 +85,6 @@ void Capacitor::initCompCurrent(float _voltage){ //_voltage corresponds to the D
 	prevTotalCurrent = 0;
 }
 
-vector<int> Capacitor::getNodes() const{
-    vector<int> res{};
-    res.push_back(nodes.at(0));
-    res.push_back(nodes.at(1));
-    return res;
-}
-
 double Capacitor::ivAtNode(int n) const{
 	return compCurrent * (n==nodes[0] ? -1 : 1);
 }

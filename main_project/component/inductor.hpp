@@ -18,7 +18,6 @@ public:
 	Inductor(string name, vector<string> args, vector<float> extraInfo);
 	~Inductor() = default;
 	float getConductance() const override;
-	vector<int> getNodes() const ;
 
 	double ivAtNode(int n) const override;
     double divAtNode(int n, int dn) const override;

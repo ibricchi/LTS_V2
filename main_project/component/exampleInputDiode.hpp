@@ -26,7 +26,6 @@ public:
     ~ExampleInputDiode() = default;
 
     void addParam(int paramId, float paramValue);
-    vector<int> getNodes() const override;
     string getModelName() const override;
 
     double ivAtNode(int n1) const override;

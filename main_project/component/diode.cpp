@@ -51,10 +51,6 @@ double Diode::divAtNode(int n, int dn) const{
     return conductance;
 }
 
-vector<int> Diode::getNodes() const{
-    return nodes;
-}
-
 string Diode::getModelName() const{
     return modelName;
 }

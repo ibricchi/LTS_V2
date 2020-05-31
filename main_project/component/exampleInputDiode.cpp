@@ -31,10 +31,6 @@ void ExampleInputDiode::addParam(int paramId, float paramValue){
     }
 }
 
-vector<int> ExampleInputDiode::getNodes() const{
-    return nodes;
-}
-
 string ExampleInputDiode::getModelName() const{
     return modelName;
 }

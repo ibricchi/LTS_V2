@@ -75,10 +75,6 @@ void Inductor::initCompCurrent(float _current){
 	prevTotalCurrent = _current;
 }
 
-vector<int> Inductor::getNodes() const{
-    return nodes;
-}
-
 double Inductor::ivAtNode(int n) const{
 	return compCurrent * (n==nodes[0] ? 1 : -1);
 }

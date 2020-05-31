@@ -22,7 +22,3 @@ float CurrentControlledSource::getGain() const{
 string CurrentControlledSource::getVsName() const{
     return vsName;
 }
-
-vector<int> CurrentControlledSource::getNodes() const{
-    return nodes;
-}

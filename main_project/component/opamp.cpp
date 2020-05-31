@@ -19,11 +19,6 @@ OpAmp::OpAmp(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::voltageSource);
 }
 
-//resistor is a two terminal device that has two nodes
-vector<int> OpAmp::getNodes() const{
-    return nodes;
-}
-
 // get the IV characteristics of a component given two nodes
 double OpAmp::ivAtNode(int n1) const{
     cerr << "ivAtNode not implemented for opamp" <<endl;
