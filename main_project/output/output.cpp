@@ -53,7 +53,7 @@ void outputCSV(Circuit& c, string outputFileName){
 }
 
 void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulationTime){
-    // c.setHasNonLinearComponents(true); //TESTING ONLY
+    c.setHasNonLinearComponents(true); //TESTING ONLY
     
     string outLine{};
     if(!c.hasNonLinearComponents()){
@@ -64,14 +64,13 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         linearSetup(c);
         for(float t = 0; t<=simulationTime; t += timeStep){
             outLine = runLinearTransience(c, t); 
-            // cout << c.getB() <<endl<<endl; //testing only
-            // cout << c.getA() <<endl;
-            // break;
+            
             outputFile << outLine << endl;
         }
     }else{
-        nonLinearDCSetup(c);
-        initializeDcBias(c);
+        //DC operating point analysis. Results are not written to CSV file.
+        // nonLinearDCSetup(c);
+        // initializeDcBias(c);
 
         nonLinearSetup(c);
         for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps

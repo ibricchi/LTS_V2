@@ -40,13 +40,8 @@ string runNonLinearTransience(Circuit& c, float t){
 
     const float threshold = .001;
 
-    // c.updateNodalVoltages();
-    // VectorXd startX = c.getX();
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
-
-    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-    // cout << newX.format(CleanFmt) << endl << endl;
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
@@ -69,10 +64,8 @@ string runNonLinearTransience(Circuit& c, float t){
 
         count++;
 
-
-        // cout << endl<<endl;
-        // cout << c.getB();
-        // cout << endl<<endl;
+        IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        cout << newX.format(CleanFmt) << endl << endl;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
@@ -104,6 +97,7 @@ string runNonLinearTransience(Circuit& c, float t){
         float v2 = nodes.at(1) == 0 ? 0 : newX(nodes.at(1)-1);
         currentVoltage = v1 - v2;
 
+        //Need to call getTotalCurrent before updateVals
         up->updateVals(currentVoltage, 0, 1);
     }
 
