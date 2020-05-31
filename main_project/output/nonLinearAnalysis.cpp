@@ -10,9 +10,9 @@
 
 #include "nonLinearAnalysis.hpp"
 
-void nonLinearSetup(Circuit& c){
+void nonLinearSetup(Circuit& c, bool isDc){
     c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
-    c.nlSetup(); //make x bigger by adding isDc option
+    c.nlSetup(isDc);
 }
 
 string runNonLinearTransience(Circuit& c, float t){
@@ -123,10 +123,6 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         count = 0;
 
         do{
-            // cout << "count: " << count <<endl;
-            // cout << "step: " << step <<endl;
-            // cout << "alpha: " << alpha <<endl<<endl;
-
             //check if step becomes too small
             if(step < minimumStep){
                 cerr << "The DC bias point could not be determined: Minimum step size reached." <<endl;
@@ -168,13 +164,6 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             newX = c.getX();
             c.updateNodalVoltages(); //update based on newX
 
-            // cout <<endl<<endl << "newX: " <<endl;
-            // cout << newX;
-            // cout <<endl<<endl;
-            // cout << "currentX: " <<endl;
-            // cout << currentX;
-            // cout <<endl<<endl;
-
             count++;
         }
         while(!matrixDiffBellowThreshold(currentX, newX, threshold));
@@ -182,8 +171,6 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         //check if current convergence is first convergence
         if(firstConvergingAlpha == -1){
             firstConvergingAlpha = alpha;
-
-            // cout << "first convergence" <<endl;
         }
 
         //save current x as last converging x

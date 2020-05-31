@@ -69,9 +69,10 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         }
     }else{
         //DC operating point analysis. Results are not written to CSV file.
-        nonLinearSetup(c);
+        nonLinearSetup(c, true);
         initializeDcBias(c);
 
+        nonLinearSetup(c);
         for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
             outLine = runNonLinearTransience(c, t); 
             outputFile << outLine << endl;

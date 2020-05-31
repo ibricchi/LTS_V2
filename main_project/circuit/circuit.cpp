@@ -131,11 +131,12 @@ vector<Component*>& Circuit::getNonLinearsRef(){
 }
 
 // setup for non linear
-void Circuit::nlSetup(){
+void Circuit::nlSetup(bool isDc){
     int nvc = nonVoltageSources.size();
     int vsc = voltageSources.size();
+    int extraZeroVSNumber = isDc ? inductorNumber : 0;
 
-    x = VectorXd::Zero(highestNodeNumber + vsc);
+    x = VectorXd::Zero(highestNodeNumber + vsc + extraZeroVSNumber);
 
     // sets up nodalFunctions vector
     // very similar to the setup of A in linear analysis

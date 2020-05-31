@@ -150,7 +150,7 @@ public:
     }
 
     // non linear setup
-    void nlSetup();
+    void nlSetup(bool isDc = false);
 
     // operation to create A
     void setupA(bool isDc = false);
