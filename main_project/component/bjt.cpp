@@ -88,12 +88,15 @@ double BJT::ivAtNode(int nin){
     switch(n){
         case n::C:
             current = IC;
+            lastIc = -current;
             break;
         case n::B:
             current = IB;
+            lastIb = -current;
             break;
         case n::E:
             current = -IE;
+            lastIe = -current;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
@@ -172,6 +175,6 @@ string BJT::getCurrentHeadingName() const{
 }
 
 string BJT::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return "not implemented, not implemented, not implemented";
-    //return comma seperated string with all 3 currents
+    //sufficient or also need to add current through resistors and dependent current sources?
+    return to_string(lastIc) + "," + to_string(lastIb) + "," + to_string(lastIe);
 }

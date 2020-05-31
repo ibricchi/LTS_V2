@@ -170,6 +170,6 @@ string Mosfet::getCurrentHeadingName() const{
 }
 
 string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    //current through dependent current source + through current source + through resistor
+    //is this sufficient or also need to add current through resistor and dependent current source?
     return to_string(lastId) + "," + to_string(lastIg) + "," + to_string(lastIs);
 }

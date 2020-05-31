@@ -13,6 +13,9 @@ private:
     float BR = 1.0;
     float VT = 0.025;
 
+    //used for current csv output
+    float lastIc, lastIb, lastIe;
+
     // don't know if I could replace with enum
     enum n{
         C = 0,
