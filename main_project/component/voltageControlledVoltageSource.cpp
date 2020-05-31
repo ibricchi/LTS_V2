@@ -10,7 +10,7 @@ VoltageControlledVoltageSource::VoltageControlledVoltageSource(string name, vect
     types.push_back(componentType::voltageSource);
 }
 
-double VoltageControlledVoltageSource::ivAtNode(int n) const{
+double VoltageControlledVoltageSource::ivAtNode(int n){
     cerr << "ivAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }

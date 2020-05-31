@@ -42,7 +42,7 @@ string Mosfet::getModelName() const{
     return modelName;
 }
 
-double Mosfet::ivAtNode(int nin) const{
+double Mosfet::ivAtNode(int nin){
     double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
     double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
 
@@ -74,12 +74,15 @@ double Mosfet::ivAtNode(int nin) const{
     switch(n){
         case n::D:
             current = ID-GM*VGS-GO*VDS;
+            lastId = -current;
             break;
         case n::G:
             current = 0;
+            lastIg = -current;
             break;
         case n::S:
             current = -(ID-GM*VGS-GO*VDS);
+            lastIs = -current;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
@@ -168,5 +171,5 @@ string Mosfet::getCurrentHeadingName() const{
 
 string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current through dependent current source + through current source + through resistor
-    return "not implemented, not implemented, not implemented";
+    return to_string(lastId) + "," + to_string(lastIg) + "," + to_string(lastIs);
 }

@@ -15,7 +15,7 @@ public:
     Diode(string _name, vector<string> args, vector<float> extraInfo);
     ~Diode() = default;
 
-    double ivAtNode(int n1) const override;
+    double ivAtNode(int n1) override;
     double divAtNode(int n1, int dn) const override;
 
     void addParam(int paramId, float paramValue);

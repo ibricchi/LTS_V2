@@ -53,7 +53,7 @@ float VoltageSource::getVoltage() const{
 void VoltageSource::updateVals(float time){
     voltage = voltageWaveform.updateVals(time);
 }
-double VoltageSource::ivAtNode(int n) const{
+double VoltageSource::ivAtNode(int n){
 	return 1;
 }
 double VoltageSource::divAtNode(int n, int dn) const{

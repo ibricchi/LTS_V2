@@ -28,7 +28,7 @@ public:
     void addParam(int paramId, float paramValue);
     string getModelName() const override;
 
-    double ivAtNode(int n1) const override;
+    double ivAtNode(int n1) override;
     double divAtNode(int n1, int dn) const override;
 };
 

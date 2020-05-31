@@ -20,7 +20,7 @@ OpAmp::OpAmp(string name, vector<string> args, vector<float> extraInfo)
 }
 
 // get the IV characteristics of a component given two nodes
-double OpAmp::ivAtNode(int n1) const{
+double OpAmp::ivAtNode(int n1){
     cerr << "ivAtNode not implemented for opamp" <<endl;
     exit(1);
 }

@@ -14,6 +14,9 @@ private:
     bool hasVA = false;
     bool NMOS = true;
 
+    //used for current csv output
+    float lastId, lastIg, lastIs;
+
     enum n{
         D = 0,
         G = 1,
@@ -28,7 +31,7 @@ public:
     void addParam(int paramId, float paramValue) override;
     string getModelName() const override;
 
-    double ivAtNode(int n1) const override;
+    double ivAtNode(int n1) override;
     double divAtNode(int n1, int dn) const override;
 
     string getCurrentHeadingName() const override;

@@ -56,7 +56,7 @@ void BJT::SetupValues(float _BF, float _IFS, bool _hasVAF, float _VAF){
     VAF = _VAF;
 }
 
-double BJT::ivAtNode(int nin) const{
+double BJT::ivAtNode(int nin){
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
     double VCE = 0; //temporary

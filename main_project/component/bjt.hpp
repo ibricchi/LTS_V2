@@ -26,7 +26,7 @@ public:
     BJT(string _name, float r, int n1, int n2);
     ~BJT() = default;
 
-    double ivAtNode(int n1) const override;
+    double ivAtNode(int n1) override;
     double divAtNode(int n1, int dn) const override;
 
     string getCurrentHeadingName() const override;

@@ -56,7 +56,7 @@ public:
     // these are used for non linear analysis
     void setNodalVoltages(vector<float> v);
     // get the IV characteristics of a component given two nodes
-    virtual double ivAtNode(int n1) const =0;
+    virtual double ivAtNode(int n1) =0;
     // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
     virtual double divAtNode(int n1, int dn) const =0;
 

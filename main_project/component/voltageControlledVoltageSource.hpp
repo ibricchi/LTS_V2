@@ -15,7 +15,7 @@ public:
     VoltageControlledVoltageSource(string _name, vector<string> args, vector<float> extraInfo);
     ~VoltageControlledVoltageSource() = default;
 
-    double ivAtNode(int n) const override;
+    double ivAtNode(int n) override;
     double divAtNode(int n, int dn) const override;
 
     string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;

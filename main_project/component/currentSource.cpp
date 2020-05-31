@@ -55,7 +55,7 @@ void CurrentSource::updateVals(float time){
 }
 
 // iv functions
-double CurrentSource::ivAtNode(int n1) const{
+double CurrentSource::ivAtNode(int n1){
 	return current * (n1==nodes[0]?-1:1);
 }
 double CurrentSource::divAtNode(int n1, int dn) const{

@@ -9,7 +9,7 @@ VoltageControlledCurrentSource::VoltageControlledCurrentSource(string name, vect
     types.push_back(componentType::currentSource);
 }
 
-double VoltageControlledCurrentSource::ivAtNode(int n) const{
+double VoltageControlledCurrentSource::ivAtNode(int n){
     return 0;
 }
 double VoltageControlledCurrentSource::divAtNode(int n, int dn) const{

@@ -19,7 +19,7 @@ public:
 	~Inductor() = default;
 	float getConductance() const override;
 
-	double ivAtNode(int n) const override;
+	double ivAtNode(int n) override;
     double divAtNode(int n, int dn) const override;
 
 	float getCurrent() const override;

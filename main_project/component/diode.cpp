@@ -33,7 +33,7 @@ void Diode::addParam(int paramId, float paramValue){
     }
 }
 
-double Diode::ivAtNode(int n) const{
+double Diode::ivAtNode(int n){
     double v = nodalVoltages[0] - nodalVoltages[1];
     double current = (double)IS * (exp(v/N/VT) - 1) * (1-v/VT);
     if(n == nodes[1]){

@@ -22,7 +22,7 @@ float Resistor::getConductance() const{
 }
 
 // get the IV characteristics of a component given two nodes
-double Resistor::ivAtNode(int n1) const{
+double Resistor::ivAtNode(int n1){
     return 0;
 }
 
