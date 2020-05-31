@@ -39,6 +39,12 @@ ModelStatement::ModelStatement(vector<string> args){
     const string delimiter = "="; //separates paramName and paramValue
     string param{}, paramName{}, paramValueStr{};
     float paramValue{};
+
+    // checks for PMOS and will check for pnp
+    if(componentName == component::PMOS){
+        params.emplace(static_cast<int>(mosfetParamType::TYPE), 0);
+    }
+
     for(int i{2}; i<args.size(); i++){
         param = args.at(i);
 

@@ -39,6 +39,7 @@ enum struct diodeParamType{
     // IBV //reverse bias breakdown current
 };
 enum struct mosfetParamType{
+    TYPE,
     K, // transconductance
     ISat, // saturation current
     VT, // theshold voltage

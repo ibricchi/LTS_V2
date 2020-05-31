@@ -22,6 +22,9 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
 
 void Mosfet::addParam(int paramId, float paramValue){
     switch(static_cast<mosfetParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
+        case mosfetParamType::TYPE:
+            NMOS = false;
+            break;
         case mosfetParamType::K:
             K = paramValue;
             break;

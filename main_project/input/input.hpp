@@ -43,6 +43,7 @@ struct ModelStatement{
         {"N", diodeParamType::N}
     };
     const unordered_map<string, mosfetParamType> mosfetParamTable = {
+        {"TYPE", mosfetParamType::TYPE},
         {"K", mosfetParamType::K},
         {"VT", mosfetParamType::VT},
         {"VA", mosfetParamType::VA}

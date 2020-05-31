@@ -14,7 +14,6 @@ private:
     bool hasVA = false;
     bool NMOS = true;
 
-    // don't know if I could replace with enum
     enum n{
         D = 0,
         G = 1,
