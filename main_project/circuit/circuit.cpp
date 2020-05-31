@@ -21,6 +21,7 @@ Circuit::Circuit()
     currentTime = 0;
     timeStep = 0.001; // in seconds
     highestNodeNumber = 0;
+    inductorNumber = 0;
     hasNonLinear = false;
 }
 

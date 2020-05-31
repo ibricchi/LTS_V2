@@ -9,29 +9,30 @@
 // for debugging only
 #include <circuit/circuit.cpp>
 
-#include <component/component.cpp>
-#include <component/resistor.cpp>
-#include <component/capacitor.cpp>
-#include <component/inductor.cpp>
-#include <component/voltageSource.cpp>
-#include <component/currentSource.cpp>
-#include <component/waveform.cpp>
-#include <component/currentControlledSource.cpp>
-#include <component/voltageControlledSource.cpp>
-#include <component/currentControlledVoltageSource.cpp>
-#include <component/currentControlledCurrentSource.cpp>
-#include <component/voltageControlledVoltageSource.cpp>
-#include <component/voltageControlledCurrentSource.cpp>
-#include <component/diode.cpp>
 #include <component/bjt.cpp>
+#include <component/capacitor.cpp>
+#include <component/component.cpp>
+#include <component/currentControlledCurrentSource.cpp>
+#include <component/currentControlledSource.cpp>
+#include <component/currentControlledVoltageSource.cpp>
+#include <component/currentSource.cpp>
+#include <component/diode.cpp>
+#include <component/exampleInputDiode.hpp>
+#include <component/inductor.cpp>
 #include <component/mosfet.cpp>
 #include <component/opamp.cpp>
+#include <component/resistor.cpp>
+#include <component/voltageControlledCurrentSource.cpp>
+#include <component/voltageControlledSource.cpp>
+#include <component/voltageControlledVoltageSource.cpp>
+#include <component/voltageSource.cpp>
+#include <component/waveform.cpp>
 
 #include <input/input.cpp>
 
-#include <output/output.cpp>
 #include <output/linearAnalysis.cpp>
 #include <output/nonLinearAnalysis.cpp>
+#include <output/output.cpp>
 
 using namespace std;
 

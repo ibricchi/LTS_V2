@@ -46,18 +46,17 @@ double Mosfet::ivAtNode(int nin) const{
     float ID, GM, GO;
     ID = 0;
 
-    if(VGS-VT<0){
+    if(NMOS?(VGS<=VT):(VGS>=VT)){
         ID = 0;
         GM = 0;
         GO = 0;
-    }else if(VGS-VT<VDS){
+    }else if(NMOS?(VGS-VT<=VDS):(VGS-VT>=VDS)){
         ID = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
         GM = sqrt(2*K*ID);
         GO = ID/VA;
-    }else if(VDS <= VGS-VT){
+    }else if(NMOS?(VDS<=VGS-VT):(VDS>=VGS-VT)){
         ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
-        // k * ((vgs - vt) - vds);
         GO = K*((VGS-VT)-VDS);
     }else{
         cerr << "mosfet in a non supported state" << endl;
@@ -90,15 +89,15 @@ double Mosfet::divAtNode(int nin, int dnin) const{
 
     float ID, GM, GO;
 
-    if(VGS - VT < 0){
+    if(NMOS?(VGS<=VT):(VGS>=VT)){
         ID = 0;
         GM = 0;
         GO = 0;
-    }else if(VGS-VT < VDS){
+    }else if(NMOS?(VGS-VT<=VDS):(VGS-VT>=VDS)){
         ID = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
         GM = sqrt(2*K*ID);
         GO = ID/VA;
-    }else if(VDS <= VGS-VT){
+    }else if(NMOS?(VDS<=VGS-VT):(VDS>=VGS-VT)){
         ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);

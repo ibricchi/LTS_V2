@@ -12,6 +12,7 @@ private:
     float VT = 0;
     float VA = 1; // really should be infinite but won't be used unless hasVA is true
     bool hasVA = false;
+    bool NMOS = true;
 
     // don't know if I could replace with enum
     enum n{
