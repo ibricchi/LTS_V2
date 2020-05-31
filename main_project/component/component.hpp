@@ -44,6 +44,13 @@ public:
     virtual string getModelName() const;
     
     string getName() const;
+
+    //Get the current heading that will be printed to the CSV file.
+    //Should not include the leading and trailing comma.
+    //The current heading should be identical to 'i_' + getName() for two terminal devices => Don't need to overload.
+    //For >2 terminal devices, the string should include multiple comma seperated values that correspond to the terminals (Used to output currents) => Need to overload.
+    virtual string getCurrentHeadingName() const;
+
     vector<int> getNodes() const;
 
     // these are used for non linear analysis

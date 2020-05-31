@@ -43,7 +43,7 @@ void outputCSV(Circuit& c, string outputFileName){
         outputFile << ",v_" + to_string(i);
     }
     for(const auto &comp : components){
-        outputFile << ",i_" + comp->getName();
+        outputFile << "," + comp->getCurrentHeadingName();
     }
     outputFile << "\n";
     

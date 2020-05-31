@@ -167,7 +167,11 @@ double BJT::divAtNode(int nin, int dnin) const{
     return conductance;
 }
 
+string BJT::getCurrentHeadingName() const{
+    return "ic_" + name + ",ib_" + name + ",ie_" + name;
+}
+
 string BJT::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return "not implemented";
+    return "not implemented, not implemented, not implemented";
     //return comma seperated string with all 3 currents
 }
