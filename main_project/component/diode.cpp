@@ -17,39 +17,20 @@ Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
-
-    switch (args.size())
-    {
-    case 2:
-        SetupValues();
-        break;
-    case 3:
-        SetupValues(
-            stof(args[2])
-        );
-        break;
-    case 4:
-        SetupValues(
-            stof(args[2]),
-            stof(args[3])
-        );
-        break;
-    case 5:
-        SetupValues(
-            stof(args[0]),
-            stof(args[1]),
-            stof(args[2])
-        );
-        break;
-    default:
-        break;
-    }
 }
 
-void Diode::SetupValues(float _IS, float _N, float _VT){
-    IS = _IS;
-    N = _N;
-    VT = _VT;
+void Diode::addParam(int paramId, float paramValue){
+    switch(static_cast<diodeParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
+        case diodeParamType::IS:
+            IS = paramValue;
+            break;
+        case diodeParamType::N:
+            N = paramValue;
+            break;
+        case diodeParamType::VT:
+            VT = paramValue;
+            break;
+    }
 }
 
 double Diode::ivAtNode(int n) const{
@@ -72,6 +53,10 @@ double Diode::divAtNode(int n, int dn) const{
 
 vector<int> Diode::getNodes() const{
     return nodes;
+}
+
+string Diode::getModelName() const{
+    return modelName;
 }
 
 float Diode::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {

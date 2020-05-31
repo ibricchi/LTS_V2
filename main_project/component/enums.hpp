@@ -32,6 +32,7 @@ enum struct component{
 enum struct diodeParamType{
     IS, //saturation current
     N, //emission coefficient
+    VT
     // RS, //series resistance
     // CJO, //junction capacitance
     // TT, //transit time
