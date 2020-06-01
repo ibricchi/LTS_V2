@@ -36,15 +36,19 @@ void Diode::addParam(int paramId, float paramValue){
 double Diode::ivAtNode(int n){
     double v = nodalVoltages[0] - nodalVoltages[1];
     double current = (double)IS * (exp(v/N/VT) - 1) * (1-v/VT);
+    lastIeq = current;
+
     if(n == nodes[1]){
         current*=-1;
     }
     return current;
 }
 
-double Diode::divAtNode(int n, int dn) const{
+double Diode::divAtNode(int n, int dn){
     double v = nodalVoltages[0] - nodalVoltages[1];
     double conductance = (double)(IS / N / VT) * exp(v/N/VT);
+    lastConductance = conductance;
+
     if(n != dn){
         conductance *= -1;
     }
@@ -57,5 +61,7 @@ string Diode::getModelName() const{
 
 string Diode::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current through current source and current through resistor
-    return "not implemented";
+    double v = nodalVoltages[0] - nodalVoltages[1];
+    
+    return to_string(v*lastConductance + lastIeq);
 }

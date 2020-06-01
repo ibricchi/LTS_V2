@@ -103,7 +103,7 @@ double BJT::ivAtNode(int nin){
     return current;
 }
 
-double BJT::divAtNode(int nin, int dnin) const{
+double BJT::divAtNode(int nin, int dnin){
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
 

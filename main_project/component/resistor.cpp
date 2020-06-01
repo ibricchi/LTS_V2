@@ -27,8 +27,8 @@ double Resistor::ivAtNode(int n1){
 }
 
 // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
-double Resistor::divAtNode(int n1, int dn) const{
-    return conductance * (n1==nodes[0]?-1:1) * (dn==nodes[0]?-1:1);
+double Resistor::divAtNode(int n, int dn){
+    return conductance * (n==nodes[0]?-1:1) * (dn==nodes[0]?-1:1);
 }
 
 string Resistor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {

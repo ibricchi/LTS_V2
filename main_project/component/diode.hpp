@@ -10,13 +10,16 @@ class Diode: public Component{
 private:
     float IS = 1e-14, N=1, VT=0.026;
 
+    //Used to prevent recomputing exponentials for getTotalCurrentString
+    double lastIeq, lastConductance;
+
     void SetupValues(float IS = 1e-14, float N = 1, float VT = 0.025);
 public:
     Diode(string _name, vector<string> args, vector<float> extraInfo);
     ~Diode() = default;
 
     double ivAtNode(int n1) override;
-    double divAtNode(int n1, int dn) const override;
+    double divAtNode(int n, int dn) override;
 
     void addParam(int paramId, float paramValue);
     string getModelName() const override;

@@ -30,7 +30,7 @@ public:
     void updateVals(float time);
 
     double ivAtNode(int n) override;
-    double divAtNode(int n, int dn) const override;
+    double divAtNode(int n, int dn) override;
 
     float getVoltage() const override;
 

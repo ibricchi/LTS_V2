@@ -89,7 +89,7 @@ double Mosfet::ivAtNode(int nin){
     return current;
 }
 
-double Mosfet::divAtNode(int nin, int dnin) const{
+double Mosfet::divAtNode(int nin, int dnin){
     double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
     double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
 

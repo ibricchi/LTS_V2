@@ -88,6 +88,6 @@ void Capacitor::initCompCurrent(float _voltage){ //_voltage corresponds to the D
 double Capacitor::ivAtNode(int n){
 	return compCurrent * (n==nodes[0] ? -1 : 1);
 }
-double Capacitor::divAtNode(int n, int dn) const{
+double Capacitor::divAtNode(int n, int dn){
 	return compConductance * (n==nodes[0] ? -1 : 1) * (dn==nodes[0] ? -1 : 1);
 }
