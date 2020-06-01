@@ -175,6 +175,9 @@ string BJT::getCurrentHeadingName() const{
 }
 
 string BJT::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    //sufficient or also need to add current through resistors and dependent current sources?
+    // current through current source, current through resistors, current through dependent current sources
+
+    //Currently only added currents through the current sources!
+    //Add the remaining ones once we know that this BJT model produces correct results/converges at all.
     return to_string(lastIc) + "," + to_string(lastIb) + "," + to_string(lastIe);
 }
