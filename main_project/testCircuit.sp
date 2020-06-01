@@ -1,11 +1,8 @@
 Dependent source test
 *
-M1 N002 N003 N004 N004 NMOS
-RC N001 N002 10k
-V1 N001 0 20
-V2 N003 0 SINE(2 5 10)
-R1 N004 0 3k
+V1 N001 0 SINE(2 5 10 .1 5 90)
+R1 N001 0 1k
 *
 .MODEL asd D (VT=0.026)
-.tran 0.0001 .2 0
+.tran 0.0001 .5 0
 .end

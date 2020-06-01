@@ -159,7 +159,10 @@ float Waveform::updateVals(float time){
 }
 
 float Waveform::updateSinVals(float time){
-    return offset + amplitude * exp(-dampingFactor*(time - timeDelay)) * sin(2 * PI * frequency * (time - timeDelay) + (phase/360));
+    if(time < timeDelay){
+        return offset+amplitude*sin(PI*phase/180);
+    }
+    return offset + amplitude * exp(-dampingFactor*(time - timeDelay)) * sin(2 * PI * frequency * (time - timeDelay) + PI*(phase/180));
 }
 
 float Waveform::updatePwlVals(float time){
