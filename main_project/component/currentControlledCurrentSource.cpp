@@ -12,7 +12,7 @@ CurrentControlledCurrentSource::CurrentControlledCurrentSource(string name, vect
 double CurrentControlledCurrentSource::ivAtNode(int n){
     return 0;
 }
-double CurrentControlledCurrentSource::divAtNode(int n, int dn) const{
+double CurrentControlledCurrentSource::divAtNode(int n, int dn){
     return 0;
 }
 

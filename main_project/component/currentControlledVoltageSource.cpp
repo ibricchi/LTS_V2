@@ -14,7 +14,7 @@ double CurrentControlledVoltageSource::ivAtNode(int n){
     cerr << "ivAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }
-double CurrentControlledVoltageSource::divAtNode(int n, int dn) const{
+double CurrentControlledVoltageSource::divAtNode(int n, int dn){
     cerr << "divAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }

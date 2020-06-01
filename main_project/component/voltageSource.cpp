@@ -56,7 +56,7 @@ void VoltageSource::updateVals(float time){
 double VoltageSource::ivAtNode(int n){
 	return 1;
 }
-double VoltageSource::divAtNode(int n, int dn) const{
+double VoltageSource::divAtNode(int n, int dn){
 	return 1;
 }
 

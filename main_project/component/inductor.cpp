@@ -78,6 +78,6 @@ void Inductor::initCompCurrent(float _current){
 double Inductor::ivAtNode(int n){
 	return compCurrent * (n==nodes[0] ? 1 : -1);
 }
-double Inductor::divAtNode(int n, int dn) const{
+double Inductor::divAtNode(int n, int dn){
 	return compConductance * (n==nodes[0] ? -1 : 1) * (dn==nodes[0] ? -1 : 1);
 }

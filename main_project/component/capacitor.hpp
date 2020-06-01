@@ -20,7 +20,7 @@ public:
 	float getConductance() const override;
 
 	double ivAtNode(int n1) override;
-    double divAtNode(int n1, int dn) const override;
+    double divAtNode(int n, int dn) override;
 
 	float getCurrent() const override;
 	string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;

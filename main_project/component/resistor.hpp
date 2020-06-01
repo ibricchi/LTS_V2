@@ -14,7 +14,7 @@ public:
     ~Resistor() = default;
 
     double ivAtNode(int n1) override;
-    double divAtNode(int n1, int dn) const override;
+    double divAtNode(int n, int dn) override;
 
     float getConductance() const override;
 

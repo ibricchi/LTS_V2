@@ -29,7 +29,7 @@ public:
     string getModelName() const override;
 
     double ivAtNode(int n1) override;
-    double divAtNode(int n1, int dn) const override;
+    double divAtNode(int n, int dn) override;
 };
 
 #endif

@@ -11,6 +11,7 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
     modelName = (args.size()>3) ? args[3] : "";
+
     // Order: C, B, E
     nodes = processNodes({args[n::D], args[n::G], args[n::S]});
 
@@ -89,7 +90,7 @@ double Mosfet::ivAtNode(int nin){
     return current;
 }
 
-double Mosfet::divAtNode(int nin, int dnin) const{
+double Mosfet::divAtNode(int nin, int dnin){
     double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
     double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
 
@@ -112,6 +113,9 @@ double Mosfet::divAtNode(int nin, int dnin) const{
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
     }
+
+    lastGo = GO;
+    lastGm = GM;
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -150,12 +154,15 @@ double Mosfet::divAtNode(int nin, int dnin) const{
             switch(dn){
                 case n::D:
                     conductance = -GO;
+                    lastGd = conductance;
                     break;
                 case n::G:
                     conductance = -GM;
+                    lastGg = conductance;
                     break;
                 case n::S:
                     conductance = GO+GM;
+                    lastGs = conductance;
                     break;
             }
             break;
@@ -170,6 +177,9 @@ string Mosfet::getCurrentHeadingName() const{
 }
 
 string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    //is this sufficient or also need to add current through resistor and dependent current source?
-    return to_string(lastId) + "," + to_string(lastIg) + "," + to_string(lastIs);
+    // total current = current through current source, through resistor, through dependent current source
+    float VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    float VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
+
+    return to_string(lastId + VDS*lastGo - lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs - VDS*lastGo + lastGm*VGS);
 }

@@ -12,7 +12,7 @@ public:
     ~VoltageControlledCurrentSource() = default;
 
     double ivAtNode(int n) override;
-    double divAtNode(int n, int dn) const override;
+    double divAtNode(int n, int dn) override;
 
     string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };

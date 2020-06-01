@@ -26,7 +26,7 @@ double OpAmp::ivAtNode(int n1){
 }
 
 // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
-double OpAmp::divAtNode(int n1, int dn) const{
+double OpAmp::divAtNode(int n, int dn){
     cerr << "divAtNode not implemented for opamp" <<endl;
     exit(1);
 }
