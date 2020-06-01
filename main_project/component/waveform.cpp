@@ -13,7 +13,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
 	    c = toupper(c);
     });
 
-    if(typeName == "SIN"){
+    if(typeName == "SIN" || typeName == "SINE"){
         switch (args.size()) // switch statment depending on how many arguments were given as some are not required
         {
         case 5:

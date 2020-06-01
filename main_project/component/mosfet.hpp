@@ -16,6 +16,8 @@ private:
 
     //used for current csv output
     float lastId, lastIg, lastIs;
+    float lastGd, lastGg, lastGs;
+    float lastGo, lastGm;
 
     enum n{
         D = 0,

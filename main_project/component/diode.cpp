@@ -2,8 +2,6 @@
 #include <vector>
 #include <cmath>
 
-#include <iostream> //testing only
-
 #include "diode.hpp"
 
 using namespace std;
@@ -62,6 +60,6 @@ string Diode::getModelName() const{
 string Diode::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     //current through current source and current through resistor
     double v = nodalVoltages[0] - nodalVoltages[1];
-    
+
     return to_string(v*lastConductance + lastIeq);
 }
