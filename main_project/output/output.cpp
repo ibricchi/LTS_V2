@@ -56,7 +56,7 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
     // c.setHasNonLinearComponents(true); //TESTING ONLY
     
     string outLine{};
-    if(!c.hasNonLinearComponents()){
+    if(false && !c.hasNonLinearComponents()){
         //DC operating point analysis. Results are not written to CSV file.
         linearDCSetup(c);
         runLinearTransience(c, -1);

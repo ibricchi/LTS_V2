@@ -82,8 +82,14 @@ vector<int> Inductor::getNodes() const{
 }
 
 float Inductor::ivAtNode(int n) const{
-	return 1;
+	float current = -compCurrent;	
+	return current * (n==nodes[0]?-1:1);
 }
 float Inductor::divAtNode(int n, int dn) const{
-	return 1;
+	    //float v = nodalVoltages[0] - nodalVoltages[1];
+    float conductance = compConductance;
+    if(n != dn){
+        conductance *= -1;
+    }
+    return conductance;
 }
