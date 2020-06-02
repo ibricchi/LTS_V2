@@ -76,9 +76,9 @@ double BJT::ivAtNode(int nin){
     double IBREQ = IBR - GPR*VBC;
     double ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
 
-    double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
+    double IC = ICEQ - IBREQ;
     double IB = IBREQ + IBFEQ;
-    double IE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
+    double IE = IBFEQ + ICEQ;
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -128,13 +128,13 @@ double BJT::divAtNode(int nin, int dnin){
         case n::C:
             switch(dn){
                 case n::C:
-                    conductance = GPR + GO;
+                    conductance = GPR + GO + GMR;
                     break;
                 case n::B:
-                    conductance = -GPR;
+                    conductance = -GPR + GMF - GMR;
                     break;
                 case n::E:
-                    conductance = -GO;
+                    conductance = -GO - GMF;
                     break;
             }
             break;
@@ -154,13 +154,13 @@ double BJT::divAtNode(int nin, int dnin){
         case n::E:
             switch(dn){
                 case n::C:
-                    conductance = -GO;
+                    conductance = -GO - GMR;
                     break;
                 case n::B:
-                    conductance = -GPF;
+                    conductance = -GPF + GMR - GMF;
                     break;
                 case n::E:
-                    conductance = GO + GPF;
+                    conductance = GO + GPF + GMF;
                     break;
             }
             break;

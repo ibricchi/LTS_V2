@@ -35,7 +35,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
-    int maxCount = 10;
+    int maxCount = 100;
     // float gamma = 0.1;
 
     do{
@@ -54,10 +54,14 @@ string runNonLinearTransience(Circuit& c, float t){
 
         count++;
 
-        IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << c.getA().format(CleanFmt) << endl << endl;
-        // cout << c.getB().format(CleanFmt) << endl << endl;
-        // cout << c.getX().format(CleanFmt) << endl << endl;
+        if(t > 0.009400){
+            IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+            cout << "Time:" << t << endl;
+            cout << "-----------------------" << endl;
+            cout << c.getA().format(CleanFmt) << endl << endl;
+            cout << c.getB().format(CleanFmt) << endl << endl;
+            cout << c.getX().format(CleanFmt) << endl << endl;
+        }
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 

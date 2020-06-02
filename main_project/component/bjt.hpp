@@ -9,12 +9,12 @@
 class BJT: public Component{
 private:
     bool hasVAF;
-    float BF, AF, IRS, IFS, VAF;
-    float BR = 1.0;
-    float VT = 0.025;
+    double BF, AF, IRS, IFS, VAF;
+    double BR = 1.0;
+    double VT = 0.025;
 
     //used for current csv output
-    float lastIc, lastIb, lastIe;
+    double lastIc, lastIb, lastIe;
 
     // don't know if I could replace with enum
     enum n{
