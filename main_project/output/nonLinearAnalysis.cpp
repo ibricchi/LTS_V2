@@ -35,7 +35,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
-    int maxCount = 100;
+    int maxCount = 500;
     // float gamma = 0.1;
 
     do{
@@ -54,14 +54,14 @@ string runNonLinearTransience(Circuit& c, float t){
 
         count++;
 
-        if(t > 0.009400){
-            IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-            cout << "Time:" << t << endl;
-            cout << "-----------------------" << endl;
-            cout << c.getA().format(CleanFmt) << endl << endl;
-            cout << c.getB().format(CleanFmt) << endl << endl;
-            cout << c.getX().format(CleanFmt) << endl << endl;
-        }
+        
+            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+            // cout << "Time:" << t << endl;
+            // cout << "-----------------------" << endl;
+            // cout << c.getA().format(CleanFmt) << endl << endl;
+            // cout << c.getB().format(CleanFmt) << endl << endl;
+            // cout << c.getX().format(CleanFmt) << endl << endl;
+        
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
@@ -149,19 +149,23 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
 
                     //reset circuit to starting values
                     currentX = startX;
-                    newX = startX;
-                    
+                    newX = startX; //needs to be reset for nan checking to work properly
+                    newX(0,0) += 1; //make slightly different from currentX to give higher chance for reaching a correct convergence
+
                     c.setX(startX); //required for updateNodalVoltages to work
                     c.updateNodalVoltages();
                 }else{
                     //if a firstConvergingAlpha already exists (step was too big)
                     //=> decrease step and try again
                     step /= 2;
-                    alpha -= step; //reseting to last alpha and adding half old step = subtracting half old step from current alpha
 
+                    alpha -= step; //reseting to last alpha and adding half old step = subtracting half old step from current alpha
+                   
                     //reset circuit to last converging values
                     currentX = lastConvergingX;
-                    newX = lastConvergingX;
+                    newX = lastConvergingX; //needs to be reset for nan checking to work properly
+                    newX(0,0) += 1; //make slightly different from currentX to give higher chance for reaching a correct convergence
+
                     c.setX(lastConvergingX); //required for updateNodalVoltages to work
                     c.updateNodalVoltages();
                 }
@@ -219,12 +223,8 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
 }
 
 bool hasNan(VectorXd& m){
-    // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-    // cout << m << endl;
     for(int i = 0; i < m.size(); i++){
-        // cout << m(i) << endl;
         if(isnan(m(i))){
-            // cout << "failed test" << endl;
             return true;
         }
     }
