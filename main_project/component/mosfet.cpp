@@ -33,7 +33,7 @@ void Mosfet::addParam(int paramId, float paramValue){
             hasVA=true;
             VA = paramValue;
             break;
-        case mosfetParamType::VT:
+        case mosfetParamType::VTO:
             VT = paramValue;
             break;
     }

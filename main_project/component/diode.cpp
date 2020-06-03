@@ -25,7 +25,7 @@ void Diode::addParam(int paramId, float paramValue){
         case diodeParamType::N:
             N = paramValue;
             break;
-        case diodeParamType::VT:
+        case diodeParamType::VTO:
             VT = paramValue;
             break;
     }
