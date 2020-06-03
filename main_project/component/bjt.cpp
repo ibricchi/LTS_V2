@@ -170,6 +170,10 @@ double BJT::divAtNode(int nin, int dnin){
     return conductance;
 }
 
+string BJT::getModelName() const{
+    return modelName;
+}
+
 string BJT::getCurrentHeadingName() const{
     return "ic_" + name + ",ib_" + name + ",ie_" + name;
 }
