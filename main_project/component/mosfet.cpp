@@ -47,19 +47,19 @@ double Mosfet::ivAtNode(int nin){
     double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
     double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
 
-    float ID, GM, GO;
-    ID = 0;
+    float IDEQ, GM, GO;
+    IDEQ = 0;
 
     if(VGS-VT<0){
-        ID = 0;
+        IDEQ = 0;
         GM = 0;
         GO = 0;
     }else if(NMOS?(VGS-VT<VDS):(0<VDS+VGS+VT)){
-        ID = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
-        GM = sqrt(2*K*ID);
-        GO = ID/VA;
+        IDEQ = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
+        GM = sqrt(2*K*IDEQ);
+        GO = IDEQ/VA;
     }else if(NMOS?(VDS <= VGS-VT):(VDS+VGS+VT<=0)){
-        ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
+        IDEQ = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
     }else{
@@ -74,7 +74,7 @@ double Mosfet::ivAtNode(int nin){
     double current;
     switch(n){
         case n::D:
-            current = ID-GM*VGS-GO*VDS;
+            current = IDEQ-GM*VGS-GO*VDS;
             lastId = -current;
             break;
         case n::G:
@@ -82,7 +82,7 @@ double Mosfet::ivAtNode(int nin){
             lastIg = -current;
             break;
         case n::S:
-            current = -(ID-GM*VGS-GO*VDS);
+            current = -(IDEQ-GM*VGS-GO*VDS);
             lastIs = -current;
             break;
     }
