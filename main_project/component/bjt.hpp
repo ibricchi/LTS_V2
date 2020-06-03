@@ -9,7 +9,11 @@
 class BJT: public Component{
 private:
     bool hasVAF;
-    double BF, AF, IRS, IFS, VAF;
+    double BF; // beta forward
+    double AF; // alpha forward
+    double IRS; // reverse saturation current
+    double IFS; // forward saturation current
+    double VAF; // forward early voltage
     double BR = 1.0;
     double VT = 0.025;
 
