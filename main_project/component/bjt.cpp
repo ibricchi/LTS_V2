@@ -98,7 +98,7 @@ double BJT::ivAtNode(int nin){
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
-    return current * (NPN?1:-1);
+    return current;
 }
 
 double BJT::divAtNode(int nin, int dnin){
