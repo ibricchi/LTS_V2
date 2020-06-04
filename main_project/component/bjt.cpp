@@ -13,7 +13,7 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});
 
-    nodalVoltages = {0,0,0};
+    setNodalVoltages({0,0,0});
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
@@ -50,32 +50,34 @@ void BJT::addParam(int paramId, float paramValue){
     }
 }
 
+void BJT::setNodalVoltages(vector<float> v){
+    nodalVoltages = v;
+    VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
+    VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
+    VCE = // temporary
+
+    IBF = (IFS/BF)*(exp(VBE/VT) - 1);
+    IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+    IC1 = BF*IBF-BR*IBR;
+
+    GPF = IFS/BF*exp(VBE/VT)/VT;
+    GPR = IRS/BR*exp(VBC/VT)/VT;
+
+    GMF = BF*GPF;
+    GMR = BR*GPR;
+    GO = 0; //temporary
+
+    IBFEQ = IBF - GPF*VBE;
+    IBREQ = IBR - GPR*VBC;
+    ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
+
+    IC = ICEQ - IBREQ;
+    IB = IBREQ + IBFEQ;
+    IE = IBFEQ + ICEQ;
+}
+
 double BJT::ivAtNode(int nin){
-    double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
-    double VCE = 0; //temporary
-
-    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
-    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
-    double IC1 = BF*IBF-BR*IBR;
-
-    double GPF = IFS/BF*exp(VBE/VT)/VT;
-    double GPR = IRS/BR*exp(VBC/VT)/VT;
-
-    double GMF = BF*GPF;
-    double GMR = BR*GPR;
-    double GO = 0; //temporary
-
-    double IBFEQ = IBF - GPF*VBE;
-    double IBREQ = IBR - GPR*VBC;
-    double ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
-
-    double IC = ICEQ - IBREQ;
-    double IB = IBREQ + IBFEQ;
-    double IE = IBFEQ + ICEQ;
-
-    // this is just because I aciddentally set up the switch statement wrong
-    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+    // selects the right node type (Collector Base or Emitter)
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
 
     double current;
@@ -98,22 +100,7 @@ double BJT::ivAtNode(int nin){
 }
 
 double BJT::divAtNode(int nin, int dnin){
-    double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
-
-    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
-    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
-
-    double GPF = IFS/BF*exp(VBE/VT)/VT;
-    double GPR = IRS/BR*exp(VBC/VT)/VT;
-
-    double GMF = BF*GPF;
-    double GMR = BR*GPR;
-
-    double GO = 0; // implement later only for early voltage
-
-    // this is just because I aciddentally set up the switch statement wrong
-    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+    // selects the right node type (Collector Base or Emitter)
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
     int dn = dnin==nodes[n::C]?n::C:(dnin==nodes[n::B]?n::B:n::E);
 

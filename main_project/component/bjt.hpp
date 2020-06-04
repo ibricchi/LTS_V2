@@ -17,6 +17,9 @@ private:
     double BR = 1.0; // beta reverse
     double VT = 0.025; // thermal voltage
 
+    // used for calculations
+    double VBE, VBC, VCE, IBF, IBR, IC1, GPF, GPR, GMF, GMR, GO, IC, IB, IE, IBFEQ, IBREQ, ICEQ;
+
     //used for current csv output
     double lastIc, lastIb, lastIe;
 
@@ -35,6 +38,8 @@ public:
     double divAtNode(int n, int dn) override;
 
     void addParam(int paramId, float paramValue) override;
+
+    void setNodalVoltages(vector<float> v) override;
 
     string getModelName() const override;
 
