@@ -111,10 +111,10 @@ double BJT::divAtNode(int nin, int dnin){
         case n::C:
             switch(dn){
                 case n::C:
-                    conductance = (NPN?GPR:GPF) + GO + GMR;
+                    conductance = GPR + GO + GMR;
                     break;
                 case n::B:
-                    conductance = -(NPN?GPR:GPF) + GMF - GMR;
+                    conductance = -GPR + GMF - GMR;
                     break;
                 case n::E:
                     conductance = -GO - GMF;
@@ -124,13 +124,13 @@ double BJT::divAtNode(int nin, int dnin){
         case n::B:
             switch(dn){
                 case n::C:
-                    conductance = -(NPN?GPR:GPF);
+                    conductance = -GPR;
                     break;
                 case n::B:
                     conductance = GPR + GPF;
                     break;
                 case n::E:
-                    conductance = -(NPN?GPF:GPR);
+                    conductance = -GPF;
                     break;
             }
             break;
@@ -140,10 +140,10 @@ double BJT::divAtNode(int nin, int dnin){
                     conductance = -GO - GMR;
                     break;
                 case n::B:
-                    conductance = -(NPN?GPF:GPR) + GMR - GMF;
+                    conductance = -GPF + GMR - GMF;
                     break;
                 case n::E:
-                    conductance = (NPN?GPF:GPR) + GO + GMF;
+                    conductance = GPF + GO + GMF;
                     break;
             }
             break;
