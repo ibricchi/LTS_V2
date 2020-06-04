@@ -17,43 +17,37 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
-
-    switch (args.size())
-    {
-    case 3:
-        SetupValues();
-        break;
-    case 4:
-        SetupValues(
-            stof(args[3])
-        );
-        break;
-    case 5:
-        SetupValues(
-            stof(args[3]),
-            stof(args[4])
-        );
-        break;
-    case 6:
-        SetupValues(
-            stof(args[3]),
-            stof(args[4]),
-            true,
-            stof(args[5])
-        );
-        break;
-    default:
-        break;
-    }
 }
 
-void BJT::SetupValues(float _BF, float _IFS, bool _hasVAF, float _VAF){
-    BF = _BF;
-    AF = BF/(1+BF);
-    IFS = _IFS;
-    IRS = _IFS;
-    hasVAF = _hasVAF;
-    VAF = _VAF;
+void BJT::addParam(int paramId, float paramValue){
+    switch(static_cast<bjtParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
+        case bjtParamType::TYPE:
+            NPN = false;
+            break;
+        case bjtParamType::BF:
+            BF = paramValue;
+            break;
+        case bjtParamType::VAF:
+            hasVAF = true;
+            VAF = paramValue;
+            break;
+        case bjtParamType::IFS:
+            IFS = paramValue;
+            break;
+        case bjtParamType::BR:
+            BR = paramValue;
+            break;
+        case bjtParamType::VT:
+            VT = paramValue;
+            break;
+        case bjtParamType::IRS:
+            IRS = paramValue;
+            break;
+        default:
+            cerr << "unsupported parameter ID for BJT" << endl;
+            exit(1);
+            break;
+    }
 }
 
 double BJT::ivAtNode(int nin){
