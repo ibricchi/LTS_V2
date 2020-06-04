@@ -10,8 +10,8 @@ using namespace std;
 BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
-    modelName = (args.size()>3) ? args[3] : "";
-
+    modelName = (args.size()>4) ? args.at(4) : "";
+    
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});
 

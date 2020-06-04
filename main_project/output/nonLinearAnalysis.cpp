@@ -54,15 +54,15 @@ string runNonLinearTransience(Circuit& c, float t){
 
         count++;
 
-        // if(t > 0.053){
-        //     IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        //     cout << "Time:" << t << " Count: " << count << endl;
-        //     cout << "-----------------------" << endl;
-        //     cout << c.getA().format(CleanFmt) << endl << endl;
-        //     cout << c.getB().format(CleanFmt) << endl << endl;
-        //     cout << currentX.format(CleanFmt) << endl << endl;
-        //     cout << newX.format(CleanFmt) << endl << endl;
-        // }
+        if(t > 0.007){
+            IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+            cout << "Time:" << t << " Count: " << count << endl;
+            cout << "-----------------------" << endl;
+            cout << c.getA().format(CleanFmt) << endl << endl;
+            // cout << c.getB().format(CleanFmt) << endl << endl;
+            // cout << currentX.format(CleanFmt) << endl << endl;
+            // cout << newX.format(CleanFmt) << endl << endl;
+        }
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 
