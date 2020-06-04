@@ -10,6 +10,8 @@ using namespace std;
 BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
+    modelName = (args.size()>3) ? args[3] : "";
+
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});
 
@@ -52,8 +54,8 @@ void BJT::addParam(int paramId, float paramValue){
 
 void BJT::setNodalVoltages(vector<float> v){
     nodalVoltages = v;
-    VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
+    VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]) * (NPN?1:-1);
+    VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]) * (NPN?1:-1);
     VCE = // temporary
 
     IBF = (IFS/BF)*(exp(VBE/VT) - 1);
@@ -71,9 +73,9 @@ void BJT::setNodalVoltages(vector<float> v){
     IBREQ = IBR - GPR*VBC;
     ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
 
-    IC = ICEQ - IBREQ;
-    IB = IBREQ + IBFEQ;
-    IE = IBFEQ + ICEQ;
+    IC = (NPN?(ICEQ - IBREQ):(-ICEQ+IBFEQ)); // always current flowing into C
+    IB = (IBREQ + IBFEQ) * (NPN?1:-1); // always current flowing into B
+    IE = (NPN?(IBFEQ + ICEQ):(-IBREQ-ICEQ)); // always current flowing out of E
 }
 
 double BJT::ivAtNode(int nin){
@@ -96,7 +98,7 @@ double BJT::ivAtNode(int nin){
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
-    return current;
+    return current * (NPN?1:-1);
 }
 
 double BJT::divAtNode(int nin, int dnin){
@@ -109,10 +111,10 @@ double BJT::divAtNode(int nin, int dnin){
         case n::C:
             switch(dn){
                 case n::C:
-                    conductance = GPR + GO + GMR;
+                    conductance = (NPN?GPR:GPF) + GO + GMR;
                     break;
                 case n::B:
-                    conductance = -GPR + GMF - GMR;
+                    conductance = -(NPN?GPR:GPF) + GMF - GMR;
                     break;
                 case n::E:
                     conductance = -GO - GMF;
@@ -122,13 +124,13 @@ double BJT::divAtNode(int nin, int dnin){
         case n::B:
             switch(dn){
                 case n::C:
-                    conductance = -GPR;
+                    conductance = -(NPN?GPR:GPF);
                     break;
                 case n::B:
                     conductance = GPR + GPF;
                     break;
                 case n::E:
-                    conductance = -GPF;
+                    conductance = -(NPN?GPF:GPR);
                     break;
             }
             break;
@@ -138,10 +140,10 @@ double BJT::divAtNode(int nin, int dnin){
                     conductance = -GO - GMR;
                     break;
                 case n::B:
-                    conductance = -GPF + GMR - GMF;
+                    conductance = -(NPN?GPF:GPR) + GMR - GMF;
                     break;
                 case n::E:
-                    conductance = GO + GPF + GMF;
+                    conductance = (NPN?GPF:GPR) + GO + GMF;
                     break;
             }
             break;
