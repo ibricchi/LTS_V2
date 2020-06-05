@@ -37,7 +37,7 @@ string runNonLinearTransience(Circuit& c, float t){
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
-    int maxCount = 500;
+    int maxCount = 100;
     int dynamicTimeStepMaxCount = 3;
     int dynamicTimeStepMinCount = 2;
     int dynamicTimeStepFactor = 8;
@@ -51,7 +51,6 @@ double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
     double minDynamicTimeStep = c.getSimulationTime()/50000000000;
     double maxDynamicTimeStep = (c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1;
 
-
     for(const auto &up : vcUpdatables){
 	up->setTimeStep(dynamicTimeStep);
     }
@@ -60,7 +59,7 @@ double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
 	timeUp->updateVals(t);
     }
     do{
-        if(count > maxCount){
+        if(count >= maxCount){
             cerr << "Newton Raphson count too big" <<endl;
             exit(1);
         }
@@ -93,14 +92,13 @@ double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
 
         count++;
 
-        
-            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-            // cout << "Time:" << t << endl;
-            // cout << "-----------------------" << endl;
-            // cout << c.getA().format(CleanFmt) << endl << endl;
-            // cout << c.getB().format(CleanFmt) << endl << endl;
-            // cout << c.getX().format(CleanFmt) << endl << endl;
-        
+        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        // cout << "Time:" << t << " Count: " << count << endl;
+        // cout << "-----------------------" << endl;
+        // cout << c.getA().format(CleanFmt) << endl << endl;
+        // cout << c.getB().format(CleanFmt) << endl << endl;
+        // cout << currentX.format(CleanFmt) << endl << endl;
+        // cout << newX.format(CleanFmt) << endl << endl;
     }
     while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 	//cerr << "Made it past while" << endl;    
@@ -226,6 +224,15 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             currentX = newX;
             newX = c.getX();
             c.updateNodalVoltages(); //update based on newX
+
+            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+            // cout << "Count: " << count << endl;
+            // cout << "-----------------------" << endl;
+            // cout << c.getA().format(CleanFmt) << endl << endl;
+            // cout << c.getA_inv().format(CleanFmt) << endl << endl;
+            // cout << c.getB().format(CleanFmt) << endl << endl;
+            // cout << currentX.format(CleanFmt) << endl << endl;
+            // cout << newX.format(CleanFmt) << endl << endl;
 
             count++;
         }

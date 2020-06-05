@@ -44,15 +44,17 @@ struct ModelStatement{
         {"VTO", diodeParamType::VTO}
     };
     const unordered_map<string, mosfetParamType> mosfetParamTable = {
-        {"TYPE", mosfetParamType::TYPE},
         {"K", mosfetParamType::K},
         {"VTO", mosfetParamType::VTO},
         {"VA", mosfetParamType::VA}
     };
     const unordered_map<string, bjtParamType> bjtParamTable = {
         {"BF", bjtParamType::BF},
-        {"IS", bjtParamType::IS},
-        {"VAF", bjtParamType::VAF}
+        {"BR", bjtParamType::BR},
+        {"IFS", bjtParamType::IFS},
+        {"IRS", bjtParamType::IRS},
+        {"VA", bjtParamType::VAF},
+        {"VTO", bjtParamType::VT}
     };
 };
 

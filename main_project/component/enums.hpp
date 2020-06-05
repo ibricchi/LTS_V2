@@ -47,9 +47,13 @@ enum struct mosfetParamType{
     VA, // early voltage
 };
 enum struct bjtParamType{
+    TYPE,
     BF, //beta (common emitter current gain)
-    IS, //saturation current
-    VAF //early voltage
+    BR, // beta reverse
+    IFS, // forward saturation current
+    IRS, // reverse saturation current
+    VAF, //early voltage
+    VT // Thermal Voltage
 };
 
 #endif
