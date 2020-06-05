@@ -67,6 +67,12 @@ string runNonLinearTransience(Circuit& c, float t){
             cerr << "Newton Raphson count too big" <<endl;
             exit(1);
         }
+        // if(dynamicTimeStep < minDynamicTimeStep){
+        //     cerr << "Minimum dynamic timestep reached" <<endl;
+        //     exit(1);
+        // }
+
+
         if((count > dynamicTimeStepMaxCount || !matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaA)) && (dynamicTimeStep>=dynamicTimeStepFactor*minDynamicTimeStep)){
         // cerr << "NextTimeStep: " << dynamicTimeStep/dynamicTimeStepFactor << endl;
             //cerr << "StartX" << endl << startX << endl << "StartX" << endl;
