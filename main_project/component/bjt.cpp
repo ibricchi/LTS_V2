@@ -10,6 +10,7 @@ using namespace std;
 BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
+    // figures out if 3 or 4 inputs are used for BJT and then set's model name appropriately
     if(args.size()==3){
         modelName = "";
     }else if(args.size()==4){
@@ -24,7 +25,6 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
         cerr << "Wrong number of argumnets passed to BJT" << endl;
         exit(1);
     }
-    cout << modelName << endl;
     
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});

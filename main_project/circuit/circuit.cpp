@@ -355,6 +355,8 @@ void Circuit::nonLinearA(bool isDc){
             conductance = ncp.DIV(en);
             A(n-1, en-1) += conductance;
         }
+        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+        // cout << A.format(CleanFmt) << endl << endl;
     }
 
     // same as linear for VS
