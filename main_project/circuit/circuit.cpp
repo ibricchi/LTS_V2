@@ -20,6 +20,7 @@ Circuit::Circuit()
 {
     currentTime = 0;
     timeStep = 0.001; // in seconds
+    //prevTime = -timeStep;
     highestNodeNumber = 0;
     hasNonLinear = false;
 }
@@ -46,11 +47,19 @@ void Circuit::setHighestNodeNumber(int _highestNodeNumber){
     highestNodeNumber = _highestNodeNumber;
 }
 
-float Circuit::getCurrentTime() const{
+double Circuit::getCurrentTime() const{
     return currentTime;
 }
-void Circuit::setCurrentTime(float _currentTime){
+void Circuit::setCurrentTime(double _currentTime){
     currentTime = _currentTime;
+}
+
+double Circuit::getPrevTime() const{
+    return prevTime;
+}
+
+void Circuit::setPrevTime(double _prevTime){
+    prevTime = _prevTime;
 }
 
 float Circuit::getTStart() const{

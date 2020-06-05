@@ -38,7 +38,8 @@ protected:
 
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
-    float currentTime;
+    double currentTime;
+    double prevTime;
     float tStart;
     float simulationTime; //time when simulation ends (TSTOP)
     float timeStep;
@@ -70,8 +71,11 @@ public:
     int getHighestNodeNumber() const;
     void setHighestNodeNumber(int _highestNodeNumber);
 
-    float getCurrentTime() const;
-    void setCurrentTime(float _currentTime);
+    double getCurrentTime() const;
+    void setCurrentTime(double _currentTime);
+
+    double getPrevTime() const;
+    void setPrevTime(double _prevTime);
 
     float getTStart() const;
     void setTStart(float _tStart);
@@ -90,6 +94,7 @@ public:
 
     bool hasNonLinearComponents() const;
     void setHasNonLinearComponents(bool _hasNonLinearComponents);
+
 
     void incrementInductorNumber();
 

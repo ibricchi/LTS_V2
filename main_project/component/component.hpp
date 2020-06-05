@@ -60,7 +60,7 @@ public:
     virtual void updateVals(float time_or_voltage);
 
     // this should be used to set a new timestep for capacitors/inductors
-    virtual void setTimeStep(float _timeStep);
+    virtual void setTimeStep(double _timeStep);
 
     //used to add additional parameters to components after construction
     virtual void addParam(int paramId, float paramValue);

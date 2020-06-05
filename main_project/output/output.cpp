@@ -26,7 +26,7 @@ void outputCSV(Circuit& c, string outputFileName){
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
 
     //get simulation parameters from circuit
-    float timeStep = c.getTStep(); //Change once we have implemented a dynamic timestep (Currently we are using the printing step tStep as the static timestep)
+    float timeStep = c.getTimeStep(); //Change once we have implemented a dynamic timestep (Currently we are using the printing step tStep as the static timestep)
     float simulationTime = c.getSimulationTime();
     // float tStep = c.getTStep(); //printing increment for csv file
     // float maxTimeStep = c.getMaxTimeStep(); //used for dynamic timestep
@@ -82,9 +82,22 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         }
     }else{
         nonLinearSetup(c);
-        for(float t = 0; t<=simulationTime; t += timeStep){// could replace with a while loop if we ever do dynamic time steps
-            outLine = runNonLinearTransience(c, t); 
+       // for(float t = 0; t<=simulationTime; t += c.getTimeStep()){// could replace with a while loop if we ever do dynamic time steps
+while(c.getCurrentTime() < simulationTime){
+            outLine = runNonLinearTransience(c, c.getCurrentTime());
+	    c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
             outputFile << outLine << endl;
+	    cerr << "Output Cycle" << endl;
+	    //cerr << "Time: " << c.getCurrentTime() << endl;//+c.getTimeStep() << "Simulation Time: " << simulationTime << endl;	    
+		if(c.getCurrentTime() > simulationTime){
+			c.setCurrentTime(simulationTime);
+			cerr << "Time: " << simulationTime << endl;
+			c.setTimeStep(simulationTime - c.getPrevTime());			
+			outLine = runNonLinearTransience(c,simulationTime);
+			c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
+			outputFile << outLine << endl;
+			//return;
+	    }
         }
     }
 }

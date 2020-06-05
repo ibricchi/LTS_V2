@@ -51,7 +51,7 @@ void Component::addParam(int paramId, float paramValue){
 	exit(1);
 }
 
-void Component::setTimeStep(float _timeStep){
+void Component::setTimeStep(double _timeStep){
 	cerr << "Tried to call setTimeStep from a component that doesn't support it" <<endl;
 	exit(1);
 }

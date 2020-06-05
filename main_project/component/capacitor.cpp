@@ -71,7 +71,7 @@ void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
 	}	
 }
 
-void Capacitor::setTimeStep(float _timeStep){
+void Capacitor::setTimeStep(double _timeStep){
 	timeStep = _timeStep;
 	
 	//use the new timeStep to update conductance

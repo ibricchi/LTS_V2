@@ -26,7 +26,7 @@ public:
 	float getCurrent() const override;
 	float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 	void updateVals(float newVoltage, float newCurrent, int order) override; //Called at the end of every iteration, after calculating node voltages and component currents.
-	void setTimeStep(float _timeStep) override;
+	void setTimeStep(double _timeStep) override;
 	void initCompCurrent(float _current);
 };
 
