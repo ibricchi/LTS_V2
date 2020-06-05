@@ -10,7 +10,21 @@ using namespace std;
 BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
-    modelName = (args.size()>4) ? args.at(4) : "";
+    if(args.size()==3){
+        modelName = "";
+    }else if(args.size()==4){
+        if(args[3][0] > '9'){
+            modelName = args[3];
+        }else{
+            modelName = "";
+        }
+    }else if(args.size()==5){
+        modelName = args[4];
+    }else{
+        cerr << "Wrong number of argumnets passed to BJT" << endl;
+        exit(1);
+    }
+    cout << modelName << endl;
     
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});
