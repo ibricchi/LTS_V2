@@ -74,21 +74,21 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
 
         nonLinearSetup(c);
        // for(float t = 0; t<=simulationTime; t += c.getTimeStep()){// could replace with a while loop if we ever do dynamic time steps
-while(c.getCurrentTime() < simulationTime){
+        while(c.getCurrentTime() < simulationTime){
             outLine = runNonLinearTransience(c, c.getCurrentTime());
-	    c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
+            c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
             outputFile << outLine << endl;
-	    cerr << "Output Cycle" << endl;
-	    //cerr << "Time: " << c.getCurrentTime() << endl;//+c.getTimeStep() << "Simulation Time: " << simulationTime << endl;	    
-		if(c.getCurrentTime() > simulationTime){
-			c.setCurrentTime(simulationTime);
-			cerr << "Time: " << simulationTime << endl;
-			c.setTimeStep(simulationTime - c.getPrevTime());			
-			outLine = runNonLinearTransience(c,simulationTime);
-			c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
-			outputFile << outLine << endl;
-			//return;
-	    }
+            // cerr << "Output Cycle" << endl;
+            //cerr << "Time: " << c.getCurrentTime() << endl;//+c.getTimeStep() << "Simulation Time: " << simulationTime << endl;	    
+            if(c.getCurrentTime() > simulationTime){
+                c.setCurrentTime(simulationTime);
+                // cerr << "Time: " << simulationTime << endl;
+                c.setTimeStep(simulationTime - c.getPrevTime());			
+                outLine = runNonLinearTransience(c,simulationTime);
+                c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
+                outputFile << outLine << endl;
+                //return;
+            }
         }
     }
 }

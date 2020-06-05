@@ -70,7 +70,7 @@ void BJT::setNodalVoltages(vector<float> v){
     nodalVoltages = v;
     VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]) * (NPN?1:-1);
     VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]) * (NPN?1:-1);
-    VCE = // temporary
+    VCE = (nodalVoltages[n::C] - nodalVoltages[n::E]) * (NPN?1:-1);
 
     IBF = (IFS/BF)*(exp(VBE/VT) - 1);
     IBR = (IRS/BR)*(exp(VBC/VT) - 1);
@@ -87,6 +87,7 @@ void BJT::setNodalVoltages(vector<float> v){
     IBREQ = IBR - GPR*VBC;
     ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
 
+    //total current produced by currents sources at a node
     IC = (NPN?(ICEQ - IBREQ):(-ICEQ+IBFEQ)); // always current flowing into C
     IB = (IBREQ + IBFEQ) * (NPN?1:-1); // always current flowing into B
     IE = (NPN?(IBFEQ + ICEQ):(-IBREQ-ICEQ)); // always current flowing out of E
@@ -100,15 +101,12 @@ double BJT::ivAtNode(int nin){
     switch(n){
         case n::C:
             current = IC;
-            lastIc = -current;
             break;
         case n::B:
             current = IB;
-            lastIb = -current;
             break;
         case n::E:
             current = -IE;
-            lastIe = -current;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
@@ -177,8 +175,5 @@ string BJT::getCurrentHeadingName() const{
 
 string BJT::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     // current through current source, current through resistors, current through dependent current sources
-
-    //Currently only added currents through the current sources!
-    //Add the remaining ones once we know that this BJT model produces correct results/converges at all.
-    return to_string(lastIc) + "," + to_string(lastIb) + "," + to_string(lastIe);
+    return to_string(IC + GO*VCE - GMR*VBC + GMF*VBE + GPR*VBC) + "," + to_string(IB + GPF*VBE + GPR*VBC) + "," + to_string(-IE - GMF*VBE + GMR*VBC - GPF*VBE - GO*VCE);
 }

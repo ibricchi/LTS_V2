@@ -20,9 +20,6 @@ private:
     // used for calculations
     double VBE, VBC, VCE, IBF, IBR, IC1, GPF, GPR, GMF, GMR, GO, IC, IB, IE, IBFEQ, IBREQ, ICEQ;
 
-    //used for current csv output
-    double lastIc, lastIb, lastIe;
-
     // don't know if I could replace with enum
     enum n{
         C = 0,

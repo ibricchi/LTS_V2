@@ -37,50 +37,55 @@ string runNonLinearTransience(Circuit& c, float t){
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
-    int maxCount = 100;
+    int maxCount = 500;
     int dynamicTimeStepMaxCount = 3;
     int dynamicTimeStepMinCount = 2;
     int dynamicTimeStepFactor = 8;
     float dynamicTimeStepAbsoluteDeltaA = 0.1; //Absolute delta in x values that triggers a decrease in timestep
     float dynamicTimeStepAbsoluteDeltaB = 0.1; //Absolute delta in x values that triggers an increase in timestep
     float prevTime = c.getPrevTime();    
-double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
- //   cerr << "DynTimeStep: " << dynamicTimeStep << endl;
-    if(dynamicTimeStep ==0){exit(1);}
+    double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
+    //   cerr << "DynTimeStep: " << dynamicTimeStep << endl;
+    if(dynamicTimeStep ==0){
+        exit(1);
+    }
+    
     float gamma = 0.1;
     double minDynamicTimeStep = c.getSimulationTime()/50000000000;
     double maxDynamicTimeStep = (c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1;
 
     for(const auto &up : vcUpdatables){
-	up->setTimeStep(dynamicTimeStep);
+	    up->setTimeStep(dynamicTimeStep);
     }
 
     for(const auto &timeUp : timeUpdatables){
-	timeUp->updateVals(t);
+	    timeUp->updateVals(t);
     }
+
     do{
         if(count >= maxCount){
             cerr << "Newton Raphson count too big" <<endl;
             exit(1);
         }
-	if((count > dynamicTimeStepMaxCount || !matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaA)) && (dynamicTimeStep>=dynamicTimeStepFactor*minDynamicTimeStep)){
-	   // cerr << "NextTimeStep: " << dynamicTimeStep/dynamicTimeStepFactor << endl;
-	    //cerr << "StartX" << endl << startX << endl << "StartX" << endl;
-	    c.setX(startX);
-	    c.setTimeStep(dynamicTimeStep/dynamicTimeStepFactor);
-	    outLine = runNonLinearTransience(c,c.getPrevTime()+dynamicTimeStep/dynamicTimeStepFactor);
-	    return outLine;   
-	}
-	cerr << "Newton-Raphson Count: " << count << endl;        
-	c.nonLinearA();
+        if((count > dynamicTimeStepMaxCount || !matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaA)) && (dynamicTimeStep>=dynamicTimeStepFactor*minDynamicTimeStep)){
+        // cerr << "NextTimeStep: " << dynamicTimeStep/dynamicTimeStepFactor << endl;
+            //cerr << "StartX" << endl << startX << endl << "StartX" << endl;
+            c.setX(startX);
+            c.setTimeStep(dynamicTimeStep/dynamicTimeStepFactor);
+            outLine = runNonLinearTransience(c,c.getPrevTime()+dynamicTimeStep/dynamicTimeStepFactor);
+            return outLine;   
+        }
+
+        // cerr << "Newton-Raphson Count: " << count << endl;        
+        c.nonLinearA();
         c.computeA_inv();
         c.nonLinearB();
         c.computeNLX(0); //simply does A_inv*b (same as for linear x)
         currentX = newX;
         newX = c.getX();
         c.updateNodalVoltages(); //update based on newX
-//	cerr << newX << endl;
-//	cerr << currentX << endl;
+        //	cerr << newX << endl;
+        //	cerr << currentX << endl;
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
         // cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
         // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
@@ -99,19 +104,18 @@ double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
         // cout << c.getB().format(CleanFmt) << endl << endl;
         // cout << currentX.format(CleanFmt) << endl << endl;
         // cout << newX.format(CleanFmt) << endl << endl;
-    }
-    while(!matrixDiffBellowThreshold(currentX, newX, threshold));
+    }while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 	//cerr << "Made it past while" << endl;    
-if(matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaB)){    
-	if(count < dynamicTimeStepMinCount && dynamicTimeStep <= maxDynamicTimeStep/2 ){
-	dynamicTimeStep *= 2;
+    if(matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaB)){    
+        if(count < dynamicTimeStepMinCount && dynamicTimeStep <= maxDynamicTimeStep/2 ){
+            dynamicTimeStep *= 2;
+        }
     }
-}
     //output current time 
     c.setTimeStep(dynamicTimeStep); 
     c.setCurrentTime(t); //Do we need this?
     outLine += to_string(t);
-//cerr << "Past while dynamTime: " << dynamicTimeStep << endl;
+    //cerr << "Past while dynamTime: " << dynamicTimeStep << endl;
     //output node voltages
     for(int i{}; i<highestNodeNumber; i++){
         outLine += "," + to_string(newX(i));
@@ -126,7 +130,7 @@ if(matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaB)){
     for(const auto &comp : timeUpdatables){
         comp->updateVals(t+c.getTimeStep());
     }
-*/
+    */
     //update components based on current voltage/current
     float currentVoltage{}, currentCurrent{};
     for(const auto &up : vcUpdatables){
