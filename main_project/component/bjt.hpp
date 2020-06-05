@@ -9,9 +9,16 @@
 class BJT: public Component{
 private:
     bool hasVAF;
-    float BF, AF, IRS, IFS, VAF;
-    float BR = 1.0;
-    float VT = 0.025;
+    double BF; // beta forward
+    double AF; // alpha forward
+    double IRS; // reverse saturation current
+    double IFS; // forward saturation current
+    double VAF; // forward early voltage
+    double BR = 1.0;
+    double VT = 0.025;
+
+    //used for current csv output
+    double lastIc, lastIb, lastIe;
 
     // don't know if I could replace with enum
     enum n{
@@ -26,12 +33,14 @@ public:
     BJT(string _name, float r, int n1, int n2);
     ~BJT() = default;
 
-    float ivAtNode(int n1) const override;
-    float divAtNode(int n1, int dn) const override;
+    double ivAtNode(int n1) override;
+    double divAtNode(int n, int dn) override;
 
-    vector<int> getNodes() const override;
+    string getModelName() const override;
 
-    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
+    string getCurrentHeadingName() const override;
+
+    string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

@@ -54,22 +54,14 @@ void CurrentSource::updateVals(float time){
     current = currentWaveform.updateVals(time);
 }
 
-//currentSource is a two terminal device that has two nodes
-vector<int> CurrentSource::getNodes() const{
-    vector<int> res{};
-    res.push_back(nodes.at(0));
-    res.push_back(nodes.at(1));
-    return res;
-}
-
 // iv functions
-float CurrentSource::ivAtNode(int n1) const{
+double CurrentSource::ivAtNode(int n1){
 	return current * (n1==nodes[0]?-1:1);
 }
-float CurrentSource::divAtNode(int n1, int dn) const{
+double CurrentSource::divAtNode(int n, int dn){
 	return 0;
 }
 
-float CurrentSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order){
-    return current;
+string CurrentSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order){
+    return to_string(current);
 }

@@ -29,8 +29,6 @@ public:
 
     float getGain() const override;
     string getVsName() const override;
-
-    vector<int> getNodes() const override;
 };
 
 #endif

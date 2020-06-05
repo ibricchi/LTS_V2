@@ -12,8 +12,13 @@ private:
     float VT = 0;
     float VA = 1; // really should be infinite but won't be used unless hasVA is true
     bool hasVA = false;
+    bool NMOS = true;
 
-    // don't know if I could replace with enum
+    //used for current csv output
+    float lastId, lastIg, lastIs;
+    float lastGd, lastGg, lastGs;
+    float lastGo, lastGm;
+
     enum n{
         D = 0,
         G = 1,
@@ -28,12 +33,12 @@ public:
     void addParam(int paramId, float paramValue) override;
     string getModelName() const override;
 
-    float ivAtNode(int n1) const override;
-    float divAtNode(int n1, int dn) const override;
+    double ivAtNode(int n1) override;
+    double divAtNode(int n, int dn) override;
 
-    vector<int> getNodes() const override;
+    string getCurrentHeadingName() const override;
 
-    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
+    string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

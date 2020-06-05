@@ -1,9 +1,9 @@
-Dependent source test
-*
-XU1 N001 N003 N002 Ideal
-R1 N002 N001 2k
-R2 N001 0 1k
-V1 N003 0 20
-*
-.tran 0.0001 .5 0 1
+* C:\Users\IS\OneDrive\VM\Draft1.asc
+Q1 N003 N002 N004
+R2 N001 N003 10k
+V1 N002 0 SINE(5 1 10)
+V2 N001 0 20
+R1 N004 0 3k
+.tran 0.0001 0.5 0 0.0001s
 .end
+

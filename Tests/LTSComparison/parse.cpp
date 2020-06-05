@@ -1,29 +1,38 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
 int main(){
 vector<string> varNames;
+string input;
 string s;
+string garbage;
 //int nOfVars =0;
 
 //for(int a=0;a<18;a++){
 while(!cin.fail()){
 	getline(cin,s);
 	s.pop_back();
-	//cout << s << endl;
+
 	if(s=="Variables:"){
-		getline(cin,s);
-		//cout << "Woohoo!";
-		s.pop_back();
-		//cerr << "ERROR "<< s << "ERROR";
-		while(s!="Values:"){
+		while(true){
+			getline(cin,input);
+			input.pop_back();
+
+			if(input=="Values:"){
+				break;
+			}
+
+			stringstream stream(input);
+
+			stream >> garbage; //only interested in middle value of value line
+			stream >> s;
 			varNames.push_back(s);
-			getline(cin,s);
-			s.pop_back();
 		}
+		s.clear();
 		getline(cin,s);
 		s.pop_back();
 		for (int n=0;n<varNames.size();n++){

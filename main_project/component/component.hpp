@@ -37,21 +37,28 @@ public:
     //get the total current that flows through a component
     //this will be the current that is written to the csv file
     //the current x vector must be passed as an argument (needed to get the current through voltage sources)
-    virtual float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  = 0;
+    virtual string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  = 0;
     
     virtual float getGain() const;
     virtual string getVsName() const;
     virtual string getModelName() const;
     
     string getName() const;
-    virtual vector<int> getNodes() const = 0;
+
+    //Get the current heading that will be printed to the CSV file.
+    //Should not include the leading and trailing comma.
+    //The current heading should be identical to 'i_' + getName() for two terminal devices => Don't need to overload.
+    //For >2 terminal devices, the string should include multiple comma seperated values that correspond to the terminals (Used to output currents) => Need to overload.
+    virtual string getCurrentHeadingName() const;
+
+    vector<int> getNodes() const;
 
     // these are used for non linear analysis
     void setNodalVoltages(vector<float> v);
     // get the IV characteristics of a component given two nodes
-    virtual float ivAtNode(int n1) const =0;
+    virtual double ivAtNode(int n1) =0;
     // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
-    virtual float divAtNode(int n1, int dn) const =0;
+    virtual double divAtNode(int n, int dn) =0;
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(float newVoltage, float newCurrent, int order);

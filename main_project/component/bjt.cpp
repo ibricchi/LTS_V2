@@ -56,7 +56,7 @@ void BJT::SetupValues(float _BF, float _IFS, bool _hasVAF, float _VAF){
     VAF = _VAF;
 }
 
-float BJT::ivAtNode(int nin) const{
+double BJT::ivAtNode(int nin){
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
     double VCE = 0; //temporary
@@ -76,9 +76,9 @@ float BJT::ivAtNode(int nin) const{
     double IBREQ = IBR - GPR*VBC;
     double ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
 
-    double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
+    double IC = ICEQ - IBREQ;
     double IB = IBREQ + IBFEQ;
-    double IE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
+    double IE = IBFEQ + ICEQ;
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -88,19 +88,22 @@ float BJT::ivAtNode(int nin) const{
     switch(n){
         case n::C:
             current = IC;
+            lastIc = -current;
             break;
         case n::B:
             current = IB;
+            lastIb = -current;
             break;
         case n::E:
             current = -IE;
+            lastIe = -current;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
     return current;
 }
 
-float BJT::divAtNode(int nin, int dnin) const{
+double BJT::divAtNode(int nin, int dnin){
     double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
     double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
 
@@ -125,13 +128,13 @@ float BJT::divAtNode(int nin, int dnin) const{
         case n::C:
             switch(dn){
                 case n::C:
-                    conductance = GPR + GO;
+                    conductance = GPR + GO + GMR;
                     break;
                 case n::B:
-                    conductance = -GPR;
+                    conductance = -GPR + GMF - GMR;
                     break;
                 case n::E:
-                    conductance = -GO;
+                    conductance = -GO - GMF;
                     break;
             }
             break;
@@ -151,13 +154,13 @@ float BJT::divAtNode(int nin, int dnin) const{
         case n::E:
             switch(dn){
                 case n::C:
-                    conductance = -GO;
+                    conductance = -GO - GMR;
                     break;
                 case n::B:
-                    conductance = -GPF;
+                    conductance = -GPF + GMR - GMF;
                     break;
                 case n::E:
-                    conductance = GO + GPF;
+                    conductance = GO + GPF + GMF;
                     break;
             }
             break;
@@ -167,10 +170,18 @@ float BJT::divAtNode(int nin, int dnin) const{
     return conductance;
 }
 
-vector<int> BJT::getNodes() const{
-    return nodes;
+string BJT::getModelName() const{
+    return modelName;
 }
 
-float BJT::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return nanf("");
+string BJT::getCurrentHeadingName() const{
+    return "ic_" + name + ",ib_" + name + ",ie_" + name;
+}
+
+string BJT::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    // current through current source, current through resistors, current through dependent current sources
+
+    //Currently only added currents through the current sources!
+    //Add the remaining ones once we know that this BJT model produces correct results/converges at all.
+    return to_string(lastIc) + "," + to_string(lastIb) + "," + to_string(lastIe);
 }

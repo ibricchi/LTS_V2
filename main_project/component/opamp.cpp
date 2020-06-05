@@ -19,23 +19,18 @@ OpAmp::OpAmp(string name, vector<string> args, vector<float> extraInfo)
 	types.push_back(componentType::voltageSource);
 }
 
-//resistor is a two terminal device that has two nodes
-vector<int> OpAmp::getNodes() const{
-    return nodes;
-}
-
 // get the IV characteristics of a component given two nodes
-float OpAmp::ivAtNode(int n1) const{
+double OpAmp::ivAtNode(int n1){
     cerr << "ivAtNode not implemented for opamp" <<endl;
     exit(1);
 }
 
 // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
-float OpAmp::divAtNode(int n1, int dn) const{
+double OpAmp::divAtNode(int n, int dn){
     cerr << "divAtNode not implemented for opamp" <<endl;
     exit(1);
 }
 
-float OpAmp::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return x(highestNodeNumber+voltageSourcesIdx);
+string OpAmp::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    return to_string(x(highestNodeNumber+voltageSourcesIdx));
 }

@@ -11,6 +11,19 @@ Component::~Component(){}
 // these functions should by default throw error unless overwritten by another child class down the line
 // this allows to call an error if ever a function that shouldn't be returning a voltage or current or conductance
 // is asked for one
+
+string Component::getName() const{
+    return name;
+}
+
+string Component::getCurrentHeadingName() const{
+	return "i_" + name;
+}
+
+vector<int> Component::getNodes() const{
+	return nodes;
+}
+
 float Component::getVoltage() const{
 	cerr << "Tried to call getVoltage from a component that doesn't support it" <<endl;
 	exit(1);
@@ -59,10 +72,6 @@ void Component::setTimeStep(double _timeStep){
 string Component::getModelName() const{
 	cerr << "Tried to call getModelName from a component that doesn't support it" <<endl;
 	exit(1);
-}
-
-string Component::getName() const{
-    return name;
 }
 
 void Component::initCompCurrent(float _voltage_or_current){

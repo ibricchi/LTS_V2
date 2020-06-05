@@ -18,9 +18,6 @@ public:
     virtual ~VoltageControlledSource() = 0;
 
     float getGain() const override;
-
-    //returns all 4 nodes (N+, N-, NC+, NC-)
-    vector<int> getNodes() const override;
 };
 
 #endif

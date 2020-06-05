@@ -11,6 +11,7 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
     modelName = (args.size()>3) ? args[3] : "";
+
     // Order: C, B, E
     nodes = processNodes({args[n::D], args[n::G], args[n::S]});
 
@@ -22,6 +23,9 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
 
 void Mosfet::addParam(int paramId, float paramValue){
     switch(static_cast<mosfetParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
+        case mosfetParamType::TYPE:
+            NMOS = false;
+            break;
         case mosfetParamType::K:
             K = paramValue;
             break;
@@ -29,7 +33,7 @@ void Mosfet::addParam(int paramId, float paramValue){
             hasVA=true;
             VA = paramValue;
             break;
-        case mosfetParamType::VT:
+        case mosfetParamType::VTO:
             VT = paramValue;
             break;
     }
@@ -39,25 +43,24 @@ string Mosfet::getModelName() const{
     return modelName;
 }
 
-float Mosfet::ivAtNode(int nin) const{
-    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
-    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
+double Mosfet::ivAtNode(int nin){
+    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
 
-    float ID, GM, GO;
-    ID = 0;
+    float IDEQ, GM, GO;
+    IDEQ = 0;
 
     if(VGS-VT<0){
-        ID = 0;
+        IDEQ = 0;
         GM = 0;
         GO = 0;
-    }else if(VGS-VT<VDS){
-        ID = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
-        GM = sqrt(2*K*ID);
-        GO = ID/VA;
-    }else if(VDS <= VGS-VT){
-        ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
+    }else if(NMOS?(VGS-VT<VDS):(0<VDS+VGS+VT)){
+        IDEQ = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
+        GM = sqrt(2*K*IDEQ);
+        GO = IDEQ/VA;
+    }else if(NMOS?(VDS <= VGS-VT):(VDS+VGS+VT<=0)){
+        IDEQ = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
-        // k * ((vgs - vt) - vds);
         GO = K*((VGS-VT)-VDS);
     }else{
         cerr << "mosfet in a non supported state" << endl;
@@ -71,34 +74,38 @@ float Mosfet::ivAtNode(int nin) const{
     double current;
     switch(n){
         case n::D:
-            current = ID-GM*VGS-GO*VDS;
+            current = IDEQ-GM*VGS-GO*VDS;
+            lastId = -current;
             break;
         case n::G:
             current = 0;
+            lastIg = -current;
             break;
         case n::S:
-            current = -(ID-GM*VGS-GO*VDS);
+            current = -(IDEQ-GM*VGS-GO*VDS);
+            lastIs = -current;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
     return current;
 }
 
-float Mosfet::divAtNode(int nin, int dnin) const{
-    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]);
-    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]);
+double Mosfet::divAtNode(int nin, int dnin){
+    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
 
     float ID, GM, GO;
+    ID = 0;
 
-    if(VGS - VT < 0){
+    if(VGS-VT<0){
         ID = 0;
         GM = 0;
         GO = 0;
-    }else if(VGS-VT < VDS){
+    }else if(NMOS?(VGS-VT<VDS):(0<VDS+VGS+VT)){
         ID = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
         GM = sqrt(2*K*ID);
         GO = ID/VA;
-    }else if(VDS <= VGS-VT){
+    }else if(NMOS?(VDS <= VGS-VT):(VDS+VGS+VT<=0)){
         ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
@@ -106,6 +113,9 @@ float Mosfet::divAtNode(int nin, int dnin) const{
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
     }
+
+    lastGo = GO;
+    lastGm = GM;
 
     // this is just because I aciddentally set up the switch statement wrong
     // this fixes it, but maybe changing the swtich statement might be more efficient later on
@@ -144,12 +154,15 @@ float Mosfet::divAtNode(int nin, int dnin) const{
             switch(dn){
                 case n::D:
                     conductance = -GO;
+                    lastGd = conductance;
                     break;
                 case n::G:
                     conductance = -GM;
+                    lastGg = conductance;
                     break;
                 case n::S:
                     conductance = GO+GM;
+                    lastGs = conductance;
                     break;
             }
             break;
@@ -159,11 +172,14 @@ float Mosfet::divAtNode(int nin, int dnin) const{
     return conductance;
 }
 
-vector<int> Mosfet::getNodes() const{
-    return nodes;
+string Mosfet::getCurrentHeadingName() const{
+    return "id_" + name + ",ig_" + name + ",is_" + name;
 }
 
-float Mosfet::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    //current through dependent current source + through current source + through resistor
-    return nanf("");
+string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    // total current = current through current source, through resistor, through dependent current source
+    float VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    float VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
+
+    return to_string(lastId + VDS*lastGo - lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs - VDS*lastGo + lastGm*VGS);
 }

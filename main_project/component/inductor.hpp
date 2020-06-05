@@ -18,13 +18,12 @@ public:
 	Inductor(string name, vector<string> args, vector<float> extraInfo);
 	~Inductor() = default;
 	float getConductance() const override;
-	vector<int> getNodes() const ;
 
-	float ivAtNode(int n) const override;
-    float divAtNode(int n, int dn) const override;
+	double ivAtNode(int n) override;
+    double divAtNode(int n, int dn) override;
 
 	float getCurrent() const override;
-	float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
+	string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 	void updateVals(float newVoltage, float newCurrent, int order) override; //Called at the end of every iteration, after calculating node voltages and component currents.
 	void setTimeStep(double _timeStep) override;
 	void initCompCurrent(float _current);

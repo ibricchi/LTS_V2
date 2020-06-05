@@ -48,16 +48,16 @@ float Capacitor::getCurrent() const{
 	return compCurrent;
 }
 
-float Capacitor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string Capacitor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
 	voltage = nodalVoltages[0] - nodalVoltages[1];
-	cerr << "CapVoltage: " << voltage << endl;
+
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
 		prevTotalCurrent = res;
-		cerr << "TotalCapCurrent: " << res << endl;
-		return res;	
+		
+		return to_string(res);	
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrent");
+		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrentString");
 	}
 }
 
@@ -80,28 +80,15 @@ void Capacitor::setTimeStep(double _timeStep){
 
 
 void Capacitor::initCompCurrent(float _voltage){ //_voltage corresponds to the DC bias voltage across the capacitor
-compVoltage = _voltage;
-compCurrent = compConductance * _voltage;
-prevTotalCurrent = 0;
-
+	compVoltage = _voltage;
+	compCurrent = compConductance * _voltage;
+	prevTotalCurrent = 0;
 }
 
-vector<int> Capacitor::getNodes() const{
-    vector<int> res{};
-    res.push_back(nodes.at(0));
-    res.push_back(nodes.at(1));
-    return res;
-}
 
-float Capacitor::ivAtNode(int n) const{
-	float current = compCurrent;	
-	return current * (n==nodes[0]?-1:1);
+double Capacitor::ivAtNode(int n){
+	return compCurrent * (n==nodes[0] ? -1 : 1);
 }
-float Capacitor::divAtNode(int n, int dn) const{
-	    //float v = nodalVoltages[0] - nodalVoltages[1];
-    float conductance = compConductance;
-    if(n != dn){
-        conductance *= -1;
-    }
-    return conductance;
+double Capacitor::divAtNode(int n, int dn){
+	return compConductance * (n==nodes[0] ? -1 : 1) * (dn==nodes[0] ? -1 : 1);
 }

@@ -10,15 +10,15 @@ CurrentControlledVoltageSource::CurrentControlledVoltageSource(string name, vect
     types.push_back(componentType::voltageSource);
 }
 
-float CurrentControlledVoltageSource::ivAtNode(int n) const{
+double CurrentControlledVoltageSource::ivAtNode(int n){
     cerr << "ivAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }
-float CurrentControlledVoltageSource::divAtNode(int n, int dn) const{
+double CurrentControlledVoltageSource::divAtNode(int n, int dn){
     cerr << "divAtNode not implemented in dependent voltage source" <<endl;
     exit(1);
 }
 
-float CurrentControlledVoltageSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    return x(highestNodeNumber+voltageSourcesIdx);
+string CurrentControlledVoltageSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+    return to_string(x(highestNodeNumber+voltageSourcesIdx));
 }

@@ -13,7 +13,7 @@ void Waveform::setupWaveform(const Component* comp, vector<string> args, vector<
 	    c = toupper(c);
     });
 
-    if(typeName == "SIN"){
+    if(typeName == "SIN" || typeName == "SINE"){
         switch (args.size()) // switch statment depending on how many arguments were given as some are not required
         {
         case 5:
@@ -159,7 +159,10 @@ float Waveform::updateVals(float time){
 }
 
 float Waveform::updateSinVals(float time){
-    return offset + amplitude * exp(-dampingFactor*(time - timeDelay)) * sin(2 * PI * frequency * (time - timeDelay) + (phase/360));
+    if(time < timeDelay){
+        return offset+amplitude*sin(PI*phase/180);
+    }
+    return offset + amplitude * exp(-dampingFactor*(time - timeDelay)) * sin(2 * PI * frequency * (time - timeDelay) + PI*(phase/180));
 }
 
 float Waveform::updatePwlVals(float time){

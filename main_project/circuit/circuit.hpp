@@ -15,10 +15,10 @@ struct nodeCompPair{
     vector<int> extraNodes;
     Component* comp;
 
-    float IV() const{
+    double IV() const{
         return comp->ivAtNode(n);
     }
-    float DIV(float dn) const{
+    double DIV(int dn) const{
         return comp->divAtNode(n, dn);
     }
 };
@@ -155,13 +155,13 @@ public:
     }
 
     // non linear setup
-    void nlSetup();
+    void nlSetup(bool isDc = false);
 
     // operation to create A
-    void setupA(bool dc = false);
+    void setupA(bool isDc = false);
 
     // non linear A
-    void nonLinearA();
+    void nonLinearA(bool isDc = false);
 
     MatrixXd getA() const;
 
@@ -170,10 +170,11 @@ public:
     MatrixXd getA_inv() const;
 
     // operation to adjust B
-    void adjustB(bool dc = false);
+    void adjustB(bool isDc = false);
 
     // non linear b
-    void nonLinearB();
+    //alpha is the source value multiplier. It is 1 for normal operation and 0<=x<=1 for source stepping
+    void nonLinearB(bool isDc = false, float alpha = 1);
 
     VectorXd getB() const;
 

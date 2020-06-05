@@ -13,13 +13,12 @@ public:
     Resistor(string _name, vector<string> args, vector<float> extraInfo);
     ~Resistor() = default;
 
-    float ivAtNode(int n1) const override;
-    float divAtNode(int n1, int dn) const override;
+    double ivAtNode(int n1) override;
+    double divAtNode(int n, int dn) override;
 
     float getConductance() const override;
-    vector<int> getNodes() const override;
 
-    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
+    string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

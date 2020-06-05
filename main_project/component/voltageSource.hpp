@@ -12,7 +12,7 @@ private:
     int sourceType;
 
     //index of the voltageSource inside the voltageSources vector
-    //used for getTotalCurrent
+    //used for getTotalCurrentString
     int voltageSourcesIdx;
 
     //used for dc
@@ -29,14 +29,12 @@ public:
 
     void updateVals(float time);
 
-    float ivAtNode(int n) const override;
-    float divAtNode(int n, int dn) const override;
+    double ivAtNode(int n) override;
+    double divAtNode(int n, int dn) override;
 
     float getVoltage() const override;
 
-    vector<int> getNodes() const override;
-
-    float getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
+    string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 
 #endif

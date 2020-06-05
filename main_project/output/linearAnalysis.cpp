@@ -11,12 +11,12 @@
 #include "linearAnalysis.hpp"
 
 void linearDCSetup(Circuit& c){
-    c.setupCurrentControlledSources(c);//
+    c.setupCurrentControlledSources(c);
     c.setupA(true);
     c.adjustB(true);
     c.computeA_inv();
-    c.computeX();//
-    c.updateNodalVoltages();//
+    c.computeX();
+    c.updateNodalVoltages();
 }
 
 void linearSetup(Circuit& c){
@@ -45,7 +45,7 @@ string runLinearTransience(Circuit& c, float t){
     //compute x for the current timestep
     c.computeX();
     VectorXd x = c.getX();
-cerr << x;
+   
     //output current time 
     c.setCurrentTime(t); // do we need this?
     outLine += to_string(t);
@@ -57,11 +57,10 @@ cerr << x;
     vector<int> nodes{};
     float voltage{}, v1{}, v2{};
     float current{};
-    	c.updateNodalVoltages();//
+    c.updateNodalVoltages();
 	//output component currents    
 	for(const auto &comp : components){
-        	outLine += "," + to_string(comp->getTotalCurrent(x, highestNodeNumber));
-
+        outLine += "," + comp->getTotalCurrentString(x, highestNodeNumber);
     }
     
     // update components before next calculation of b
@@ -73,13 +72,14 @@ cerr << x;
     float currentVoltage{}, currentCurrent{};
     int numberOfInductors = c.getInductorNumber();
     int whichInductor = 0; //Starts count from zero, so if whichInductor == 3, it's on the 4th inductor, variable shows which inductor is being referred to in the following for    
-for(const auto &up : vcUpdatables){
+    for(const auto &up : vcUpdatables){
         nodes = up->getNodes();
 
         float v1 = nodes.at(0) == 0 ? 0 : x(nodes.at(0)-1);
         float v2 = nodes.at(1) == 0 ? 0 : x(nodes.at(1)-1);
         currentVoltage = v1 - v2;
-//These next lines initialise the compCurrent values of capacitors and inductors based on DC bias values of voltage and current
+        
+        //These next lines initialise the compCurrent values of capacitors and inductors based on DC bias values of voltage and current
 		if(t==-1){
 			if(typeid(*up)==typeid(Capacitor)){
 				up->initCompCurrent(currentVoltage);
@@ -89,16 +89,15 @@ for(const auto &up : vcUpdatables){
 			}	
 		}
        
+        // cout <<endl<<endl;
+        // cout << "time: " << t <<endl;
+        // cout << "voltage: " << currentVoltage <<endl;
+        // cout << "conductance: " << up->getConductance() <<endl;
+        // cout << "current: " << up->getCurrent() <<endl;
+        // //cout << "total current: " << up->getTotalCurrentString(currentVoltage) <<endl;
+        // cout <<endl<<endl;
 
-
-        cout <<endl<<endl;
-        cout << "time: " << t <<endl;
-        cout << "voltage: " << currentVoltage <<endl;
-        cout << "conductance: " << up->getConductance() <<endl;
-        cout << "current: " << up->getCurrent() <<endl;
-        //cout << "total current: " << up->getTotalCurrent(currentVoltage) <<endl;
-        cout <<endl<<endl;
-//Must be run after getTotalCurrent
+    //Must be run after getTotalCurrentString
 	 up->updateVals(currentVoltage, 0, 1);
     }
 

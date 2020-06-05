@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <CustomExceptionClasses/unsupportedIntegrationMethodOrderException.hpp>
-
+#include <iostream> //testing
 #include "inductor.hpp"
 
 Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
@@ -41,21 +41,22 @@ float Inductor::getCurrent() const{
 	return -compCurrent; //So it's in the right direction, as current source points towards negative.
 }
 
-float Inductor::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string Inductor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
 	voltage = nodalVoltages[0] - nodalVoltages[1];
 
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance + compConductance*compVoltage +prevTotalCurrent; //
 		prevTotalCurrent = res;
-		return res; //negative as current flows from n1 to n2 of inductor
+		return to_string(res); //negative as current flows from n1 to n2 of inductor
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/getTotalCurrent");
+		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/getTotalCurrentString");
 	}
 }
 
 void Inductor::updateVals(float newVoltage, float newCurrent, int order){
 	if(order==1){ //using companion model for the trapezoid integration method.		
 		compCurrent =(2.0*compConductance*newVoltage)+compCurrent;
+
 		compVoltage = newVoltage;
 	}else{
 		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/updateVals");
@@ -70,26 +71,13 @@ void Inductor::setTimeStep(double _timeStep){
 }
 
 void Inductor::initCompCurrent(float _current){
-compCurrent = _current;
-prevTotalCurrent = _current;
+	compCurrent = _current;
+	prevTotalCurrent = _current;
 }
 
-vector<int> Inductor::getNodes() const{
-    vector<int> res{};
-    res.push_back(nodes.at(0));
-    res.push_back(nodes.at(1));
-    return res;
+double Inductor::ivAtNode(int n){
+	return compCurrent * (n==nodes[0] ? 1 : -1);
 }
-
-float Inductor::ivAtNode(int n) const{
-	float current = -compCurrent;	
-	return current * (n==nodes[0]?-1:1);
-}
-float Inductor::divAtNode(int n, int dn) const{
-	    //float v = nodalVoltages[0] - nodalVoltages[1];
-    float conductance = compConductance;
-    if(n != dn){
-        conductance *= -1;
-    }
-    return conductance;
+double Inductor::divAtNode(int n, int dn){
+	return compConductance * (n==nodes[0] ? -1 : 1) * (dn==nodes[0] ? -1 : 1);
 }

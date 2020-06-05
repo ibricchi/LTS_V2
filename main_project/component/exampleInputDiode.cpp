@@ -31,17 +31,13 @@ void ExampleInputDiode::addParam(int paramId, float paramValue){
     }
 }
 
-vector<int> ExampleInputDiode::getNodes() const{
-    return nodes;
-}
-
 string ExampleInputDiode::getModelName() const{
     return modelName;
 }
 
-float ExampleInputDiode::ivAtNode(int n1) const{
+double ExampleInputDiode::ivAtNode(int n1){
     return 0.1; //incorrect, just for demonstration
 }
-float ExampleInputDiode::divAtNode(int n1, int dn) const{
+double ExampleInputDiode::divAtNode(int n, int dn){
     return 0.1; //incorrect, just for demonstration
 }

@@ -9,15 +9,15 @@ VoltageControlledCurrentSource::VoltageControlledCurrentSource(string name, vect
     types.push_back(componentType::currentSource);
 }
 
-float VoltageControlledCurrentSource::ivAtNode(int n) const{
+double VoltageControlledCurrentSource::ivAtNode(int n){
     return 0;
 }
-float VoltageControlledCurrentSource::divAtNode(int n, int dn) const{
+double VoltageControlledCurrentSource::divAtNode(int n, int dn){
     return 0;
 }
 
-float VoltageControlledCurrentSource::getTotalCurrent(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string VoltageControlledCurrentSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     float controllingVoltage = nodalVoltages[2] - nodalVoltages[3];
     
-    return gain*controllingVoltage;
+    return to_string(gain*controllingVoltage);
 }
