@@ -46,7 +46,8 @@ string runNonLinearTransience(Circuit& c, float t){
     float prevTime = c.getPrevTime();    
     double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
     //   cerr << "DynTimeStep: " << dynamicTimeStep << endl;
-    if(dynamicTimeStep ==0){
+    if(dynamicTimeStep == 0){
+        cerr << "Dynamic time step reaches 0, convergence cannot be found at all" << endl;
         exit(1);
     }
     
