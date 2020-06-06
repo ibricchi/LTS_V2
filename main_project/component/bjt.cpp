@@ -178,6 +178,6 @@ string BJT::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, floa
     if(NPN){
         return to_string(IC + GO*VCE - GMR*VBC + GMF*VBE - GPR*VBC) + "," + to_string(IB + GPF*VBE + GPR*VBC) + "," + to_string(-IE - GMF*VBE + GMR*VBC - GPF*VBE - GO*VCE);
     }else{
-        return to_string(IC - GO*VCE + GMR*VBC - GMF*VBE + GPF*VBC) + "," + to_string(IB - GPR*VBE - GPF*VBC) + "," + to_string(-IE + GMF*VBE - GMR*VBC + GPR*VBE + GO*VCE);
+        return to_string(IC - GO*VCE + GMR*VBC - GMF*VBE + GPF*VBC) + "," + to_string(IB - GPF*VBE - GPR*VBC) + "," + to_string(-IE + GMF*VBE - GMR*VBC + GPR*VBE + GO*VCE);
     }
 }
