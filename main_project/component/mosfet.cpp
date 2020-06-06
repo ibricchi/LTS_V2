@@ -10,7 +10,21 @@ using namespace std;
 Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
-    modelName = (args.size()>3) ? args[3] : "";
+    // figures out if 3 or 4 inputs are used for BJT and then set's model name appropriately
+    if(args.size()==3){
+        modelName = "";
+    }else if(args.size()==4){
+        if(args[3][0] > '9'){
+            modelName = args[3];
+        }else{
+            modelName = "";
+        }
+    }else if(args.size()==5){
+        modelName = args[4];
+    }else{
+        cerr << "Wrong number of argumnets passed to BJT" << endl;
+        exit(1);
+    }
 
     // Order: C, B, E
     nodes = processNodes({args[n::D], args[n::G], args[n::S]});
