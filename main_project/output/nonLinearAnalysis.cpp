@@ -48,7 +48,7 @@ string runNonLinearTransience(Circuit& c, float t){
     //   cerr << "DynTimeStep: " << dynamicTimeStep << endl;
     if(dynamicTimeStep == 0){
         cerr << "Dynamic time step reaches 0, convergence cannot be found at all" << endl;
-        // exit(1);
+        exit(1);
     }
     
     float gamma = 0.1;
