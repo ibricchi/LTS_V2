@@ -44,8 +44,8 @@ string Mosfet::getModelName() const{
 }
 
 double Mosfet::ivAtNode(int nin){
-    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
-    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
+    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
 
     float IDEQ, GM, GO;
     IDEQ = 0;
@@ -54,11 +54,11 @@ double Mosfet::ivAtNode(int nin){
         IDEQ = 0;
         GM = 0;
         GO = 0;
-    }else if(NMOS?(VGS-VT<VDS):(0<VDS+VGS+VT)){
-        IDEQ = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
+    }else if(NMOS ? (VGS-VT<VDS) : (0<VDS+VGS+VT)){
+        IDEQ = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA):1);
         GM = sqrt(2*K*IDEQ);
         GO = IDEQ/VA;
-    }else if(NMOS?(VDS <= VGS-VT):(VDS+VGS+VT<=0)){
+    }else if(NMOS ? (VDS <= VGS-VT) : (VDS+VGS+VT<=0)){
         IDEQ = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
@@ -74,16 +74,16 @@ double Mosfet::ivAtNode(int nin){
     double current;
     switch(n){
         case n::D:
-            current = IDEQ-GM*VGS-GO*VDS;
-            lastId = -current;
+            current = IDEQ - GM*VGS - GO*VDS;
+            lastId = current;
             break;
         case n::G:
             current = 0;
-            lastIg = -current;
+            lastIg = current;
             break;
         case n::S:
-            current = -(IDEQ-GM*VGS-GO*VDS);
-            lastIs = -current;
+            current = -(IDEQ - GM*VGS - GO*VDS);
+            lastIs = current;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
@@ -91,8 +91,8 @@ double Mosfet::ivAtNode(int nin){
 }
 
 double Mosfet::divAtNode(int nin, int dnin){
-    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
-    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
+    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
 
     float ID, GM, GO;
     ID = 0;
@@ -101,11 +101,11 @@ double Mosfet::divAtNode(int nin, int dnin){
         ID = 0;
         GM = 0;
         GO = 0;
-    }else if(NMOS?(VGS-VT<VDS):(0<VDS+VGS+VT)){
-        ID = K * (VGS-VT)*(VGS-VT) * (hasVA?(1 + VDS/VA):1);
+    }else if(NMOS ? (VGS-VT<VDS) : (0<VDS+VGS+VT)){
+        ID = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA) : 1);
         GM = sqrt(2*K*ID);
         GO = ID/VA;
-    }else if(NMOS?(VDS <= VGS-VT):(VDS+VGS+VT<=0)){
+    }else if(NMOS ? (VDS <= VGS-VT) : (VDS+VGS+VT<=0)){
         ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
@@ -178,8 +178,12 @@ string Mosfet::getCurrentHeadingName() const{
 
 string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     // total current = current through current source, through resistor, through dependent current source
-    float VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS?1:-1);
-    float VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS?1:-1);
+    float VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
+    float VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
 
-    return to_string(lastId + VDS*lastGo - lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs - VDS*lastGo + lastGm*VGS);
+    if(NMOS){
+        return to_string(lastId + VDS*lastGo + lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs - VDS*lastGo - lastGm*VGS);
+    }else{
+        return to_string(lastId - VDS*lastGo - lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs + VDS*lastGo + lastGm*VGS);
+    }
 }
