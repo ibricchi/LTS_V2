@@ -161,6 +161,10 @@ double Mosfet::divAtNode(int nin, int dnin){
     return conductance;
 }
 
+void Mosfet::setMinPNConductance(float con){
+    minPNConductance = con;
+}
+
 string Mosfet::getModelName() const{
     return modelName;
 }

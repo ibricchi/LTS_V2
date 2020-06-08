@@ -39,6 +39,7 @@ public:
     void addParam(int paramId, float paramValue) override;
 
     void setNodalVoltages(vector<float> v) override;
+    void setMinPNConductance(float con) override;
 
     string getModelName() const override;
 

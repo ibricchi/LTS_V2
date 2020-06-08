@@ -54,6 +54,10 @@ double Diode::divAtNode(int n, int dn){
     return conductance * (n!=dn?-1:1);
 }
 
+void Diode::setMinPNConductance(float con){
+    minPNConductance = con;
+}
+
 string Diode::getModelName() const{
     return modelName;
 }

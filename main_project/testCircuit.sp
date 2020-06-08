@@ -8,7 +8,7 @@ V2 N004 0 -20
 V3 N003 0 20
 R1 N002 0 10k
 *
-.options Gmin=1
+.options Gmin=2
 *
 .model D D
 .model PNP PNP
