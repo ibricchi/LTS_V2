@@ -110,6 +110,7 @@ double Circuit::getMinPNConductance() const{
 }
 void Circuit::setMinPNConductance(double con){
     minPNConductance = con;
+    cout << "testing minpn" << endl;
 }
 
 void Circuit::incrementInductorNumber(){
