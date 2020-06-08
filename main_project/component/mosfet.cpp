@@ -67,12 +67,12 @@ void Mosfet::setNodalVoltages(vector<float> v){
         GM = sqrt(2*K*IS);
         GO = (hasVA?IS/VA:0);
         IS = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA):1);
-        IDEQ = IS - GM*VGS - GO*VDS;
+        IDEQ = (IS - GM*VGS - GO*VDS) * (NMOS?1:-1);
     }else if(NMOS ? (VDS <= VGS-VT) : (VDS+VGS+VT<=0)){
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
         IS = K * (2*(VGS-VT)*VDS-VDS*VDS);
-        IDEQ = IS - GM*VGS - GO*VDS;
+        IDEQ = (IS - GM*VGS - GO*VDS) * (NMOS?1:-1);
     }else{
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
@@ -86,7 +86,7 @@ double Mosfet::ivAtNode(int nin){
     double current;
     switch(n){
         case n::D:
-            current = -(IDEQ);
+            current = IDEQ;
             lastId = current;
             break;
         case n::G:
@@ -94,7 +94,7 @@ double Mosfet::ivAtNode(int nin){
             lastIg = current;
             break;
         case n::S:
-            current = (IDEQ);
+            current = -IDEQ;
             lastIs = current;
             break;
     }
