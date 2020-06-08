@@ -38,6 +38,7 @@ public:
     string getModelName() const override;
 
     void setNodalVoltages(vector<float> v) override;
+    void setMinPNConductance(float con) override;
 
     double ivAtNode(int n1) override;
     double divAtNode(int n, int dn) override;

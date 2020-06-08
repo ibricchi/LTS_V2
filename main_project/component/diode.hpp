@@ -27,6 +27,7 @@ public:
     double divAtNode(int n, int dn) override;
 
     void setNodalVoltages(vector<float> nv) override;
+    void setMinPNConductance(float con) override;
 
     void addParam(int paramId, float paramValue);
     string getModelName() const override;

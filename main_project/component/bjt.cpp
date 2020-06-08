@@ -172,6 +172,10 @@ double BJT::divAtNode(int nin, int dnin){
     return conductance;
 }
 
+void BJT::setMinPNConductance(float con){
+    minPNConductance = con;
+}
+
 string BJT::getModelName() const{
     return modelName;
 }

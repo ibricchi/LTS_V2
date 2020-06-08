@@ -60,6 +60,9 @@ public:
     // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
     virtual double divAtNode(int n, int dn) =0;
 
+    // set minimum PN conductance for non-linear components
+    virtual void setMinPNConductance(float con);
+
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(float newVoltage, float newCurrent, int order);
     

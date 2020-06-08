@@ -23,6 +23,7 @@ string runNonLinearTransience(Circuit& c, float t){
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
     vector<Component*> vcUpdatables = c.getVCUpdatablesRef();
     vector<Component*> timeUpdatables = c.getTimeUpdatablesRef();
+    vector<Component*> nonLinears = c.getNonLinearsRef();
     int highestNodeNumber = c.getHighestNodeNumber();
     //forms a row in the csv file
     string outLine{};
@@ -61,6 +62,11 @@ string runNonLinearTransience(Circuit& c, float t){
 
     for(const auto &timeUp : timeUpdatables){
 	    timeUp->updateVals(t);
+    }
+
+    // update components based on minPNConductance
+    for(const auto &nonLin : nonLinears){
+        nonLin->setMinPNConductance(c.getMinPNConductance());
     }
 
     do{
@@ -141,6 +147,7 @@ string runNonLinearTransience(Circuit& c, float t){
         up->updateVals(currentVoltage, 0, 1);
     }
     c.setPrevTime(t);
+    
    // cerr << "Just before return dynTimeStep: " << dynamicTimeStep << endl;
     return outLine;
     
