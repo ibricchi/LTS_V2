@@ -59,8 +59,8 @@ void Mosfet::setNodalVoltages(vector<float> v){
     VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
 
     if(VGS-VT<0){
-        GM = 0;
-        GO = 0;
+        GM = 1e-10;
+        GO = 1e-10;
         IS = 0;
         IDEQ = 0;
     }else if(NMOS ? (VGS-VT<VDS) : (0<VDS+VGS+VT)){
@@ -77,6 +77,9 @@ void Mosfet::setNodalVoltages(vector<float> v){
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
     }
+
+    if(GM == 0) GM = 1e-10;
+    if(GO == 0) GO = 1e-10;
 }
 
 double Mosfet::ivAtNode(int nin){  
