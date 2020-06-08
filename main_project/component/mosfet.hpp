@@ -14,7 +14,7 @@ private:
     bool hasVA = false;
     bool NMOS = true;
 
-    double minPNConductance;
+    double minPNConductance; // minimum allowed conductance
 
     // used for caluations
     float VGS, VDS, IS, IDEQ, GM, GO;
