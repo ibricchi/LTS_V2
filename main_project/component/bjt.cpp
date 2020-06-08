@@ -118,7 +118,6 @@ double BJT::ivAtNode(int nin){
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
-    cout << minPNConductance << endl;
     return current;
 }
 

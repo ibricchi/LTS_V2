@@ -16,5 +16,4 @@ R1 N002 0 10k
 .model NMOS NMOS
 .model PMOS PMOS
 .tran 0.00001 1 0
-.options Gmin=1m
 .end
