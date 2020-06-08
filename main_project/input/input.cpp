@@ -274,11 +274,11 @@ void setupOptions(Circuit& c, vector<string>& args){
         c = toupper(c);
     });
 
-    if(optionName != "GMIN"){
-        cerr << "Unsupported option: " << optionName <<endl;
-        exit(1);
-    }else{
+    if(optionName == "GMIN"){
         double gMin = Component::getValue(args[0].substr(5));
         c.setMinPNConductance(gMin);
+    }else{
+        cerr << "Unsupported option: " << optionName <<endl;
+        exit(1);
     }
 }
