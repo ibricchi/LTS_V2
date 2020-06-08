@@ -15,7 +15,7 @@ private:
     bool NMOS = true;
 
     // used for caluations
-    float VGS, VDS, IDEQ, GM, GO;
+    float VGS, VDS, IS, IDEQ, GM, GO;
 
     //used for current csv output
     float lastId, lastIg, lastIs;

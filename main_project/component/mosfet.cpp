@@ -54,21 +54,25 @@ void Mosfet::addParam(int paramId, float paramValue){
 }
 
 void Mosfet::setNodalVoltages(vector<float> v){
+    nodalVoltages = v;
     VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
     VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
 
     if(VGS-VT<0){
-        IDEQ = 0;
         GM = 0;
         GO = 0;
+        IS = 0;
+        IDEQ = 0;
     }else if(NMOS ? (VGS-VT<VDS) : (0<VDS+VGS+VT)){
-        IDEQ = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA):1);
-        GM = sqrt(2*K*IDEQ);
-        GO = IDEQ/VA;
+        GM = sqrt(2*K*IS);
+        GO = (hasVA?IS/VA:0);
+        IS = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA):1);
+        IDEQ = IS - GM*VGS - GO*VDS;
     }else if(NMOS ? (VDS <= VGS-VT) : (VDS+VGS+VT<=0)){
-        IDEQ = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
+        IS = K * (2*(VGS-VT)*VDS-VDS*VDS);
+        IDEQ = IS - GM*VGS - GO*VDS;
     }else{
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
@@ -82,7 +86,7 @@ double Mosfet::ivAtNode(int nin){
     double current;
     switch(n){
         case n::D:
-            current = (IDEQ - GM*VGS - GO*VDS);
+            current = -(IDEQ);
             lastId = current;
             break;
         case n::G:
@@ -90,7 +94,7 @@ double Mosfet::ivAtNode(int nin){
             lastIg = current;
             break;
         case n::S:
-            current = -(IDEQ - GM*VGS - GO*VDS);
+            current = (IDEQ);
             lastIs = current;
             break;
     }
@@ -161,9 +165,6 @@ string Mosfet::getCurrentHeadingName() const{
 
 string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     // total current = current through current source, through resistor, through dependent current source
-    float VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
-    float VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
-
     if(NMOS){
         return to_string(lastId + VDS*lastGo + lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs - VDS*lastGo - lastGm*VGS);
     }else{
