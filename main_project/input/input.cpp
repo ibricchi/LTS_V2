@@ -21,8 +21,8 @@
 #include "input.hpp"
 
 ModelStatement::ModelStatement(vector<string> args){
-    componentId = args.at(0);
-    string componentStr = args.at(1);
+    componentId = args[0];
+    string componentStr = args[1];
 
     //convert componentStr to uppercase (as netlist case insensitive)
     for_each(componentStr.begin(), componentStr.end(), [](char &c){
@@ -48,7 +48,7 @@ ModelStatement::ModelStatement(vector<string> args){
     }
 
     for(int i{2}; i<args.size(); i++){
-        param = args.at(i);
+        param = args[i];
 
         //remove opening and closing parentheses
         if(i == 2){
