@@ -14,6 +14,8 @@ private:
     bool hasVA = false;
     bool NMOS = true;
 
+    double minPNConductance;
+
     // used for caluations
     float VGS, VDS, IS, IDEQ, GM, GO;
 

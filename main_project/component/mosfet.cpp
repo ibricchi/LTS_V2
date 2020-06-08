@@ -26,6 +26,9 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
         exit(1);
     }
 
+    // sets minimum conductance
+    minPNConductance = extraInfo[3];
+
     // Order: C, B, E
     nodes = processNodes({args[n::D], args[n::G], args[n::S]});
 
@@ -78,8 +81,8 @@ void Mosfet::setNodalVoltages(vector<float> v){
         exit(1);
     }
 
-    if(GM == 0) GM = 1e-10;
-    if(GO == 0) GO = 1e-10;
+    if(GM < minPNConductance) GM = minPNConductance;
+    if(GO < minPNConductance) GO = minPNConductance;
 }
 
 double Mosfet::ivAtNode(int nin){  
