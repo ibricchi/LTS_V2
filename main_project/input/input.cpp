@@ -175,6 +175,8 @@ void readSpice(Circuit& c, istream& file){
             }else if(name == "END"){
                 containsEnd = true;
                 break; //ignore anything that comes after a .end statement
+            }else if(name == "OPTIONS"){
+                setupOptions(c, args);
             }else{
                 cerr << "Unsuported netlist statement. Statement: " << compTypeC + name <<endl;
                 exit(1);
@@ -261,4 +263,22 @@ void readSpice(Circuit& c, istream& file){
     }
 
     c.setHighestNodeNumber(maxNode);
+}
+
+void setupOptions(const Circuit& c, vector<string>& args){
+    //very simple as currently only GMIN supported as an option
+    string optionName = args[0].substr(0,4);
+
+    //convert name to uppercase (as netlist case insensitive)
+    for_each(optionName.begin(), optionName.end(), [](char &c){
+        c = toupper(c);
+    });
+
+    if(optionName != "GMIN"){
+        cerr << "Unsupported option: " << optionName <<endl;
+        exit(1);
+    }else{
+        double gMin = Component::getValue(args[0].substr(5));
+        c.setMinPNConductance(gMin);
+    }
 }

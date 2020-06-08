@@ -10,6 +10,9 @@
 
 using namespace std;
 
+//very simplified as currently only GMIN supported as an option
+void setupOptions(const Circuit& c, vector<string>& args);
+
 // this function will eventually read from file and convert to istream to pass into second overload
 void readSpice(Circuit& c, string file);
 
