@@ -91,26 +91,16 @@ string runNonLinearTransience(Circuit& c, float t){
         currentX = newX;
         newX = c.getX();
         c.updateNodalVoltages(); //update based on newX
-        //	cerr << newX << endl;
-        //	cerr << currentX << endl;
+
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
         // cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
         // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
-        // cout << c.getA_inv().format(CleanFmt) << endl << endl;
+        // cout << "A^{-1}" << endl <<c.getA_inv().format(CleanFmt) << endl << endl;
         // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
         // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
         // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
 
-
         count++;
-
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << "Time:" << t << " Count: " << count << endl;
-        // cout << "-----------------------" << endl;
-        // cout << c.getA().format(CleanFmt) << endl << endl;
-        // cout << c.getB().format(CleanFmt) << endl << endl;
-        // cout << currentX.format(CleanFmt) << endl << endl;
-        // cout << newX.format(CleanFmt) << endl << endl;
     }while(!matrixDiffBellowThreshold(currentX, newX, threshold));
 	//cerr << "Made it past while" << endl;    
     if(matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaB)){    
@@ -232,18 +222,21 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             c.computeA_inv();
             c.nonLinearB(true, alpha);
             c.computeNLX(0); //simply does A_inv*b (same as for linear x)
+            
             currentX = newX;
             newX = c.getX();
-            c.updateNodalVoltages(); //update based on newX
 
+            // Debugging
+            
             // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-            // cout << "Count: " << count << endl;
-            // cout << "-----------------------" << endl;
-            // cout << c.getA().format(CleanFmt) << endl << endl;
-            // cout << c.getA_inv().format(CleanFmt) << endl << endl;
-            // cout << c.getB().format(CleanFmt) << endl << endl;
-            // cout << currentX.format(CleanFmt) << endl << endl;
-            // cout << newX.format(CleanFmt) << endl << endl;
+            // cout << "Count: " << count << endl << "-------------------------------" << endl;
+            // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
+            // cout << "A^{-1}" << endl <<c.getA_inv().format(CleanFmt) << endl << endl;
+            // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
+            // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
+            // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
+
+            c.updateNodalVoltages(); //update based on newX
 
             count++;
         }
