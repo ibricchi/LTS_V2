@@ -57,6 +57,9 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
     
     string outLine{};
     if(!c.hasNonLinearComponents()){
+        //get static timestep (printing interval)
+        timeStep = c.getTStep();
+
         //DC operating point analysis. Results are not written to CSV file.
         linearDCSetup(c);
         runLinearTransience(c, -1);	
