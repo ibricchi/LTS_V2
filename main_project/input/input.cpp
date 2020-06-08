@@ -265,20 +265,37 @@ void readSpice(Circuit& c, istream& file){
     c.setHighestNodeNumber(maxNode);
 }
 
-void setupOptions(const Circuit& c, vector<string>& args){
-    //very simple as currently only GMIN supported as an option
-    string optionName = args[0].substr(0,4);
-
-    //convert name to uppercase (as netlist case insensitive)
-    for_each(optionName.begin(), optionName.end(), [](char &c){
-        c = toupper(c);
-    });
-
-    if(optionName != "GMIN"){
-        cerr << "Unsupported option: " << optionName <<endl;
+void setupOptions(Circuit& c, vector<string>& args){
+    if(args.size() == 0){
+        cerr << "Invalid options statement. An options statement must have at least one parameter." <<endl;
         exit(1);
-    }else{
-        double gMin = Component::getValue(args[0].substr(5));
-        c.setMinPNConductance(gMin);
+    }
+
+    const string delimiter = "="; //separates paramName and paramValue
+
+    string paramName{}, paramValueStr{};
+    float paramValue{};
+
+    for(auto arg : args){
+        paramName = arg.substr(0, arg.find(delimiter));
+        paramValueStr = arg.substr(arg.find(delimiter)+1);
+
+        //convert paramName to uppercase (as netlist case insensitive)
+        for_each(paramName.begin(), paramName.end(), [](char &c){
+	        c = toupper(c);
+        });
+
+        //convert value to float
+        paramValue = Component::getValue(paramValueStr);
+
+        //add any new option here
+        if(paramName == "GMIN"){
+            c.setMinPNConductance(paramValue);
+        }else if(paramName == "ABSTOL"){
+            //do something (threshold for Newton-Raphson)
+        }else{
+            cerr << "Invalid OPTIONS command. Unsupported option: " << paramName << endl;
+            exit(1);
+        }
     }
 }
