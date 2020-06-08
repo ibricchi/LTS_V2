@@ -105,6 +105,13 @@ void Circuit::setHasNonLinearComponents(bool _hasNonLinearComponents){
     hasNonLinear = _hasNonLinearComponents;
 }
 
+double Circuit::getMinPNConductance() const{
+    return minPNConductance;
+}
+void Circuit::setMinPNConductance(double con){
+    minPNConductance = con;
+}
+
 void Circuit::incrementInductorNumber(){
     inductorNumber++;
 }
