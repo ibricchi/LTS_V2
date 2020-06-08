@@ -29,7 +29,7 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
     // Order: C, B, E
     nodes = processNodes({args[n::D], args[n::G], args[n::S]});
 
-    nodalVoltages = {0,0,0};
+    setNodalVoltages({0,0,0});
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
