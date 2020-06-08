@@ -53,42 +53,40 @@ void Mosfet::addParam(int paramId, float paramValue){
     }
 }
 
-string Mosfet::getModelName() const{
-    return modelName;
-}
-
-double Mosfet::ivAtNode(int nin){
-    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
-    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
-
-    float IDEQ, GM, GO;
-    IDEQ = 0;
+void Mosfet::setNodalVoltages(vector<float> v){
+    nodalVoltages = v;
+    VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
+    VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
 
     if(VGS-VT<0){
-        IDEQ = 0;
         GM = 0;
         GO = 0;
+        IS = 0;
+        IDEQ = 0;
     }else if(NMOS ? (VGS-VT<VDS) : (0<VDS+VGS+VT)){
-        IDEQ = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA):1);
-        GM = sqrt(2*K*IDEQ);
-        GO = IDEQ/VA;
+        GM = sqrt(2*K*IS);
+        GO = (hasVA?IS/VA:0);
+        IS = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA):1);
+        IDEQ = (IS - GM*VGS - GO*VDS) * (NMOS?1:-1);
     }else if(NMOS ? (VDS <= VGS-VT) : (VDS+VGS+VT<=0)){
-        IDEQ = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
+        IS = K * (2*(VGS-VT)*VDS-VDS*VDS);
+        IDEQ = (IS - GM*VGS - GO*VDS) * (NMOS?1:-1);
     }else{
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
     }
+}
 
-    // this is just because I aciddentally set up the switch statement wrong
-    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+double Mosfet::ivAtNode(int nin){  
+    // selects the right node type (Drain Gate and Source)
     int n = nin==nodes[n::D]?n::D:(nin==nodes[n::G]?n::G:n::S);
 
     double current;
     switch(n){
         case n::D:
-            current = IDEQ - GM*VGS - GO*VDS;
+            current = IDEQ;
             lastId = current;
             break;
         case n::G:
@@ -96,7 +94,7 @@ double Mosfet::ivAtNode(int nin){
             lastIg = current;
             break;
         case n::S:
-            current = -(IDEQ - GM*VGS - GO*VDS);
+            current = -IDEQ;
             lastIs = current;
             break;
     }
@@ -105,34 +103,7 @@ double Mosfet::ivAtNode(int nin){
 }
 
 double Mosfet::divAtNode(int nin, int dnin){
-    double VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
-    double VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
-
-    float ID, GM, GO;
-    ID = 0;
-
-    if(VGS-VT<0){
-        ID = 0;
-        GM = 0;
-        GO = 0;
-    }else if(NMOS ? (VGS-VT<VDS) : (0<VDS+VGS+VT)){
-        ID = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA) : 1);
-        GM = sqrt(2*K*ID);
-        GO = ID/VA;
-    }else if(NMOS ? (VDS <= VGS-VT) : (VDS+VGS+VT<=0)){
-        ID = K * (2*(VGS-VT)*VDS-VDS*VDS);
-        GM = K*VDS;
-        GO = K*((VGS-VT)-VDS);
-    }else{
-        cerr << "mosfet in a non supported state" << endl;
-        exit(1);
-    }
-
-    lastGo = GO;
-    lastGm = GM;
-
-    // this is just because I aciddentally set up the switch statement wrong
-    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+    // selects the right node type (Drain Gate and Source)
     int n = nin==nodes[n::D]?n::D:(nin==nodes[n::G]?n::G:n::S);
     int dn = dnin==nodes[n::D]?n::D:(dnin==nodes[n::G]?n::G:n::S);
 
@@ -181,9 +152,11 @@ double Mosfet::divAtNode(int nin, int dnin){
             }
             break;
     }
-
-    // cout << "n: " << n << " dn: " << dn << " conductance: " << conductance << endl << endl;
     return conductance;
+}
+
+string Mosfet::getModelName() const{
+    return modelName;
 }
 
 string Mosfet::getCurrentHeadingName() const{
@@ -192,9 +165,6 @@ string Mosfet::getCurrentHeadingName() const{
 
 string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     // total current = current through current source, through resistor, through dependent current source
-    float VGS = (nodalVoltages[n::G] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
-    float VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
-
     if(NMOS){
         return to_string(lastId + VDS*lastGo + lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs - VDS*lastGo - lastGm*VGS);
     }else{
