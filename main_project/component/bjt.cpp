@@ -28,7 +28,6 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     
     // get's minimum pn conductnace from extrainfo
     minPNConductance = extraInfo[3];
-    cout << minPNConductance << endl;
 
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});
