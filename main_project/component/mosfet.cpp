@@ -62,13 +62,13 @@ void Mosfet::setNodalVoltages(vector<float> v){
         GM = 0;
         GO = 0;
     }else if(NMOS ? (VGS-VT<VDS) : (0<VDS+VGS+VT)){
+        IDEQ = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA):1);
         GM = sqrt(2*K*IDEQ);
         GO = IDEQ/VA;
-        IDEQ = K * (VGS-VT)*(VGS-VT) * (hasVA ? (1 + VDS/VA):1)  - GM*VGS - GO*VGS;
     }else if(NMOS ? (VDS <= VGS-VT) : (VDS+VGS+VT<=0)){
+        IDEQ = K * (2*(VGS-VT)*VDS-VDS*VDS);
         GM = K*VDS;
         GO = K*((VGS-VT)-VDS);
-        IDEQ = K * (2*(VGS-VT)*VDS-VDS*VDS) - GM*VGS - GO*VGS;
     }else{
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
@@ -76,14 +76,13 @@ void Mosfet::setNodalVoltages(vector<float> v){
 }
 
 double Mosfet::ivAtNode(int nin){  
-    // this is just because I aciddentally set up the switch statement wrong
-    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+    // selects the right node type (Drain Gate and Source)
     int n = nin==nodes[n::D]?n::D:(nin==nodes[n::G]?n::G:n::S);
 
     double current;
     switch(n){
         case n::D:
-            current = IDEQ;
+            current = (IDEQ - GM*VGS - GO*VDS);
             lastId = current;
             break;
         case n::G:
@@ -91,10 +90,11 @@ double Mosfet::ivAtNode(int nin){
             lastIg = current;
             break;
         case n::S:
-            current = -IDEQ;
+            current = -(IDEQ - GM*VGS - GO*VDS);
             lastIs = current;
             break;
     }
+    // cout << "n: " << n << " current: " << current << endl << endl;
     return current;
 }
 
