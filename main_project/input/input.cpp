@@ -265,7 +265,7 @@ void readSpice(Circuit& c, istream& file){
     c.setHighestNodeNumber(maxNode);
 }
 
-void setupOptions(const Circuit& c, vector<string>& args){
+void setupOptions(Circuit& c, vector<string>& args){
     //very simple as currently only GMIN supported as an option
     string optionName = args[0].substr(0,4);
 
