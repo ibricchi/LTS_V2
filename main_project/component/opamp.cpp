@@ -16,7 +16,7 @@ OpAmp::OpAmp(string name, vector<string> args, vector<float> extraInfo)
     try{
         modelName = args.at(3); //Not used for now => Assumed to be ideal
     }catch(...){
-        cerr << "An op-amp is missing a model name" <<endl;
+        cerr << "An op-amp is missing a model name. For an ideal op-amp, this can be any word." <<endl;
         exit(1);
     }
     
