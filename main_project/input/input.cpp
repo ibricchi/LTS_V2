@@ -21,6 +21,11 @@
 #include "input.hpp"
 
 ModelStatement::ModelStatement(vector<string> args){
+    if(args.size() < 2){
+        cerr << "Invalid model statement: A model statement must at least contain a name and a component type." << endl;
+        exit(1);
+    }
+
     componentId = args[0];
     string componentStr = args[1];
 
