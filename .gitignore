@@ -69,3 +69,4 @@ main_project/LTS_V2_GPROF
 
 # File produced when linux excel is opened without closing it first
 main_project/.~lock.out.csv#
+waveformTest.txt
