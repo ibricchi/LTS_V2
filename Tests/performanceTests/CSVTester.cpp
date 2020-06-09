@@ -248,9 +248,9 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now(); 
         timestep1(buffer);
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
 
@@ -281,9 +281,9 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now(); 
         timestep2(buffer);
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
 
@@ -312,9 +312,9 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now(); 
         timestep1(buffer);
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
 
@@ -343,9 +343,9 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now(); 
         timestep2(buffer);
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
 
@@ -376,9 +376,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -409,9 +409,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -442,9 +442,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -475,9 +475,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -508,9 +508,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -542,9 +542,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -575,9 +575,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -608,9 +608,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -641,9 +641,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -674,9 +674,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setTimeStep(timeStep);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setTimeStep(timeStep);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -707,9 +707,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setHasNonLinearComponents(true);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setHasNonLinearComponents(true);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -740,9 +740,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setHasNonLinearComponents(true);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setHasNonLinearComponents(true);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -773,9 +773,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setHasNonLinearComponents(true);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setHasNonLinearComponents(true);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -806,9 +806,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setHasNonLinearComponents(true);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setHasNonLinearComponents(true);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -839,9 +839,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setHasNonLinearComponents(true);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setHasNonLinearComponents(true);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -872,9 +872,9 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c.setHasNonLinearComponents(true);
-        c.setTStep(timeStep);
-        c.setSimulationTime(simulationTime);
+        c->setHasNonLinearComponents(true);
+        c->setTStep(timeStep);
+        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
