@@ -23,12 +23,15 @@ string runNonLinearTransience(Circuit& c, float t){
     vector<Component*> conductanceSources = c.getConductanceSourcesRef();
     vector<Component*> vcUpdatables = c.getVCUpdatablesRef();
     vector<Component*> timeUpdatables = c.getTimeUpdatablesRef();
+    vector<Component*> nonLinears = c.getNonLinearsRef();
     int highestNodeNumber = c.getHighestNodeNumber();
-
     //forms a row in the csv file
     string outLine{};
-
+//cerr << "Time: " << t << endl;
     const float threshold = .001;
+
+    //c.updateNodalVoltages();
+    VectorXd startX = c.getX();
 
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
@@ -36,14 +39,57 @@ string runNonLinearTransience(Circuit& c, float t){
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
     int maxCount = 500;
-    // float gamma = 0.1;
+    int dynamicTimeStepMaxCount = 3;
+    int dynamicTimeStepMinCount = 2;
+    int dynamicTimeStepFactor = 8;
+    float dynamicTimeStepAbsoluteDeltaA = 0.1; //Absolute delta in x values that triggers a decrease in timestep
+    float dynamicTimeStepAbsoluteDeltaB = 0.1; //Absolute delta in x values that triggers an increase in timestep
+    float prevTime = c.getPrevTime();    
+    double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
+    //   cerr << "DynTimeStep: " << dynamicTimeStep << endl;
+    if(dynamicTimeStep == 0){
+        cerr << "Dynamic time step reaches 0, convergence cannot be found at all" << endl;
+        exit(1);
+    }
+    
+    float gamma = 0.1;
+    double minDynamicTimeStep = c.getSimulationTime()/50000000000;
+    double maxDynamicTimeStep = (c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1;
+
+    for(const auto &up : vcUpdatables){
+	    up->setTimeStep(dynamicTimeStep);
+    }
+
+    for(const auto &timeUp : timeUpdatables){
+	    timeUp->updateVals(t);
+    }
+
+    // update components based on minPNConductance
+    for(const auto &nonLin : nonLinears){
+        nonLin->setMinPNConductance(c.getMinPNConductance());
+    }
 
     do{
-        if(count > maxCount){
+        if(count >= maxCount){
             cerr << "Newton Raphson count too big" <<endl;
             exit(1);
         }
+        // if(dynamicTimeStep < minDynamicTimeStep){
+        //     cerr << "Minimum dynamic timestep reached" <<endl;
+        //     exit(1);
+        // }
 
+
+        if((count > dynamicTimeStepMaxCount || !matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaA)) && (dynamicTimeStep>=dynamicTimeStepFactor*minDynamicTimeStep)){
+        // cerr << "NextTimeStep: " << dynamicTimeStep/dynamicTimeStepFactor << endl;
+            //cerr << "StartX" << endl << startX << endl << "StartX" << endl;
+            c.setX(startX);
+            c.setTimeStep(dynamicTimeStep/dynamicTimeStepFactor);
+            outLine = runNonLinearTransience(c,c.getPrevTime()+dynamicTimeStep/dynamicTimeStepFactor);
+            return outLine;   
+        }
+
+        // cerr << "Newton-Raphson Count: " << count << endl;        
         c.nonLinearA();
         c.computeA_inv();
         c.nonLinearB();
@@ -52,17 +98,27 @@ string runNonLinearTransience(Circuit& c, float t){
         newX = c.getX();
         c.updateNodalVoltages(); //update based on newX
 
-        count++;
-
         // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << c.getX().format(CleanFmt) << endl << endl;
-    }
-    while(!matrixDiffBellowThreshold(currentX, newX, threshold));
+        // cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
+        // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
+        // cout << "A^{-1}" << endl <<c.getA_inv().format(CleanFmt) << endl << endl;
+        // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
+        // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
+        // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
 
+        count++;
+    }while(!matrixDiffBellowThreshold(currentX, newX, threshold));
+	//cerr << "Made it past while" << endl;    
+    if(matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaB)){    
+        if(count < dynamicTimeStepMinCount && dynamicTimeStep <= maxDynamicTimeStep/2 ){
+            dynamicTimeStep *= 2;
+        }
+    }
     //output current time 
+    c.setTimeStep(dynamicTimeStep); 
     c.setCurrentTime(t); //Do we need this?
     outLine += to_string(t);
-
+    //cerr << "Past while dynamTime: " << dynamicTimeStep << endl;
     //output node voltages
     for(int i{}; i<highestNodeNumber; i++){
         outLine += "," + to_string(newX(i));
@@ -73,11 +129,11 @@ string runNonLinearTransience(Circuit& c, float t){
         outLine += "," + comp->getTotalCurrentString(newX, highestNodeNumber);
     }
 
-    // update components before next calculation of b
+   /* // update components before next calculation of b, commented out now as it is done at the beginning of function call with current value of t
     for(const auto &comp : timeUpdatables){
         comp->updateVals(t+c.getTimeStep());
     }
-
+    */
     //update components based on current voltage/current
     float currentVoltage{}, currentCurrent{};
     for(const auto &up : vcUpdatables){
@@ -90,7 +146,9 @@ string runNonLinearTransience(Circuit& c, float t){
         //Need to call getTotalCurrentString before updateVals
         up->updateVals(currentVoltage, 0, 1);
     }
-
+    c.setPrevTime(t);
+    
+   // cerr << "Just before return dynTimeStep: " << dynamicTimeStep << endl;
     return outLine;
     
 }
@@ -98,7 +156,7 @@ string runNonLinearTransience(Circuit& c, float t){
 // both matrixes are assumed to be x:1 matrixes with same x
 bool matrixDiffBellowThreshold(VectorXd& m1, VectorXd& m2, float d){
     for(int i = 0; i < m1.rows(); i++){
-        if(abs(m1(i) - m2(i)) > d){
+        if((abs(m1(i) - m2(i)) > d) || isnan(m1(i)) || isnan(m2(i))){
             return false;
         }
     }
@@ -130,7 +188,7 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             }
 
             //check for divergence 
-            if(count >= maxIterationsPerSourceStep){
+            if(count >= maxIterationsPerSourceStep || hasNan(newX)){
                 if(firstConvergingAlpha == -1){
                     if(alpha == 0){
                         cerr << "The DC bias operating point could not be determined: Alpha cannot become smaller than 0." <<endl;
@@ -143,17 +201,23 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
 
                     //reset circuit to starting values
                     currentX = startX;
-                    
+                    newX = startX; //needs to be reset for nan checking to work properly
+                    newX(0,0) += 1; //make slightly different from currentX to give higher chance for reaching a correct convergence
+
                     c.setX(startX); //required for updateNodalVoltages to work
                     c.updateNodalVoltages();
                 }else{
                     //if a firstConvergingAlpha already exists (step was too big)
                     //=> decrease step and try again
                     step /= 2;
-                    alpha -= step; //reseting to last alpha and adding half old step = subtracting half old step from current alpha
 
+                    alpha -= step; //reseting to last alpha and adding half old step = subtracting half old step from current alpha
+                   
                     //reset circuit to last converging values
                     currentX = lastConvergingX;
+                    newX = lastConvergingX; //needs to be reset for nan checking to work properly
+                    newX(0,0) += 1; //make slightly different from currentX to give higher chance for reaching a correct convergence
+
                     c.setX(lastConvergingX); //required for updateNodalVoltages to work
                     c.updateNodalVoltages();
                 }
@@ -165,8 +229,20 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             c.computeA_inv();
             c.nonLinearB(true, alpha);
             c.computeNLX(0); //simply does A_inv*b (same as for linear x)
+            
             currentX = newX;
             newX = c.getX();
+
+            // Debugging
+            
+            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+            // cout << "Count: " << count << endl << "-------------------------------" << endl;
+            // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
+            // cout << "A^{-1}" << endl <<c.getA_inv().format(CleanFmt) << endl << endl;
+            // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
+            // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
+            // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
+
             c.updateNodalVoltages(); //update based on newX
 
             count++;
@@ -208,4 +284,13 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
         up->getTotalCurrentString(newX, c.getHighestNodeNumber());
         up->updateVals(currentVoltage, 0, 1);
     }
+}
+
+bool hasNan(VectorXd& m){
+    for(int i = 0; i < m.size(); i++){
+        if(isnan(m(i))){
+            return true;
+        }
+    }
+    return false;
 }

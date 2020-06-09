@@ -64,7 +64,7 @@ void Component::addParam(int paramId, float paramValue){
 	exit(1);
 }
 
-void Component::setTimeStep(float _timeStep){
+void Component::setTimeStep(double _timeStep){
 	cerr << "Tried to call setTimeStep from a component that doesn't support it" <<endl;
 	exit(1);
 }
@@ -75,7 +75,13 @@ string Component::getModelName() const{
 }
 
 void Component::initCompCurrent(float _voltage_or_current){
-cerr << "Tried to call initCompCurrent from a component that doesn't support it" << endl;
+	cerr << "Tried to call initCompCurrent from a component that doesn't support it" << endl;
+	exit(1);
+}
+
+void Component::setMinPNConductance(float con){
+	cerr << "Tried to call setMinPNConductance from a component that doesn't support it" << endl;
+	exit(1);
 }
 
 float Component::getValue(string val){

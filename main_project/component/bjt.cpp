@@ -10,93 +10,110 @@ using namespace std;
 BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
     :Component{name}
 {
+    // figures out if 3 or 4 inputs are used for BJT and then set's model name appropriately
+    if(args.size()==3){
+        modelName = "";
+    }else if(args.size()==4){
+        if(args[3][0] > '9'){
+            modelName = args[3];
+        }else{
+            modelName = "";
+        }
+    }else if(args.size()==5){
+        modelName = args[4];
+    }else{
+        cerr << "Wrong number of argumnets passed to BJT" << endl;
+        exit(1);
+    }
+    
+    // get's minimum pn conductnace from extrainfo
+    minPNConductance = extraInfo[3];
+
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});
 
-    nodalVoltages = {0,0,0};
+    setNodalVoltages({0,0,0});
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
+}
 
-    switch (args.size())
-    {
-    case 3:
-        SetupValues();
-        break;
-    case 4:
-        SetupValues(
-            stof(args[3])
-        );
-        break;
-    case 5:
-        SetupValues(
-            stof(args[3]),
-            stof(args[4])
-        );
-        break;
-    case 6:
-        SetupValues(
-            stof(args[3]),
-            stof(args[4]),
-            true,
-            stof(args[5])
-        );
-        break;
-    default:
-        break;
+void BJT::addParam(int paramId, float paramValue){
+    switch(static_cast<bjtParamType>(paramId)){ //need this as strongly typed enums don't automatically convert to their underlying type
+        case bjtParamType::TYPE:
+            NPN = false;
+            break;
+        case bjtParamType::BF:
+            BF = paramValue;
+            break;
+        case bjtParamType::VAF:
+            hasVAF = true;
+            VAF = paramValue;
+            break;
+        case bjtParamType::IFS:
+            IFS = paramValue;
+            break;
+        case bjtParamType::BR:
+            BR = paramValue;
+            break;
+        case bjtParamType::VT:
+            VT = paramValue;
+            break;
+        case bjtParamType::IRS:
+            IRS = paramValue;
+            break;
+        default:
+            cerr << "unsupported parameter ID for BJT" << endl;
+            exit(1);
+            break;
     }
 }
 
-void BJT::SetupValues(float _BF, float _IFS, bool _hasVAF, float _VAF){
-    BF = _BF;
-    AF = BF/(1+BF);
-    IFS = _IFS;
-    IRS = _IFS;
-    hasVAF = _hasVAF;
-    VAF = _VAF;
+void BJT::setNodalVoltages(vector<float> v){
+    nodalVoltages = v;
+    VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]) * (NPN?1:-1);
+    VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]) * (NPN?1:-1);
+    VCE = (nodalVoltages[n::C] - nodalVoltages[n::E]) * (NPN?1:-1);
+
+    IBF = (IFS/BF)*(exp(VBE/VT) - 1);
+    IBR = (IRS/BR)*(exp(VBC/VT) - 1);
+    IC1 = BF*IBF-BR*IBR;
+
+    GPF = IFS/BF*exp(VBE/VT)/VT;
+    GPR = IRS/BR*exp(VBC/VT)/VT;
+    GO = 0; //temporary
+
+    if(GPF < minPNConductance) GPF = minPNConductance;
+    if(GPR < minPNConductance) GPR = minPNConductance;
+    if(GO < minPNConductance) GO = minPNConductance;
+
+    GMF = BF*GPF;
+    GMR = BR*GPR;
+
+    IBFEQ = IBF - GPF*VBE;
+    IBREQ = IBR - GPR*VBC;
+    ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
+
+    //total current produced by currents sources at a node
+    IC = (NPN?(ICEQ - IBREQ):(-ICEQ+IBFEQ)); // always current flowing into C
+    IB = (IBREQ + IBFEQ) * (NPN?1:-1); // always current flowing into B
+    IE = (NPN?(IBFEQ + ICEQ):(-IBREQ-ICEQ)); // always current flowing out of E
 }
 
 double BJT::ivAtNode(int nin){
-    double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
-    double VCE = 0; //temporary
-
-    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
-    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
-    double IC1 = BF*IBF-BR*IBR;
-
-    double GPF = IFS/BF*exp(VBE/VT)/VT;
-    double GPR = IRS/BR*exp(VBC/VT)/VT;
-
-    double GMF = BF*GPF;
-    double GMR = BR*GPR;
-    double GO = 0; //temporary
-
-    double IBFEQ = IBF - GPF*VBE;
-    double IBREQ = IBR - GPR*VBC;
-    double ICEQ = IC1 - GMF*VBE + GMR*VBC - GO*VCE;
-
-    double IC = ICEQ - IBREQ + GMF*VBE - GMR*VBC;
-    double IB = IBREQ + IBFEQ;
-    double IE = IBFEQ + GMF*VBE - GMR*VBC + ICEQ;
-
-    // this is just because I aciddentally set up the switch statement wrong
-    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+    // selects the right node type (Collector Base or Emitter)
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
 
     double current;
     switch(n){
         case n::C:
             current = IC;
-            lastIc = -current;
             break;
         case n::B:
             current = IB;
-            lastIb = -current;
             break;
         case n::E:
             current = -IE;
-            lastIe = -current;
             break;
     }
     // cout << "n: " << n << " current: " << current << endl << endl;
@@ -104,22 +121,7 @@ double BJT::ivAtNode(int nin){
 }
 
 double BJT::divAtNode(int nin, int dnin){
-    double VBE = (nodalVoltages[n::B] - nodalVoltages[n::E]);
-    double VBC = (nodalVoltages[n::B] - nodalVoltages[n::C]);
-
-    double IBF = (IFS/BF)*(exp(VBE/VT) - 1);
-    double IBR = (IRS/BR)*(exp(VBC/VT) - 1);
-
-    double GPF = IFS/BF*exp(VBE/VT)/VT;
-    double GPR = IRS/BR*exp(VBC/VT)/VT;
-
-    double GMF = BF*GPF;
-    double GMR = BR*GPR;
-
-    double GO = 0; // implement later only for early voltage
-
-    // this is just because I aciddentally set up the switch statement wrong
-    // this fixes it, but maybe changing the swtich statement might be more efficient later on
+    // selects the right node type (Collector Base or Emitter)
     int n = nin==nodes[n::C]?n::C:(nin==nodes[n::B]?n::B:n::E);
     int dn = dnin==nodes[n::C]?n::C:(dnin==nodes[n::B]?n::B:n::E);
 
@@ -128,13 +130,13 @@ double BJT::divAtNode(int nin, int dnin){
         case n::C:
             switch(dn){
                 case n::C:
-                    conductance = GPR + GO;
+                    conductance = GPR + GO + GMR;
                     break;
                 case n::B:
-                    conductance = -GPR;
+                    conductance = -GPR + GMF - GMR;
                     break;
                 case n::E:
-                    conductance = -GO;
+                    conductance = -GO - GMF;
                     break;
             }
             break;
@@ -154,13 +156,13 @@ double BJT::divAtNode(int nin, int dnin){
         case n::E:
             switch(dn){
                 case n::C:
-                    conductance = -GO;
+                    conductance = -GO - GMR;
                     break;
                 case n::B:
-                    conductance = -GPF;
+                    conductance = -GPF + GMR - GMF;
                     break;
                 case n::E:
-                    conductance = GO + GPF;
+                    conductance = GPF + GO + GMF;
                     break;
             }
             break;
@@ -170,14 +172,23 @@ double BJT::divAtNode(int nin, int dnin){
     return conductance;
 }
 
+void BJT::setMinPNConductance(float con){
+    minPNConductance = con;
+}
+
+string BJT::getModelName() const{
+    return modelName;
+}
+
 string BJT::getCurrentHeadingName() const{
     return "ic_" + name + ",ib_" + name + ",ie_" + name;
 }
 
 string BJT::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     // current through current source, current through resistors, current through dependent current sources
-
-    //Currently only added currents through the current sources!
-    //Add the remaining ones once we know that this BJT model produces correct results/converges at all.
-    return to_string(lastIc) + "," + to_string(lastIb) + "," + to_string(lastIe);
+    if(NPN){
+        return to_string(IC + GO*VCE - GMR*VBC + GMF*VBE - GPR*VBC) + "," + to_string(IB + GPF*VBE + GPR*VBC) + "," + to_string(-IE - GMF*VBE + GMR*VBC - GPF*VBE - GO*VCE);
+    }else{
+        return to_string(IC - GO*VCE + GMR*VBC - GMF*VBE + GPR*VBC) + "," + to_string(IB - GPF*VBE - GPR*VBC) + "," + to_string(-IE + GMF*VBE - GMR*VBC + GPF*VBE + GO*VCE);
+    }
 }

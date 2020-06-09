@@ -8,13 +8,19 @@
 
 class BJT: public Component{
 private:
-    bool hasVAF;
-    float BF, AF, IRS, IFS, VAF;
-    float BR = 1.0;
-    float VT = 0.025;
+    bool NPN = true;
+    bool hasVAF = false;
+    double BF = 100; // beta forward
+    double IRS = 1e-16; // reverse saturation current
+    double IFS = 1e-16; // forward saturation current
+    double VAF = 100; // forward early voltage
+    double BR = 1.0; // beta reverse
+    double VT = 0.025; // thermal voltage
 
-    //used for current csv output
-    float lastIc, lastIb, lastIe;
+    // used for calculations
+    double VBE, VBC, VCE, IBF, IBR, IC1, GPF, GPR, GMF, GMR, GO, IC, IB, IE, IBFEQ, IBREQ, ICEQ;
+
+    double minPNConductance; // minimum allowed conductance
 
     // don't know if I could replace with enum
     enum n{
@@ -22,8 +28,6 @@ private:
         B = 1,
         E = 2
     };
-
-    void SetupValues(float BF = 100, float IFS = 1e-16, bool hasVAF = false, float VAF = 100);
 public:
     BJT(string _name, vector<string> args, vector<float> extraInfo);
     BJT(string _name, float r, int n1, int n2);
@@ -31,6 +35,13 @@ public:
 
     double ivAtNode(int n1) override;
     double divAtNode(int n, int dn) override;
+
+    void addParam(int paramId, float paramValue) override;
+
+    void setNodalVoltages(vector<float> v) override;
+    void setMinPNConductance(float con) override;
+
+    string getModelName() const override;
 
     string getCurrentHeadingName() const override;
 

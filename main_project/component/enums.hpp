@@ -32,7 +32,7 @@ enum struct component{
 enum struct diodeParamType{
     IS, //saturation current
     N, //emission coefficient
-    VT
+    VTO
     // RS, //series resistance
     // CJO, //junction capacitance
     // TT, //transit time
@@ -43,13 +43,17 @@ enum struct mosfetParamType{
     TYPE,
     K, // transconductance
     ISat, // saturation current
-    VT, // theshold voltage
+    VTO, // theshold voltage
     VA, // early voltage
 };
 enum struct bjtParamType{
+    TYPE,
     BF, //beta (common emitter current gain)
-    IS, //saturation current
-    VAF //early voltage
+    BR, // beta reverse
+    IFS, // forward saturation current
+    IRS, // reverse saturation current
+    VAF, //early voltage
+    VT // Thermal Voltage
 };
 
 #endif

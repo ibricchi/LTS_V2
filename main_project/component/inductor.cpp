@@ -63,7 +63,7 @@ void Inductor::updateVals(float newVoltage, float newCurrent, int order){
 	}
 }
 
-void Inductor::setTimeStep(float _timeStep){
+void Inductor::setTimeStep(double _timeStep){
 	timeStep = _timeStep;
 
 	//use the new timeStep to update conductance

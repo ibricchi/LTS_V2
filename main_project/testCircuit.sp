@@ -1,8 +1,18 @@
-Dependent source test
+TEST CIRCUIT
 *
-V1 N001 0 SINE(2 5 10 .1 5 90)
-R1 N001 0 1k
+* DIFFERENTIAL AMPLIFIER
+Q1 N003 N001 N002 0 NPN
+Q2 N004 N001 N002 0 PNP
+V1 N001 0 SIN(0 1 5)
+V2 N004 0 -20
+V3 N003 0 20
+R1 N002 0 10k
 *
-.MODEL asd D (VT=0.026)
-.tran 0.0001 .5 0
+.model D D
+.model PNP PNP
+.model NPN NPN
+.model NMOS NMOS
+.model PMOS PMOS
+.tran 0.00001 1 0
+.options Gmin=1p
 .end

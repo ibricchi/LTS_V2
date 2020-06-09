@@ -38,7 +38,8 @@ protected:
 
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
-    float currentTime;
+    double currentTime;
+    double prevTime;
     float tStart;
     float simulationTime; //time when simulation ends (TSTOP)
     float timeStep;
@@ -51,6 +52,8 @@ protected:
     VectorXd b;
     VectorXd x;
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
+
+    double minPNConductance = 1e-12; // minimum conductance at PN juctions
 
     // non-linear analysis vectors;
     vector<nodeCompPair> nodalFunctions{};
@@ -70,8 +73,11 @@ public:
     int getHighestNodeNumber() const;
     void setHighestNodeNumber(int _highestNodeNumber);
 
-    float getCurrentTime() const;
-    void setCurrentTime(float _currentTime);
+    double getCurrentTime() const;
+    void setCurrentTime(double _currentTime);
+
+    double getPrevTime() const;
+    void setPrevTime(double _prevTime);
 
     float getTStart() const;
     void setTStart(float _tStart);
@@ -90,6 +96,9 @@ public:
 
     bool hasNonLinearComponents() const;
     void setHasNonLinearComponents(bool _hasNonLinearComponents);
+
+    double getMinPNConductance() const;
+    void setMinPNConductance(double con);
 
     void incrementInductorNumber();
 
@@ -113,6 +122,7 @@ public:
         extraInfo.push_back(getTStep());//extraInfo[0] is timeStep of circuit (currently the printing step tStep is used as the static timestep)
         extraInfo.push_back(getCurrentTime());//extraInfo[1] is current time of circuit
         extraInfo.push_back(voltageSources.size()); //idx of voltageSource inside voltageSources vector (the value will have no meaning if the component is not a voltageSource)
+        extraInfo.push_back(getMinPNConductance()); //extraInfo[3] is the minimum allowed conducntacnce at a PN junction
         comp* newComp = new comp(name, args, extraInfo);
         vector<componentType> types = newComp->getTypes();
         for(auto type : types){

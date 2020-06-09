@@ -54,11 +54,14 @@ public:
     vector<int> getNodes() const;
 
     // these are used for non linear analysis
-    void setNodalVoltages(vector<float> v);
+    virtual void setNodalVoltages(vector<float> v);
     // get the IV characteristics of a component given two nodes
     virtual double ivAtNode(int n1) =0;
     // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
     virtual double divAtNode(int n, int dn) =0;
+
+    // set minimum PN conductance for non-linear components
+    virtual void setMinPNConductance(float con);
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(float newVoltage, float newCurrent, int order);
@@ -67,7 +70,7 @@ public:
     virtual void updateVals(float time_or_voltage);
 
     // this should be used to set a new timestep for capacitors/inductors
-    virtual void setTimeStep(float _timeStep);
+    virtual void setTimeStep(double _timeStep);
 
     //used to add additional parameters to components after construction
     virtual void addParam(int paramId, float paramValue);

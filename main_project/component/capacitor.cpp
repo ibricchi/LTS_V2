@@ -71,7 +71,7 @@ void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
 	}	
 }
 
-void Capacitor::setTimeStep(float _timeStep){
+void Capacitor::setTimeStep(double _timeStep){
 	timeStep = _timeStep;
 	
 	//use the new timeStep to update conductance
@@ -84,6 +84,7 @@ void Capacitor::initCompCurrent(float _voltage){ //_voltage corresponds to the D
 	compCurrent = compConductance * _voltage;
 	prevTotalCurrent = 0;
 }
+
 
 double Capacitor::ivAtNode(int n){
 	return compCurrent * (n==nodes[0] ? -1 : 1);
