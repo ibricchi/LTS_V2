@@ -22,6 +22,7 @@ void readSpice(Circuit& c, istream& file);
     The .options statement and the param names are case insensitive.
     The spaces are important (Cannot remove or add extra spaces).
     Any new option must be added to the if else statement inside the setupOptions definition.
+    Currently supported options = ABSTOL, GMIN, IMAX (max Newton-Raphson count).
 */
 void setupOptions(Circuit& c, vector<string>& args);
 

@@ -297,7 +297,9 @@ void setupOptions(Circuit& c, vector<string>& args){
         if(paramName == "GMIN"){
             c.setMinPNConductance(paramValue);
         }else if(paramName == "ABSTOL"){
-            //do something (threshold for Newton-Raphson)
+            c.setAbstol(paramValue);
+        }else if(paramName == "IMAX"){
+            c.setMaxNewtonRaphsonCount(paramValue);
         }else{
             cerr << "Invalid OPTIONS command. Unsupported option: " << paramName << endl;
             exit(1);

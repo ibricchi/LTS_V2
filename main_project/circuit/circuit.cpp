@@ -112,6 +112,20 @@ void Circuit::setMinPNConductance(double con){
     minPNConductance = con;
 }
 
+int Circuit::getMaxNewtonRaphsonCount() const{
+    return maxNewtonRaphsonCount;
+}
+void Circuit::setMaxNewtonRaphsonCount(int count){
+    maxNewtonRaphsonCount = count;
+}
+
+float Circuit::getAbstol() const{
+    return abstol;
+}
+void Circuit::setAbstol(float _abstol){
+    abstol = _abstol;
+}
+
 void Circuit::incrementInductorNumber(){
     inductorNumber++;
 }

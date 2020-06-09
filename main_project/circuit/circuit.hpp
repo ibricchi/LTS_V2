@@ -55,6 +55,11 @@ protected:
 
     double minPNConductance = 1e-12; // minimum conductance at PN juctions
 
+    int maxNewtonRaphsonCount = 500;
+
+    //absolute Newton-Raphson error tolerance
+    float abstol = 0.1;
+
     // non-linear analysis vectors;
     vector<nodeCompPair> nodalFunctions{};
 
@@ -101,6 +106,12 @@ public:
     void setMinPNConductance(double con);
 
     void incrementInductorNumber();
+
+    int getMaxNewtonRaphsonCount() const;
+    void setMaxNewtonRaphsonCount(int count);
+
+    float getAbstol() const;
+    void setAbstol(float _abstol);
 
     // returns references to prevent inefficient copying
     vector<Component*>& getComponentsRef();

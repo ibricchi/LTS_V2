@@ -38,12 +38,12 @@ string runNonLinearTransience(Circuit& c, float t){
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
-    int maxCount = 500;
+    int maxCount = c.getMaxNewtonRaphsonCount();
     int dynamicTimeStepMaxCount = 3;
     int dynamicTimeStepMinCount = 2;
     int dynamicTimeStepFactor = 8;
-    float dynamicTimeStepAbsoluteDeltaA = 0.1; //Absolute delta in x values that triggers a decrease in timestep
-    float dynamicTimeStepAbsoluteDeltaB = 0.1; //Absolute delta in x values that triggers an increase in timestep
+    float dynamicTimeStepAbsoluteDeltaA = c.getAbstol(); //Absolute delta in x values that triggers a decrease in timestep
+    float dynamicTimeStepAbsoluteDeltaB = c.getAbstol(); //Absolute delta in x values that triggers an increase in timestep
     float prevTime = c.getPrevTime();    
     double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
     //   cerr << "DynTimeStep: " << dynamicTimeStep << endl;
@@ -52,7 +52,7 @@ string runNonLinearTransience(Circuit& c, float t){
         exit(1);
     }
     
-    float gamma = 0.1;
+    // float gamma = 0.1;
     double minDynamicTimeStep = c.getSimulationTime()/50000000000;
     double maxDynamicTimeStep = (c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1;
 
