@@ -63,7 +63,7 @@ struct ModelStatement{
         {"BR", bjtParamType::BR},
         {"IFS", bjtParamType::IFS},
         {"IRS", bjtParamType::IRS},
-        {"VA", bjtParamType::VAF},
+        {"VAF", bjtParamType::VAF},
         {"VTO", bjtParamType::VT}
     };
 };
