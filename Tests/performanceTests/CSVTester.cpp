@@ -18,7 +18,7 @@ void timestep1(stringstream& buffer){
     buffer << "V1 n1 0 SIN(0 10 10)" << endl;
     buffer << "R1 n2 0 1k" << endl;
     buffer << "R2 n1 n2 500" << endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 //more complex test circuit that is used for dynamic timestep/ dynamic simulation time test
@@ -32,7 +32,7 @@ void timestep2(stringstream& buffer){
     buffer << "I1 n4 3 .5" << endl;
     buffer << "R3 n4 0 10k" << endl;
     buffer << "C1 n4 0 1u" << endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -46,7 +46,7 @@ void seriesResistors(stringstream& buffer, u_int count){
         buffer << "R" << i << " n" << i << " n" << i+1 << " 1k" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -61,7 +61,7 @@ void seriesCapacitors(stringstream& buffer, u_int count){
         buffer << "C" << i << " n" << i << " n" << i+1 << " 1u" <<endl;
     }
     buffer << "C" << count << " n" << count << " 0 1u" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -76,7 +76,7 @@ void seriesInductors(stringstream& buffer, u_int count){
         buffer << "L" << i << " n" << i << " n" << i+1 << " 10m" <<endl;
     }
     buffer << "L" << count << " n" << count << " 0 10m" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -91,7 +91,7 @@ void seriesVS(stringstream& buffer, u_int count){
         buffer << "V" << i << " n" << i << " n" << i+1 << " 10" <<endl;
     }
     buffer << "V" << count << " n" << count << " 0 10" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -105,7 +105,7 @@ void seriesCS(stringstream& buffer, u_int count){
         buffer << "I" << i << " n" << i << " n" << i+1 << " 2" <<endl;
     }
     buffer << "I" << count << " n" << count << " 0 2" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -119,7 +119,7 @@ void seriesOpAmps(stringstream& buffer, u_int count){
     for(u_int i{1}; i<=count; i++){
         buffer << "X" << i << " N" << i << " 0" << " N" << i << " opamp" <<endl;
     }
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -132,7 +132,7 @@ void seriesVCVS(stringstream& buffer, u_int count){
         buffer << "E" << i << " n" << i << " n" << i+1 << " n" << i-1 << " n" << i << " 2" <<endl;
     }
     buffer << "E" << count << " n" << count << " 0 n" << count-1 << " n" << count << " 2" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -145,7 +145,7 @@ void seriesVCCS(stringstream& buffer, u_int count){
         buffer << "G" << i << " n" << i << " n" << i+1 << " n" << i-1 << " n" << i << " 2" <<endl;
     }
     buffer << "G" << count << " n" << count << " 0 n" << count-1 << " n" << count << " 2" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -158,7 +158,7 @@ void seriesCCVS(stringstream& buffer, u_int count){
         buffer << "H" << i << " n" << i << " n" << i+1 << " V1 2" <<endl;
     }
     buffer << "H" << count << " n" << count << " 0 V1 2" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -171,7 +171,7 @@ void seriesCCCS(stringstream& buffer, u_int count){
         buffer << "F" << i << " n" << i << " n" << i+1 << " V1 2" <<endl;
     }
     buffer << "F" << count << " n" << count << " 0 V1 2" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -184,7 +184,7 @@ void seriesAcDiode(stringstream& buffer, u_int count){
         buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
     }
     buffer << "D" << count << " n" << count << " 0 D" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -197,7 +197,7 @@ void seriesDcDiode(stringstream& buffer, u_int count){
         buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
     }
     buffer << "D" << count << " n" << count << " 0 D" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -211,7 +211,7 @@ void seriesNMos(stringstream& buffer, u_int count){
         buffer << "M" << i << " n" << i << " n" << i << "0 NMOS" <<endl;
     }
     buffer << "M" << count << " n" << count << " n" << count << " 0 NMOS" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -226,7 +226,7 @@ void seriesPMos(stringstream& buffer, u_int count){
         buffer << "M" << i << " n" << i << " n" << i << "0 PMOS" <<endl;
     }
     buffer << "M" << count << " n" << count << " n" << count << " 0 PMOS" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -240,7 +240,7 @@ void seriesNPN(stringstream& buffer, u_int count){
         buffer << "Q" << i << " n" << i << " n" << i << "0 NPN" <<endl;
     }
     buffer << "Q" << count << " n" << count << " n" << count << " 0 NPN" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -255,7 +255,7 @@ void seriesPNP(stringstream& buffer, u_int count){
         buffer << "Q" << i << " n" << i << " n" << i << "0 PNP" <<endl;
     }
     buffer << "Q" << count << " n" << count << " n" << count << " 0 PNP" <<endl;
-    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -413,6 +413,10 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << resistorCount << "," << timeTaken/1e6f << endl;
+        if(timeTaken > 6e+8){
+            cerr << "Resistors maxed out time";
+            resistorCount = maxResistors;
+        }
     }
 
     outputFile.close();
@@ -443,6 +447,10 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << capacitorCount << "," << timeTaken/1e6f << endl;
+        if(timeTaken > 6e+8){
+            cerr << "Capacitors maxed out time";
+            capacitorCount = maxCapacitors;
+        }
     }
 
     outputFile.close();
@@ -473,6 +481,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << inductorCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "Inductors maxed out time";
+            inductorCount = maxInductors;
+        }
     }
 
     outputFile.close();
@@ -503,6 +516,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << VSCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "VS maxed out time";
+            VSCount = maxVS;
+        }
     }
 
     outputFile.close();
@@ -533,6 +551,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << CSCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "CS maxed out time";
+            CSCount = maxCS;
+        }
     }
 
     outputFile.close();
@@ -564,6 +587,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << OpAmpCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "OpAmp maxed out time";
+            OpAmpCount = maxOpAmp;
+        }
     }
 
     outputFile.close();
@@ -594,6 +622,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << VCVSCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "VCVS maxed out time";
+            VCVSCount = maxVCVS;
+        }
     }
 
     outputFile.close();
@@ -624,6 +657,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << VCCSCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "VCCS maxed out time";
+            VCCSCount = maxVCCS;
+        }
     }
 
     outputFile.close();
@@ -654,6 +692,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << CCVSCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "CCVS maxed out time";
+            CCVSCount = maxCCVS;
+        }
     }
 
     outputFile.close();
@@ -684,6 +727,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << CCCSCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "CCCS maxed out time";
+            CCCSCount = maxCCCS;
+        }
     }
 
     outputFile.close();
@@ -714,6 +762,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << AcDiodeCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "AcDiode maxed out time";
+            AcDiodeCount = maxAcDiode;
+        }
     }
 
     outputFile.close();
@@ -744,6 +797,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << DcDiodeCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "DcDiode maxed out time";
+            DcDiodeCount = maxAcDiode;
+        }
     }
 
     outputFile.close();
@@ -774,6 +832,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << NMosCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "NMOS maxed out time";
+            NMosCount = maxNMos;
+        }
     }
 
     outputFile.close();
@@ -804,6 +867,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << PMosCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "PMOS maxed out time";
+            PMosCount = maxPMos;
+        }
     }
 
     outputFile.close();
@@ -834,6 +902,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << NPNCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "NPN maxed out time";
+            NPNCount = maxNPN;
+        }
     }
 
     outputFile.close();
@@ -864,6 +937,11 @@ int main(int argc, char **argv){
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << PNPCount << "," << timeTaken/1e6f << endl;
+        
+        if(timeTaken > 6e+8){
+            cerr << "PNP maxed out time";
+            PNPCount = maxPNP;
+        }
     }
 
     outputFile.close();
