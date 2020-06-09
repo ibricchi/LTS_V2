@@ -53,8 +53,8 @@ string runNonLinearTransience(Circuit& c, float t){
     }
     
     // float gamma = 0.1;
-    double minDynamicTimeStep = c.getSimulationTime()/50000000000;
-    double maxDynamicTimeStep = (c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1;
+    double minDynamicTimeStep = c.getSimulationTime()/50000000000.0;
+    double maxDynamicTimeStep = (c.getSimulationTime()/50.0 < 1) ? c.getSimulationTime()/50.0 : 1;
 
     for(const auto &up : vcUpdatables){
 	    up->setTimeStep(dynamicTimeStep);
@@ -232,16 +232,6 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
             
             currentX = newX;
             newX = c.getX();
-
-            // Debugging
-            
-            // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-            // cout << "Count: " << count << endl << "-------------------------------" << endl;
-            // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
-            // cout << "A^{-1}" << endl <<c.getA_inv().format(CleanFmt) << endl << endl;
-            // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
-            // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
-            // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
 
             c.updateNodalVoltages(); //update based on newX
 
