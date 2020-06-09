@@ -247,10 +247,13 @@ int main(int argc, char **argv){
     for(float timeStep{maxTimeStep1}; timeStep>=minTimeStep1; timeStep/=timeStepDivider1){
         auto start = high_resolution_clock::now(); 
         timestep1(buffer);
+
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
+
         auto stop = high_resolution_clock::now(); 
         auto duration = duration_cast<microseconds>(stop - start);
         auto count = duration.count();
@@ -277,10 +280,13 @@ int main(int argc, char **argv){
     for(float timeStep{maxTimeStep2}; timeStep>=minTimeStep2; timeStep/=timeStepDivider2){
         auto start = high_resolution_clock::now(); 
         timestep2(buffer);
+
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
+
         auto stop = high_resolution_clock::now(); 
         auto duration = duration_cast<microseconds>(stop - start);
         auto count = duration.count();
@@ -305,10 +311,13 @@ int main(int argc, char **argv){
     for(float simulationTime{minSimulationTime1}; simulationTime<=maxSimulationTime1; simulationTime+=deltaSimulationTime1){
         auto start = high_resolution_clock::now(); 
         timestep1(buffer);
+
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
+
         auto stop = high_resolution_clock::now(); 
         auto duration = duration_cast<microseconds>(stop - start);
         auto count = duration.count();
@@ -333,10 +342,13 @@ int main(int argc, char **argv){
     for(float simulationTime{minSimulationTime2}; simulationTime<=maxSimulationTime2; simulationTime+=deltaSimulationTime2){
         auto start = high_resolution_clock::now(); 
         timestep2(buffer);
+
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
+
         auto stop = high_resolution_clock::now(); 
         auto duration = duration_cast<microseconds>(stop - start);
         auto count = duration.count();
@@ -365,6 +377,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -397,6 +410,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -429,6 +443,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -461,6 +476,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -493,6 +509,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -526,6 +543,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -558,6 +576,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -590,6 +609,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -622,6 +642,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -654,6 +675,7 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now();
 
         c.setTimeStep(timeStep);
+        c.setTStep(timeStep);
         c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -669,4 +691,201 @@ int main(int argc, char **argv){
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
+    //series ac diode scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/AcDiodeTest.csv");
+    outputFile << "AcDiode count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minAcDiode = 0;
+    int maxAcDiode = 50;
+    int deltaAcDiode = 1;
+
+    for(int AcDiodeCount = minAcDiode; AcDiodeCount < maxAcDiode; AcDiodeCount += deltaAcDiode){
+        seriesAcDiode(buffer, AcDiodeCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setHasNonLinearComponents(true);
+        c.setTStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << AcDiodeCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series dc diode scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/DcDiodeTest.csv");
+    outputFile << "DcDiode count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minDcDiode = 0;
+    int maxDcDiode = 50;
+    int deltaDcDiode = 1;
+
+    for(int DcDiodeCount = minDcDiode; DcDiodeCount < maxDcDiode; DcDiodeCount += deltaDcDiode){
+        seriesDcDiode(buffer, DcDiodeCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setHasNonLinearComponents(true);
+        c.setTStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << DcDiodeCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series NMos scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/NMosTest.csv");
+    outputFile << "NMos count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minNMos = 0;
+    int maxNMos = 50;
+    int deltaNMos = 1;
+
+    for(int NMosCount = minNMos; NMosCount < maxNMos; NMosCount += deltaNMos){
+        seriesNMos(buffer, NMosCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setHasNonLinearComponents(true);
+        c.setTStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << NMosCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series PMos scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/PMosTest.csv");
+    outputFile << "PMos count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minPMos = 0;
+    int maxPMos = 50;
+    int deltaPMos = 1;
+
+    for(int PMosCount = minPMos; PMosCount < maxPMos; PMosCount += deltaPMos){
+        seriesPMos(buffer, PMosCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setHasNonLinearComponents(true);
+        c.setTStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << PMosCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series NPN scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/NPNTest.csv");
+    outputFile << "NPN count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minNPN = 0;
+    int maxNPN = 50;
+    int deltaNPN = 1;
+
+    for(int NPNCount = minNPN; NPNCount < maxNPN; NPNCount += deltaNPN){
+        seriesNPN(buffer, NPNCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setHasNonLinearComponents(true);
+        c.setTStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << NPNCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series PNP scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/PNPTest.csv");
+    outputFile << "PNP count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minPNP = 0;
+    int maxPNP = 50;
+    int deltaPNP = 1;
+
+    for(int PNPCount = minPNP; PNPCount < maxPNP; PNPCount += deltaPNP){
+        seriesPNP(buffer, PNPCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setHasNonLinearComponents(true);
+        c.setTStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << PNPCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
 }
