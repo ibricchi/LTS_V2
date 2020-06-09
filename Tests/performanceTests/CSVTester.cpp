@@ -15,21 +15,21 @@ using namespace std::chrono;
 void timestep1(stringstream& buffer){
     buffer.clear();
     buffer << "timestep1" << endl;
-    buffer << "V1 1 0 SIN(0 10 10)" << endl;
-    buffer << "R1 2 0 1000" << endl;
-    buffer << "R2 1 2 500" << endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" << endl;
+    buffer << "R1 n2 0 1k" << endl;
+    buffer << "R2 n1 n2 500" << endl;
 }
 //more complex test circuit that is used for dynamic timestep/ dynamic simulation time test
 void timestep2(stringstream& buffer){
     buffer.clear();
     buffer << "timestep2" << endl;
-    buffer << "V1 2 1 SIN(0 10 10)" << endl;
-    buffer << "R1 3 2 2000" << endl;
-    buffer << "L1 1 0 .1" << endl;
-    buffer << "R2 3 0 5000" << endl;
-    buffer << "I1 4 3 .5" << endl;
-    buffer << "R3 4 0 10000" << endl;
-    buffer << "C1 4 0 .000001" << endl;
+    buffer << "V1 n2 n1 SIN(0 10 10)" << endl;
+    buffer << "R1 n3 n2 2k" << endl;
+    buffer << "L1 n1 0 .1" << endl;
+    buffer << "R2 n3 0 5k" << endl;
+    buffer << "I1 n4 3 .5" << endl;
+    buffer << "R3 n4 0 10k" << endl;
+    buffer << "C1 n4 0 1u" << endl;
 }
 
 
@@ -37,11 +37,11 @@ void timestep2(stringstream& buffer){
 void seriesResistors(stringstream& buffer, u_int count){
     buffer.clear();
     buffer << "seriesResistors" <<endl;
-    buffer << "V1 1 0 SIN(0 10 10)" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "R" << i << " " << i << " " << i+1 << " 1000" <<endl;
+        buffer << "R" << i << " n" << i << " n" << i+1 << " 1k" <<endl;
     }
-    buffer << "R" << count << " " << count << " 0 1000" <<endl;
+    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
 }
 
 
@@ -50,11 +50,11 @@ void seriesResistors(stringstream& buffer, u_int count){
 void seriesCapacitors(stringstream& buffer, u_int count){
     buffer.clear();
     buffer << "seriesCapacitors" <<endl;
-    buffer << "V1 1 0 SIN(0 10 10)" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "C" << i << " " << i << " " << i+1 << " 0.000001" <<endl;
+        buffer << "C" << i << " n" << i << " n" << i+1 << " 1u" <<endl;
     }
-    buffer << "C" << count << " " << count << " 0 0.000001" <<endl;
+    buffer << "C" << count << " n" << count << " 0 1u" <<endl;
 }
 
 
@@ -63,11 +63,11 @@ void seriesCapacitors(stringstream& buffer, u_int count){
 void seriesInductors(stringstream& buffer, u_int count){
     buffer.clear();
     buffer << "seriesInductors" <<endl;
-    buffer << "V1 1 0 SIN(0 10 10)" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "L" << i << " " << i << " " << i+1 << " .1" <<endl;
+        buffer << "L" << i << " n" << i << " n" << i+1 << " 10m" <<endl;
     }
-    buffer << "L" << count << " " << count << " 0 .1" <<endl;
+    buffer << "L" << count << " n" << count << " 0 10m" <<endl;
 }
 
 
@@ -76,11 +76,11 @@ void seriesInductors(stringstream& buffer, u_int count){
 void seriesVS(stringstream& buffer, u_int count){
     buffer.clear();
     buffer << "seriesVS" <<endl;
-    buffer << "V1 1 0 SIN(0 10 10)" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "V" << i << " " << i << " " << i+1 << " 10" <<endl;
+        buffer << "V" << i << " n" << i << " n" << i+1 << " 10" <<endl;
     }
-    buffer << "V" << count << " " << count << " 0 10" <<endl;
+    buffer << "V" << count << " n" << count << " 0 10" <<endl;
 }
 
 
@@ -88,19 +88,145 @@ void seriesVS(stringstream& buffer, u_int count){
 void seriesCS(stringstream& buffer, u_int count){
     buffer.clear();
     buffer << "seriesCS" <<endl;
-    buffer << "V1 1 0 SIN(0 10 10)" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "I" << i << " " << i << " " << i+1 << " 2" <<endl;
+        buffer << "I" << i << " n" << i << " n" << i+1 << " 2" <<endl;
     }
-    buffer << "I" << count << " " << count << " 0 2" <<endl;
+    buffer << "I" << count << " n" << count << " 0 2" <<endl;
 }
 
 
+//circuit containing variable number of op-amps
+//negative terminal connected with output + positive terminal connected to ground
+void seriesOpAmps(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesOpAmps" <<endl;
+    buffer << "V1 1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<=count; i++){
+        buffer << "X" << i << " N" << i << " 0" << " N" << i << " opamp" <<endl;
+    }
+}
+
+//voltage controlled voltage source
+void seriesVCVS(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesVCVS" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "E" << i << " n" << i << " n" << i+1 << " n" << i-1 << " n" << i << " 2" <<endl;
+    }
+    buffer << "E" << count << " n" << count << " 0 n" << count-1 << " n" << count << " 2" <<endl;
+}
+
+//voltage controlled current source
+void seriesVCCS(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesVCCS" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "G" << i << " n" << i << " n" << i+1 << " n" << i-1 << " n" << i << " 2" <<endl;
+    }
+    buffer << "G" << count << " n" << count << " 0 n" << count-1 << " n" << count << " 2" <<endl;
+}
+
+//current controlled voltage source
+void seriesCCVS(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesCCVS" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "H" << i << " n" << i << " n" << i+1 << " V1 2" <<endl;
+    }
+    buffer << "H" << count << " n" << count << " 0 V1 2" <<endl;
+}
+
+//current controlled current source
+void seriesCCCS(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesCCCS" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "F" << i << " n" << i << " n" << i+1 << " V1 2" <<endl;
+    }
+    buffer << "F" << count << " n" << count << " 0 V1 2" <<endl;
+}
+
+//circuit containing variable number of diodes (with AC source)
+void seriesAcDiode(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesAcDiode" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
+    }
+    buffer << "D" << count << " n" << count << " 0 D" <<endl;
+}
+
+//circuit containing variable number of diodes (without AC source)
+void seriesDcDiode(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesDcDiode" <<endl;
+    buffer << "V1 n1 0 5" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
+    }
+    buffer << "D" << count << " n" << count << " 0 D" <<endl;
+}
+
+//N-channel mosfet 
+void seriesNMos(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesNMos" <<endl;
+    buffer << ".MODEL NMOS NMOS" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "M" << i << " n" << i << " n" << i << "0 NMOS" <<endl;
+    }
+    buffer << "M" << count << " n" << count << " n" << count << " 0 NMOS" <<endl;
+}
+
+
+//P-channel mosfets
+void seriesPMos(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesPMos" <<endl;
+    buffer << ".MODEL PMOS PMOS" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "M" << i << " n" << i << " n" << i << "0 PMOS" <<endl;
+    }
+    buffer << "M" << count << " n" << count << " n" << count << " 0 PMOS" <<endl;
+}
+
+//NPN BJT
+void seriesNPN(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesNPN" <<endl;
+    buffer << ".MODEL NPN NPN" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "Q" << i << " n" << i << " n" << i << "0 NPN" <<endl;
+    }
+    buffer << "Q" << count << " n" << count << " n" << count << " 0 NPN" <<endl;
+}
+
+
+//PNP BJT
+void seriesPNP(stringstream& buffer, u_int count){
+    buffer.clear();
+    buffer << "seriesPNP" <<endl;
+    buffer << ".MODEL PNP PNP" <<endl;
+    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    for(u_int i{1}; i<count; i++){
+        buffer << "Q" << i << " n" << i << " n" << i << "0 PNP" <<endl;
+    }
+    buffer << "Q" << count << " n" << count << " n" << count << " 0 PNP" <<endl;
+}
 
 
 int main(int argc, char **argv){
     //the following times will be default for the tests that don't involve changing of timestep and simulation time
-    float timeStep = 0.0001; //seconds
+    float timeStep = 10e-6; //seconds for linear (dynamic timestep for nonlinear)
     float simulationTime = 1; //seconds
 
     Circuit* c;
@@ -114,7 +240,7 @@ int main(int argc, char **argv){
 
     // how many timesteps to use
     float maxTimeStep1 = 1;
-    float minTimeStep1 = 0.00001;
+    float minTimeStep1 = 1e-6;
     float timeStepDivider1 = 1.1;
     // float deltaTimeStep1 = 0.0001;
 
@@ -342,7 +468,39 @@ int main(int argc, char **argv){
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-    //series vs scaling test
+    //series cs scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/CSTest.csv");
+    outputFile << "CS count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minCS = 0;
+    int maxCS = 50;
+    int deltaCS = 1;
+
+    for(int CSCount = minCS; CSCount < maxCS; CSCount += deltaCS){
+        seriesCS(buffer, CSCount);
+        
+        auto start = high_resolution_clock::now();
+
+        setupBasic(*c, timeStep);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.txt", timeStep, simulationTime);
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << CSCount << "," << timeTaken/1000.0f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    //series op-amp scaling test
     c = new Circuit{};
 
     outputFile.open("output/CSTest.csv");
