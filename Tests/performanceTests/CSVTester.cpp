@@ -247,9 +247,10 @@ int main(int argc, char **argv){
     for(float timeStep{maxTimeStep1}; timeStep>=minTimeStep1; timeStep/=timeStepDivider1){
         auto start = high_resolution_clock::now(); 
         timestep1(buffer);
-        setupBasic(*c, timeStep);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         auto stop = high_resolution_clock::now(); 
         auto duration = duration_cast<microseconds>(stop - start);
         auto count = duration.count();
@@ -268,7 +269,7 @@ int main(int argc, char **argv){
     
     // how many timesteps to use
     float maxTimeStep2 = 1;
-    float minTimeStep2 = 0.00001;
+    float minTimeStep2 = 1e-6;
     float timeStepDivider2 = 1.1;
     // float deltaTimeStep2 = 1e-7;
 
@@ -276,13 +277,14 @@ int main(int argc, char **argv){
     for(float timeStep{maxTimeStep2}; timeStep>=minTimeStep2; timeStep/=timeStepDivider2){
         auto start = high_resolution_clock::now(); 
         timestep2(buffer);
-        setupBasic(*c, timeStep);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         auto stop = high_resolution_clock::now(); 
         auto duration = duration_cast<microseconds>(stop - start);
         auto count = duration.count();
-        outputFile << timeStep << "," << count/1000.0f <<endl;
+        outputFile << timeStep << "," << count/1e6f <<endl;
     }
 
     delete c;
@@ -303,13 +305,14 @@ int main(int argc, char **argv){
     for(float simulationTime{minSimulationTime1}; simulationTime<=maxSimulationTime1; simulationTime+=deltaSimulationTime1){
         auto start = high_resolution_clock::now(); 
         timestep1(buffer);
-        setupBasic(*c, simulationTime);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         auto stop = high_resolution_clock::now(); 
         auto duration = duration_cast<microseconds>(stop - start);
         auto count = duration.count();
-        outputFile << simulationTime << "," << count/1000.0f <<endl;
+        outputFile << simulationTime << "," << count/1e6f <<endl;
     }
 
     delete c;
@@ -330,13 +333,14 @@ int main(int argc, char **argv){
     for(float simulationTime{minSimulationTime2}; simulationTime<=maxSimulationTime2; simulationTime+=deltaSimulationTime2){
         auto start = high_resolution_clock::now(); 
         timestep2(buffer);
-        setupBasic(*c, simulationTime);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         auto stop = high_resolution_clock::now(); 
         auto duration = duration_cast<microseconds>(stop - start);
         auto count = duration.count();
-        outputFile << simulationTime << "," << count/1000.0f <<endl;
+        outputFile << simulationTime << "," << count/1e6f <<endl;
     }
 
     delete c;
@@ -360,14 +364,15 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        setupBasic(*c, timeStep);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
-        outputFile << resistorCount << "," << timeTaken/1000.0f << endl;
+        outputFile << resistorCount << "," << timeTaken/1e6f << endl;
     }
 
     outputFile.close();
@@ -391,14 +396,15 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        setupBasic(*c, timeStep);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
-        outputFile << capacitorCount << "," << timeTaken/1000.0f << endl;
+        outputFile << capacitorCount << "," << timeTaken/1e6f << endl;
     }
 
     outputFile.close();
@@ -422,14 +428,15 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        setupBasic(*c, timeStep);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.txt", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
-        outputFile << inductorCount << "," << timeTaken/1000.0f << endl;
+        outputFile << inductorCount << "," << timeTaken/1e6f << endl;
     }
 
     outputFile.close();
@@ -453,14 +460,15 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        setupBasic(*c, timeStep);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.txt", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
-        outputFile << VSCount << "," << timeTaken/1000.0f << endl;
+        outputFile << VSCount << "," << timeTaken/1e6f << endl;
     }
 
     outputFile.close();
@@ -484,14 +492,15 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        setupBasic(*c, timeStep);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.txt", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
-        outputFile << CSCount << "," << timeTaken/1000.0f << endl;
+        outputFile << CSCount << "," << timeTaken/1e6f << endl;
     }
 
     outputFile.close();
@@ -503,31 +512,161 @@ int main(int argc, char **argv){
     //series op-amp scaling test
     c = new Circuit{};
 
-    outputFile.open("output/CSTest.csv");
-    outputFile << "CS count, Simulation Time (seconds)" << endl;
+    outputFile.open("output/OpAmpTest.csv");
+    outputFile << "OpAmp count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minCS = 0;
-    int maxCS = 50;
-    int deltaCS = 1;
+    // how many op-amps to use
+    int minOpAmp = 0;
+    int maxOpAmp = 50;
+    int deltaOpAmp = 1;
 
-    for(int CSCount = minCS; CSCount < maxCS; CSCount += deltaCS){
-        seriesCS(buffer, CSCount);
+    for(int OpAmpCount = minOpAmp; OpAmpCount < maxOpAmp; OpAmpCount += deltaOpAmp){
+        seriesOpAmps(buffer, OpAmpCount);
         
         auto start = high_resolution_clock::now();
 
-        setupBasic(*c, timeStep);
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
         readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.txt", timeStep, simulationTime);
+        outputCSV(*c, "output/ignore.csv");
         
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
-        outputFile << CSCount << "," << timeTaken/1000.0f << endl;
+        outputFile << OpAmpCount << "," << timeTaken/1e6f << endl;
     }
 
     outputFile.close();
     delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series VCVS scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/VCVSTest.csv");
+    outputFile << "VCVS count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minVCVS = 0;
+    int maxVCVS = 50;
+    int deltaVCVS = 1;
+
+    for(int VCVSCount = minVCVS; VCVSCount < maxVCVS; VCVSCount += deltaVCVS){
+        seriesVCVS(buffer, VCVSCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << VCVSCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series VCCS scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/VCCSTest.csv");
+    outputFile << "VCCS count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minVCCS = 0;
+    int maxVCCS = 50;
+    int deltaVCCS = 1;
+
+    for(int VCCSCount = minVCCS; VCCSCount < maxVCCS; VCCSCount += deltaVCCS){
+        seriesVCCS(buffer, VCCSCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << VCCSCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series CCVS scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/CCVSTest.csv");
+    outputFile << "CCVS count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minCCVS = 0;
+    int maxCCVS = 50;
+    int deltaCCVS = 1;
+
+    for(int CCVSCount = minCCVS; CCVSCount < maxCCVS; CCVSCount += deltaCCVS){
+        seriesCCVS(buffer, CCVSCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << CCVSCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    //series CCCS scaling test
+    c = new Circuit{};
+
+    outputFile.open("output/CCCSTest.csv");
+    outputFile << "CCCS count, Simulation Time (seconds)" << endl;
+
+    // how many CS to use
+    int minCCCS = 0;
+    int maxCCCS = 50;
+    int deltaCCCS = 1;
+
+    for(int CCCSCount = minCCCS; CCCSCount < maxCCCS; CCCSCount += deltaCCCS){
+        seriesCCCS(buffer, CCCSCount);
+        
+        auto start = high_resolution_clock::now();
+
+        c.setTimeStep(timeStep);
+        c.setSimulationTime(simulationTime);
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
+        
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << CCCSCount << "," << timeTaken/1e6f << endl;
+    }
+
+    outputFile.close();
+    delete c;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
 }
