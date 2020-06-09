@@ -18,6 +18,8 @@ void timestep1(stringstream& buffer){
     buffer << "V1 n1 0 SIN(0 10 10)" << endl;
     buffer << "R1 n2 0 1k" << endl;
     buffer << "R2 n1 n2 500" << endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 //more complex test circuit that is used for dynamic timestep/ dynamic simulation time test
 void timestep2(stringstream& buffer){
@@ -30,6 +32,8 @@ void timestep2(stringstream& buffer){
     buffer << "I1 n4 3 .5" << endl;
     buffer << "R3 n4 0 10k" << endl;
     buffer << "C1 n4 0 1u" << endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -42,6 +46,8 @@ void seriesResistors(stringstream& buffer, u_int count){
         buffer << "R" << i << " n" << i << " n" << i+1 << " 1k" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -55,6 +61,8 @@ void seriesCapacitors(stringstream& buffer, u_int count){
         buffer << "C" << i << " n" << i << " n" << i+1 << " 1u" <<endl;
     }
     buffer << "C" << count << " n" << count << " 0 1u" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -68,6 +76,8 @@ void seriesInductors(stringstream& buffer, u_int count){
         buffer << "L" << i << " n" << i << " n" << i+1 << " 10m" <<endl;
     }
     buffer << "L" << count << " n" << count << " 0 10m" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -81,6 +91,8 @@ void seriesVS(stringstream& buffer, u_int count){
         buffer << "V" << i << " n" << i << " n" << i+1 << " 10" <<endl;
     }
     buffer << "V" << count << " n" << count << " 0 10" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -93,6 +105,8 @@ void seriesCS(stringstream& buffer, u_int count){
         buffer << "I" << i << " n" << i << " n" << i+1 << " 2" <<endl;
     }
     buffer << "I" << count << " n" << count << " 0 2" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -105,6 +119,8 @@ void seriesOpAmps(stringstream& buffer, u_int count){
     for(u_int i{1}; i<=count; i++){
         buffer << "X" << i << " N" << i << " 0" << " N" << i << " opamp" <<endl;
     }
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 //voltage controlled voltage source
@@ -116,6 +132,8 @@ void seriesVCVS(stringstream& buffer, u_int count){
         buffer << "E" << i << " n" << i << " n" << i+1 << " n" << i-1 << " n" << i << " 2" <<endl;
     }
     buffer << "E" << count << " n" << count << " 0 n" << count-1 << " n" << count << " 2" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 //voltage controlled current source
@@ -127,6 +145,8 @@ void seriesVCCS(stringstream& buffer, u_int count){
         buffer << "G" << i << " n" << i << " n" << i+1 << " n" << i-1 << " n" << i << " 2" <<endl;
     }
     buffer << "G" << count << " n" << count << " 0 n" << count-1 << " n" << count << " 2" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 //current controlled voltage source
@@ -138,6 +158,8 @@ void seriesCCVS(stringstream& buffer, u_int count){
         buffer << "H" << i << " n" << i << " n" << i+1 << " V1 2" <<endl;
     }
     buffer << "H" << count << " n" << count << " 0 V1 2" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 //current controlled current source
@@ -149,6 +171,8 @@ void seriesCCCS(stringstream& buffer, u_int count){
         buffer << "F" << i << " n" << i << " n" << i+1 << " V1 2" <<endl;
     }
     buffer << "F" << count << " n" << count << " 0 V1 2" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 //circuit containing variable number of diodes (with AC source)
@@ -160,6 +184,8 @@ void seriesAcDiode(stringstream& buffer, u_int count){
         buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
     }
     buffer << "D" << count << " n" << count << " 0 D" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 //circuit containing variable number of diodes (without AC source)
@@ -171,6 +197,8 @@ void seriesDcDiode(stringstream& buffer, u_int count){
         buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
     }
     buffer << "D" << count << " n" << count << " 0 D" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 //N-channel mosfet 
@@ -183,6 +211,8 @@ void seriesNMos(stringstream& buffer, u_int count){
         buffer << "M" << i << " n" << i << " n" << i << "0 NMOS" <<endl;
     }
     buffer << "M" << count << " n" << count << " n" << count << " 0 NMOS" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -196,6 +226,8 @@ void seriesPMos(stringstream& buffer, u_int count){
         buffer << "M" << i << " n" << i << " n" << i << "0 PMOS" <<endl;
     }
     buffer << "M" << count << " n" << count << " n" << count << " 0 PMOS" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 //NPN BJT
@@ -208,6 +240,8 @@ void seriesNPN(stringstream& buffer, u_int count){
         buffer << "Q" << i << " n" << i << " n" << i << "0 NPN" <<endl;
     }
     buffer << "Q" << count << " n" << count << " n" << count << " 0 NPN" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -221,6 +255,8 @@ void seriesPNP(stringstream& buffer, u_int count){
         buffer << "Q" << i << " n" << i << " n" << i << "0 PNP" <<endl;
     }
     buffer << "Q" << count << " n" << count << " n" << count << " 0 PNP" <<endl;
+    buffer << ".tran 1u 1 0" <<endl;
+    buffer << ".end" <<endl;
 }
 
 
@@ -250,7 +286,6 @@ int main(int argc, char **argv){
 
         c->setTimeStep(timeStep);
         c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
 
@@ -283,7 +318,6 @@ int main(int argc, char **argv){
 
         c->setTimeStep(timeStep);
         c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
 
@@ -312,8 +346,6 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now(); 
         timestep1(buffer);
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
         c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -343,8 +375,6 @@ int main(int argc, char **argv){
         auto start = high_resolution_clock::now(); 
         timestep2(buffer);
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
         c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
@@ -376,9 +406,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -409,9 +436,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -442,9 +466,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -475,9 +496,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -508,9 +526,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -542,9 +557,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -575,9 +587,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -608,9 +617,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -641,9 +647,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -674,9 +677,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setTimeStep(timeStep);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -707,9 +707,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setHasNonLinearComponents(true);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -740,9 +737,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setHasNonLinearComponents(true);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -773,9 +767,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setHasNonLinearComponents(true);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -806,9 +797,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setHasNonLinearComponents(true);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -839,9 +827,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setHasNonLinearComponents(true);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
@@ -872,9 +857,6 @@ int main(int argc, char **argv){
         
         auto start = high_resolution_clock::now();
 
-        c->setHasNonLinearComponents(true);
-        c->setTStep(timeStep);
-        c->setSimulationTime(simulationTime);
         readSpice(*c, buffer);
         outputCSV(*c, "output/ignore.csv");
         
