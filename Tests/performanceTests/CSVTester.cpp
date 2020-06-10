@@ -29,7 +29,7 @@ void timestep2(stringstream& buffer){
     buffer << "R1 n3 n2 2k" << endl;
     buffer << "L1 n1 0 .1" << endl;
     buffer << "R2 n3 0 5k" << endl;
-    buffer << "I1 n4 3 .5" << endl;
+    buffer << "I1 n4 n3 .5" << endl;
     buffer << "R3 n4 0 10k" << endl;
     buffer << "C1 n4 0 1u" << endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
