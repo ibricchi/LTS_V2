@@ -41,6 +41,27 @@ void Circuit::setTitle(string _title){
     title = _title;
 }
 
+
+vector<float>& Circuit::getTimePoints(){
+return timePoints;
+}
+void Circuit:: setTimePoints(){
+	for(auto src : voltageSources){
+		if(typeid(*src) == typeid(VoltageSource)){				
+			auto res = src->getTimePoints();		
+			timePoints.insert(timePoints.end(),res.begin(),res.end());
+		}	
+	}
+	for(auto src : currentSources){
+		if(typeid(*src) == typeid(CurrentSource)){	
+			auto res = src->getTimePoints();		
+			timePoints.insert(timePoints.end(),res.begin(),res.end());
+		}	
+	}
+	sort(timePoints.begin(),timePoints.end());
+} 
+
+
 int Circuit::getHighestNodeNumber() const{
     return highestNodeNumber;
 }

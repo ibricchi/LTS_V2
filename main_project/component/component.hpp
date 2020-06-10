@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <Eigen/Dense>
 
+
 #include <cmath> //temporarily for returning nanf("") => remove later on
 
 #include "enums.hpp"
@@ -30,6 +31,8 @@ public:
     Component(string _name);
     virtual ~Component() = 0; //destructor of base class should be virtual (purely virtual as component should be abstract)
 
+    virtual vector<float> getTimePoints();
+    virtual void setTimePoints();
     virtual float getConductance() const;
     virtual float getVoltage() const;
     virtual float getCurrent() const; //For complex components, this returns the current through the companion model's current source rather than through the whole component
@@ -37,7 +40,7 @@ public:
     //get the total current that flows through a component
     //this will be the current that is written to the csv file
     //the current x vector must be passed as an argument (needed to get the current through voltage sources)
-    virtual string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  = 0;
+    virtual string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, bool overwrite=1, float voltage = 0, int order = 1)  = 0;
     
     virtual float getGain() const;
     virtual string getVsName() const;
@@ -85,6 +88,7 @@ public:
     virtual void initCompCurrent(float _voltage_or_current);
     //appends a node to the nodes vector
     void appendToNodes(int nodeToAppend);
+
 };
 
 #endif

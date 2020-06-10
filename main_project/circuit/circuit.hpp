@@ -35,6 +35,7 @@ protected:
     vector<Component*> timeUpdatables{};
     vector<Component*> nonVoltageSources{};
     vector<Component*> nonLinears{};
+    vector<float> timePoints;
 
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
     //all time is in seconds
@@ -65,6 +66,8 @@ public:
     Circuit(const Circuit&) = delete;
     Circuit& operator=(const Circuit&) = delete;
 
+    vector<float>& getTimePoints(); //Returns a vector of PWL timepoints for current/voltage sources
+    void setTimePoints(); 
     string getTitle() const;
     void setTitle(string _title);
 

@@ -60,6 +60,14 @@ double VoltageSource::divAtNode(int n, int dn){
 	return 1;
 }
 
-string VoltageSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
+string VoltageSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, bool overwrite, float voltage, int order) {
     return to_string(x(highestNodeNumber+voltageSourcesIdx));
+}
+
+vector<float> VoltageSource::getTimePoints(){
+	vector<float> res;	
+	for(auto pair: voltageWaveform.getTimePointsPairs()){
+		res.push_back(pair.first);
+	}
+	return res;
 }

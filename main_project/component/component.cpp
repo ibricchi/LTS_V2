@@ -12,6 +12,9 @@ Component::~Component(){}
 // this allows to call an error if ever a function that shouldn't be returning a voltage or current or conductance
 // is asked for one
 
+vector<float> Component::getTimePoints(){vector<float> n; return n;}
+ void Component::setTimePoints(){return;}
+
 string Component::getName() const{
     return name;
 }
