@@ -126,8 +126,9 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
 		if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
 		string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
 		interpolI1.push_back(stof(res1));
-		if(typeid(*comp)==typeid(Capacitor)){cerr << "Capcurrent: "<<res1<< endl;}}
-		else{string res= comp->getTotalCurrentString(newX,highestNodeNumber);
+		//if(typeid(*comp)==typeid(Capacitor)){cerr << "Capcurrent: "<<res1<< endl;}
+    }else{
+        string res= comp->getTotalCurrentString(newX,highestNodeNumber);
 		int firstComma = res.find_first_of(',');
 		int secondComma = res.find_last_of(',');			
 		interpolI1.push_back(stof(res.substr(0,firstComma)));
@@ -156,9 +157,9 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
             	
             currentVector.push_back((interpolT1==interpolT2) ? (interpolI1[n]) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolI2[n]-interpolI1[n])+(interpolI1[n]));
                 outLine += "," + to_string(currentVector[n]);		
-		cerr << n << ": " << currentVector[n] << endl;            
+		//cerr << n << ": " << currentVector[n] << endl;            
 	}
-        cerr<< endl;
+        //cerr<< endl;
             interpolX1 = newX;
             interpolT1 = printTime;
             interpolI1 = currentVector;
@@ -179,7 +180,7 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
         up->updateVals(currentVoltage, 0, 1);
     }
     c.setPrevTime(t);
-    cerr<< printTime << endl;
+    //cerr<< printTime << endl;
     return outLine;
     
 }
