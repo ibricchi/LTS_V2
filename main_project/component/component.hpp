@@ -36,7 +36,7 @@ public:
     virtual float getVoltage() const; //Returns voltage across a component
     virtual float getCurrent() const; //For complex components, this returns the current through the companion model's current source rather than through the whole component
     
-    // these methods are required for dynamic time stepping interpolation
+    // these methods are required for dynamic time stepping, used for finding points were sources change quickly
     virtual vector<float> getTimePoints();
     virtual void setTimePoints();
     
