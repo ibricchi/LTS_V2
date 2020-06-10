@@ -8,8 +8,9 @@
 #include <component/inductor.hpp>
 #include <component/capacitor.hpp>
 #include <component/bjt.hpp>
-#include "nonLinearAnalysis.hpp"
-#include <component/mosfet.cpp>
+#include <component/mosfet.hpp>
+
+#include <output/nonLinearAnalysis.hpp>
 
 void nonLinearSetup(Circuit& c, bool isDc){
     c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
@@ -113,8 +114,8 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
         }
     }
     //output current time 
-    cerr << "CurrentTimeStep: "<< dynamicTimeStep << endl;
-    cerr << "Time: "<< t<< endl; 
+    //cerr << "CurrentTimeStep: "<< dynamicTimeStep << endl;
+    //cerr << "Time: "<< t<< endl; 
     c.setCurrentTime(t); //Do we need this?
 
     if(t<=printTime || abs(printTime)<0.000000001){
@@ -124,35 +125,38 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
         interpolI1.clear();
         for(const auto &comp : components){
 		if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
-		string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
-		interpolI1.push_back(stof(res1));}
-		//if(typeid(*comp)==typeid(Capacitor)){cerr << "Capcurrent: "<<res1<< endl<<"TimeStep: "<<dynamicTimeStep<<endl;}}
-		else{string res= comp->getTotalCurrentString(newX,highestNodeNumber);
-		int firstComma = res.find_first_of(',');
-		int secondComma = res.find_last_of(',');			
-		interpolI1.push_back(stof(res.substr(0,firstComma)));
-		interpolI1.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
-		interpolI1.push_back(stof(res.substr(secondComma+1)));
-}
+			string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
+			interpolI1.push_back(stof(res1));
+    		}else{
+        		string res= comp->getTotalCurrentString(newX,highestNodeNumber);
+			int firstComma = res.find_first_of(',');
+			int secondComma = res.find_last_of(',');			
+			interpolI1.push_back(stof(res.substr(0,firstComma)));
+			interpolI1.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
+			interpolI1.push_back(stof(res.substr(secondComma+1)));
+		}
         }
     }
     if(t>=printTime){
         interpolX2 = newX;
         interpolT2 = t;
         interpolI2.clear();
-       if(t!=printTime){ for(const auto &comp : components){
-            if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
-		string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
-		interpolI2.push_back(stof(res1));}
-		//if(typeid(*comp)==typeid(Capacitor)){cerr << "Capcurrent: "<<res1<< endl<<"TimeStep: "<<dynamicTimeStep<<endl;}}
-		else{string res= comp->getTotalCurrentString(newX,highestNodeNumber);
-		int firstComma = res.find_first_of(',');
-		int secondComma = res.find_last_of(',');			
-		interpolI2.push_back(stof(res.substr(0,firstComma)));
-		interpolI2.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
-		interpolI2.push_back(stof(res.substr(secondComma+1)));
-        	}
-    	}}else{interpolI2 = interpolI1;}
+       if(t!=printTime){
+		for(const auto &comp : components){
+            		if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
+				string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
+				interpolI2.push_back(stof(res1));}
+			else{string res= comp->getTotalCurrentString(newX,highestNodeNumber);
+				int firstComma = res.find_first_of(',');
+				int secondComma = res.find_last_of(',');			
+				interpolI2.push_back(stof(res.substr(0,firstComma)));
+				interpolI2.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
+				interpolI2.push_back(stof(res.substr(secondComma+1)));
+        		}
+    		}
+	}else{
+		interpolI2 = interpolI1;
+	}
         do{
             currentVector.clear();
             newX = (interpolT1==interpolT2) ? (interpolX1) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolX2-interpolX1)+(interpolX1);
@@ -164,10 +168,8 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
             for(int n =0;n<interpolI1.size();n++){	
             	
             currentVector.push_back((interpolT1==interpolT2) ? (interpolI1[n]) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolI2[n]-interpolI1[n])+(interpolI1[n]));
-                outLine += "," + to_string(currentVector[n]);		
-	//	cerr << n << ": " << currentVector[n] << endl;            
+                outLine += "," + to_string(currentVector[n]);		    
 	}
-       // cerr<< endl;
             interpolX1 = newX;
             interpolT1 = printTime;
             interpolI1 = currentVector;
@@ -188,7 +190,6 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
         up->updateVals(currentVoltage, 0, 1);
     }
     c.setPrevTime(t);
-   // cerr<< printTime << endl;
     return outLine;
     
 }
@@ -304,7 +305,7 @@ void initializeDcBias(Circuit &c, int maxIterationsPerSourceStep, float minimumS
 
         //These next lines initialise the compCurrent values of capacitors and inductors based on DC bias values of voltage and current
         if(typeid(*up)==typeid(Capacitor)){
-            up->initCompCurrent(currentVoltage); cout<< "CurrentVoltage=" << currentVoltage<<endl;
+            up->initCompCurrent(currentVoltage); 
         }else if(typeid(*up)==typeid(Inductor)){
             up->initCompCurrent(newX[newX.size()-numberOfInductors+whichInductor]);
             whichInductor++;
