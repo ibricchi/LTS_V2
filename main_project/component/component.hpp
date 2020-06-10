@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <Eigen/Dense>
 
+
 #include <cmath> //temporarily for returning nanf("") => remove later on
 
 #include "enums.hpp"
@@ -34,6 +35,10 @@ public:
     virtual float getConductance() const; //Returns conducance through a component
     virtual float getVoltage() const; //Returns voltage across a component
     virtual float getCurrent() const; //For complex components, this returns the current through the companion model's current source rather than through the whole component
+    
+    // these methods are required for dynamic time stepping interpolation
+    virtual vector<float> getTimePoints();
+    virtual void setTimePoints();
     
     //get the total current that flows through a component
     //this will be the current that is written to the csv file
@@ -103,6 +108,7 @@ public:
     // appends a node to the nodes vector
     // used to improve efficiency for dependant sources
     void appendToNodes(int nodeToAppend);
+
 };
 
 #endif

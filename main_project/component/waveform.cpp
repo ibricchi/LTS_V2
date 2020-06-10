@@ -230,3 +230,9 @@ float Waveform::updatePulseVals(float time){
     //if none of the previous conditions is met, the pulse must be off
     return initialVoltage;
 }
+
+map<float,float> Waveform::getTimePointsPairs(){
+return pwlTimeVoltageMapping;
+}
+
+

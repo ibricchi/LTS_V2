@@ -29,6 +29,8 @@ public:
 
     float getCurrent() const override;
 
+    vector<float> getTimePoints();
+
     string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  override;
 };
 

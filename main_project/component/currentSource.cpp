@@ -65,3 +65,11 @@ double CurrentSource::divAtNode(int n, int dn){
 string CurrentSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order){
     return to_string(current);
 }
+
+vector<float> CurrentSource::getTimePoints(){
+	vector<float> res;	
+	for(auto pair: currentWaveform.getTimePointsPairs()){
+		res.push_back(pair.first);
+	}
+	return res;
+}

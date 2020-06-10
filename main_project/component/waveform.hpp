@@ -79,6 +79,7 @@ public:
     float updateSinVals(float time);
     float updatePwlVals(float time);
     float updatePulseVals(float time);
+    map<float,float> getTimePointsPairs();
 };
 
 #endif
