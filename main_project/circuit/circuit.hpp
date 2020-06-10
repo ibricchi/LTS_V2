@@ -10,15 +10,17 @@
 using namespace std;
 using namespace Eigen;
 
+// this struct is used for non-linear analysis
+// it makes the consturction of the conductance and source voltages much simpler
 struct nodeCompPair{
-    int n;
-    vector<int> extraNodes;
-    Component* comp;
+    int n; // main node being considered
+    vector<int> extraNodes; // all other non ground nodes
+    Component* comp; // component in question
 
-    double IV() const{
+    double IV() const{ // gets current sources at main node
         return comp->ivAtNode(n);
     }
-    double DIV(int dn) const{
+    double DIV(int dn) const{ // get's conducances with reference to main node and dn
         return comp->divAtNode(n, dn);
     }
 };
@@ -26,42 +28,50 @@ struct nodeCompPair{
 class Circuit
 {
 protected:
-    string title;
-    vector<Component*> components{}; // not sure if we necesarily need this one
-    vector<Component*> voltageSources{};
-    vector<Component*> currentSources{};
-    vector<Component*> conductanceSources{};
-    vector<Component*> vcUpdatables{};
-    vector<Component*> timeUpdatables{};
-    vector<Component*> nonVoltageSources{};
-    vector<Component*> nonLinears{};
-    vector<float> timePoints;
+    string title; // name of circuit
 
+    // these vecotrs improve the efficiency of the analysis by allowing certain functions to only be
+    // called on component types that require them
+    vector<Component*> components{}; // list of all components in circuit
+    vector<Component*> voltageSources{}; // list of all votlage sources or components that will be treated as VS
+    vector<Component*> currentSources{}; // list of all current sources or componetns that will be treated as CS
+    vector<Component*> conductanceSources{}; // list of all components with conductances
+    vector<Component*> vcUpdatables{}; // list of all components that use the updateVoltage methods
+    vector<Component*> timeUpdatables{}; // list of all components that need time updates
+    vector<Component*> nonVoltageSources{}; // list of all componetns that use IV and DIV
+    vector<Component*> nonLinears{}; // list of all non-linear components
+
+    vector<float> timePoints; // time points indicate periods of high change in sourcese, used for dynamic time stepping
+
+    // basic parameters used for all of the simulations
+    //all time are is in seconds
     int highestNodeNumber; //more efficient to keep updating when parsing netlist (otherwise have to iterate through all components again)
-    //all time is in seconds
-    double currentTime;
-    double prevTime;
-    float tStart;
-    float simulationTime; //time when simulation ends (TSTOP)
-    float timeStep;
-    float maxTimeStep;
-    float tStep; //printing incremement for csv output
-    bool hasNonLinear;
-    int inductorNumber;
-    MatrixXd A;
-    MatrixXd A_inv;
-    VectorXd b;
-    VectorXd x;
+    double currentTime; // current time in simulation
+    double prevTime; // previous simulation time
+    float tStart; // starting time, defaults to 0
+    float simulationTime; // time when simulation ends (TSTOP)
+    float timeStep; // time step between steps, changes dynamically
+    float maxTimeStep; // maximum time step to limit dynamic time stepping
+    float tStep; // printing incremement for csv output
+    bool hasNonLinear; // type of circuit, linear or non-linear
+    int inductorNumber; // number of inducntors, used for DC biasing as inductors are replaced with voltage sources, which increase the matrx size
+    
+    // important matrixes
+    MatrixXd A; // conductance matrix
+    MatrixXd A_inv; // inverse matrix
+    VectorXd b; // source matrix
+    VectorXd x; // node voltage, and VS current matrixes
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
 
     double minPNConductance = 1e-12; // minimum conductance at PN juctions
 
-    int maxNewtonRaphsonCount = 500;
+    int maxNewtonRaphsonCount = 500; // set's a maximum itteration cap to newton raphson to detect divergence
 
     //absolute Newton-Raphson error tolerance
     float abstol = 0.1;
 
-    // non-linear analysis vectors;
+    // used to store all component node pairs to itterate through
+    // each of these will be asked for their IV and DIV functions
     vector<nodeCompPair> nodalFunctions{};
 
 public:
@@ -69,12 +79,15 @@ public:
     Circuit();
     ~Circuit();
 
-    //don't want to have default copy when using pointers (not even allowed to copy unique ptr)
+    // don't want to have default copy when using pointers
     Circuit(const Circuit&) = delete;
     Circuit& operator=(const Circuit&) = delete;
 
+    // functions used for finding high rates of change in sources for dynamit time stepping
     vector<float>& getTimePoints(); //Returns a vector of PWL timepoints for current/voltage sources
-    void setTimePoints(); 
+    void setTimePoints();
+
+    // basic stter and getter functions for circuit class
     string getTitle() const;
     void setTitle(string _title);
 
@@ -108,15 +121,17 @@ public:
     double getMinPNConductance() const;
     void setMinPNConductance(double con);
 
-    void incrementInductorNumber();
-
     int getMaxNewtonRaphsonCount() const;
     void setMaxNewtonRaphsonCount(int count);
 
     float getAbstol() const;
     void setAbstol(float _abstol);
 
-    // returns references to prevent inefficient copying
+    // used to controll indcutor number during parsing of input to increase efficiency
+    void incrementInductorNumber();
+    int getInductorNumber() const;
+
+    // returns references for component type vectors to prevent inefficient copying
     vector<Component*>& getComponentsRef();
     Component* getLastComponent();
     vector<Component*>& getVoltageSourcesRef();
@@ -128,18 +143,20 @@ public:
 
     // template function to add component, the class must have a constructor with the intputs as in the function bellow
     // template <class comp>
-    // void addComponent(string name, vector<string> args);
+    // void addComponent(string name, vector<string> args, vector<float> extraInfo);
+    // this allows for high levels of polymorphsim in the creation of components
     template <class comp>
     void addComponent(string name, vector<string> args){
         vector<float> extraInfo; // extra info will be passed to constructors and used if necessary
-        // we can change it to a vector of strings if we need non float data later on
         extraInfo.push_back(getTStep());//extraInfo[0] is timeStep of circuit (currently the printing step tStep is used as the static timestep)
         extraInfo.push_back(getCurrentTime());//extraInfo[1] is current time of circuit
         extraInfo.push_back(voltageSources.size()); //idx of voltageSource inside voltageSources vector (the value will have no meaning if the component is not a voltageSource)
         extraInfo.push_back(getMinPNConductance()); //extraInfo[3] is the minimum allowed conducntacnce at a PN junction
+        
+        // this part requires the specific constructor on all components specified above
         comp* newComp = new comp(name, args, extraInfo);
         vector<componentType> types = newComp->getTypes();
-        for(auto type : types){
+        for(auto type : types){ // checks the new components type to set up into appropriate vectors
             switch (type)
             {
             case componentType::conductanceSource:
@@ -164,13 +181,13 @@ public:
                 nonLinears.push_back(newComp);
                 hasNonLinear = true;
                 break;
-            default:
+            default: // throws error if type is not known
                 cerr << "The component " << name << " has no supported componentType" <<endl;
                 exit(1);
                 break;
             }
         }
-        components.push_back(newComp);
+        components.push_back(newComp); // aslo adds it to vector of all components
     }
 
     // non linear setup
@@ -204,13 +221,14 @@ public:
     // A_inv must exist for this to work
     void computeX();
 
+    // computes X for non linear circuits
     void computeNLX(float gamma);
 
+    // set X required for dynamit time stepping as it can reset the circuit state to a previous time step
     void setX(VectorXd newX);
-    
     VectorXd getX() const;
 
-    // update nodal voltages
+    // updates nodal voltages on all components within the circuit
     void updateNodalVoltages();
 
     //connects a current controlled source with the voltage source that the controlling current flows through
@@ -220,8 +238,6 @@ public:
 
     // helper function for current controlled sources
     int getVoltageSourceIndexByName(string vsName, vector<Component*>& voltageSources) const;
-
-    int getInductorNumber() const;
 };
 
 #endif
