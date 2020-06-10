@@ -27,23 +27,14 @@ string runNonLinearTransience(Circuit& c, float t, VectorXd& interpolX1, VectorX
     int highestNodeNumber = c.getHighestNodeNumber();
     vector<float> currentVector;
     //forms a row in the csv file
-string outLine{};
-//cerr << "Time: " << t << endl;
+    string outLine{};
     const float threshold = .001;
     double printTimeStep = c.getTStep();
-    //double printTime = 0;
-    //double interpolT1 = 0;
-    //double interpolT2 = 0;
-    //VectorXd interpolX1;
-    //VectorXd interpolX2;
     bool interpolReady = false;
-    //c.updateNodalVoltages();
     VectorXd startX = c.getX();
-//exit(1);
     VectorXd currentX = c.getX();
     VectorXd newX = c.getX();
     VectorXd current;
-//cerr << "COMPONENT!!" << endl;
 
     // keep calculating for current time step till threshold is bellow ceratin level
     int count = 0;
@@ -55,29 +46,25 @@ string outLine{};
     float dynamicTimeStepAbsoluteDeltaB = c.getAbstol(); //Absolute delta in x values that triggers an increase in timestep
     float prevTime = c.getPrevTime();    
     double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
-       //cerr << "DynTimeStep: " << dynamicTimeStep << endl;
-	cerr <<endl<< "Time: "<< t << endl;
-	cerr << "PrevTime: " << prevTime << endl << endl;
+    
     if(dynamicTimeStep == 0){
         cerr << "Dynamic time step reaches 0, convergence cannot be found at all" << endl;
         exit(1);
     }
     
-    float gamma = 0.1;
     double minDynamicTimeStep = c.getSimulationTime()/5000000;
     double maxDynamicTimeStep = (c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1;
-   // float distanceFromSpike = 0.001
+    
     bool nearPWL = false;
     c.setTimePoints();
     vector<float> pwlTimePoints = c.getTimePoints();	
     for(int n =0;n<pwlTimePoints.size();n++){
-	float _t = pwlTimePoints[n];		
-	
-	if(t>_t && prevTime <_t){
-	nearPWL = true;
-	} 
+        float _t = pwlTimePoints[n];		
+        
+        if(t>_t && prevTime <_t){
+            nearPWL = true;
+        } 
     }
-
 
     for(const auto &up : vcUpdatables){
 	    up->setTimeStep(dynamicTimeStep);
@@ -101,38 +88,24 @@ string outLine{};
         //     cerr << "Minimum dynamic timestep reached" <<endl;
         //     exit(1);
         // }
-//cerr << "Count: " << count << endl;
         if((count > dynamicTimeStepMaxCount || !matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaA) || nearPWL) && (dynamicTimeStep>=dynamicTimeStepFactor*minDynamicTimeStep)){
-  //       cerr << "NextTimeStep: " << dynamicTimeStep/dynamicTimeStepFactor << endl;
-            //cerr << "StartX" << endl << startX << endl << "StartX" << endl;
             c.setX(startX);
             c.setTimeStep(dynamicTimeStep/dynamicTimeStepFactor);
             outLine = runNonLinearTransience(c,c.getPrevTime()+dynamicTimeStep/dynamicTimeStepFactor,interpolX1,interpolX2,interpolT1,interpolT2,printTime,interpolI1,interpolI2);
             return outLine;   
         }
 
-        // cerr << "Newton-Raphson Count: " << count << endl;        
         c.nonLinearA();
         c.computeA_inv();
         c.nonLinearB();
         c.computeNLX(0); //simply does A_inv*b (same as for linear x)
         currentX = newX;
         newX = c.getX();
-	//cerr << newX[0];
-//i1f(newX.rows() == 0){cerr << "Error, zero rows" << endl;}
         c.updateNodalVoltages(); //update based on newX
-
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << endl << "t " << t << ":" << endl << "-------------------------------" << endl;
-        // cout << "A: " << endl << c.getA().format(CleanFmt) << endl << endl;
-        // cout << "A^{-1}" << endl <<c.getA_inv().format(CleanFmt) << endl << endl;
-        // cout << "B: " << endl << c.getB().format(CleanFmt) << endl << endl;
-        // cout << "Old x: " << endl << currentX.format(CleanFmt) << endl << endl;
-        // cout << "New x: " << endl << newX.format(CleanFmt) << endl << endl;
 
         count++;
     }while(!matrixDiffBellowThreshold(currentX, newX, threshold));
-	//cerr << "Made it past while" << endl;    
+	 
     if(matrixDiffBellowThreshold(startX,newX,dynamicTimeStepAbsoluteDeltaB)){    
         if(count < dynamicTimeStepMinCount && dynamicTimeStep <= maxDynamicTimeStep/2 ){
             dynamicTimeStep *= 2;
@@ -141,72 +114,46 @@ string outLine{};
     //output current time 
     c.setTimeStep(dynamicTimeStep); 
     c.setCurrentTime(t); //Do we need this?
-//cerr <<"Time: is: " << t << endl;
-//cerr << "PrintTime: " << printTime << endl; 
-if(t<=printTime || abs(printTime)<0.000000001){
-	interpolX1 = newX;
-	//cerr << "t: " << t << endl;
-	//if(abs(t-2.44141e-07) < 0.000000001){cerr << "vector:" << newX << endl;}
-	
-	interpolT1 = t;	
-	interpolI1.clear();
-	for(const auto &comp : components){
-        	interpolI1.push_back(stof(comp->getTotalCurrentString(newX, highestNodeNumber)));
-    	}
-	for(float n:interpolI1){cerr << n << endl;}
-}
-if(t>=printTime){
-if(interpolX1.rows() == 0){cerr << t << endl;}	
-	interpolX2 = newX;
-	interpolT2 = t;
-	interpolI2.clear();
-	cerr << "Component" << endl;	
-	for(const auto &comp : components){
-        	interpolI2.push_back(stof(comp->getTotalCurrentString(newX, highestNodeNumber)));
-		if(typeid(*comp)==typeid(BJT)){cerr << "BJT" << endl;}    	
-	}
-for(float res:interpolI2){cerr << res << ", ";} 
-	cerr << "VectorSize: " << interpolI2.size() << endl;
-	//float ratio = (printTime-interpolT1)/(interpolT2-interpolT1);	
-	//cerr << "Inter1: " << interpolX2 << endl<< "Inter2: " << interpolX1 << endl << "Done" << endl;	
-if(interpolX1.rows() != interpolX2.rows()){cerr << interpolX1.rows() << endl<<interpolX2.rows() << endl;}// "ERROR!!!" << endl<< interpolX1 << endl << interpolX2 << endl<< "Time: " << t <<endl;}
-	//VectorXd smt= interpolX2-interpolX1;	
-	//newX = ((0)*ratio) + interpolX1;	
-do{	
-//cerr << "Size" << outLine.size() << endl;
-currentVector.clear();
-newX = (interpolT1==interpolT2) ? (interpolX1) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolX2-interpolX1)+(interpolX1);
-	cerr << newX << endl;	
-	outLine += to_string(printTime);	
-	for(int i{}; i<highestNodeNumber; i++){
-        	outLine += "," + to_string(newX(i));
-    	}	
-//	cerr << outLine.size() << endl;	
-	for(int n =0;n<interpolI1.size();n++){	
-	cerr << "N: " << n << endl;		
-	currentVector.push_back((interpolT1==interpolT2) ? (interpolI1[n]) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolI2[n]-interpolI1[n])+(interpolI1[n]));
-		outLine += "," + to_string(currentVector[n]);		
-	cerr << currentVector[n] << endl;	
-	}
-	 
-	interpolX1 = newX;
-	interpolT1 = printTime;
-	interpolI1 = currentVector;
-	cerr << "PrintTime: " << printTime << endl;
-printTime += printTimeStep;
-if(printTime<interpolT2){outLine += "\n"; cerr << "Got to here" << endl;}
-}while(printTime<interpolT2);    		
-}//output node voltages
-    //output component currents
-//cerr << outLine.size() << endl;
-   /* // update components before next calculation of b, commented out now as it is done at the beginning of function call with current value of t
-    for(const auto &comp : timeUpdatables){
-        comp->updateVals(t+c.getTimeStep());
+
+    if(t<=printTime || abs(printTime)<0.000000001){
+	    interpolX1 = newX;
+        
+        interpolT1 = t;	
+        interpolI1.clear();
+        for(const auto &comp : components){
+            interpolI1.push_back(stof(comp->getTotalCurrentString(newX, highestNodeNumber)));
+        }
     }
-    */
-    //update components based on current voltage/current
+    if(t>=printTime){
+        interpolX2 = newX;
+        interpolT2 = t;
+        interpolI2.clear();
+        for(const auto &comp : components){
+            interpolI2.push_back(stof(comp->getTotalCurrentString(newX, highestNodeNumber)));
+        }
+    
+        do{
+            currentVector.clear();
+            newX = (interpolT1==interpolT2) ? (interpolX1) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolX2-interpolX1)+(interpolX1);
+            	
+            outLine += to_string(printTime);	
+            for(int i{}; i<highestNodeNumber; i++){
+                outLine += "," + to_string(newX(i));
+            }	
+            for(int n =0;n<interpolI1.size();n++){	
+            	
+            currentVector.push_back((interpolT1==interpolT2) ? (interpolI1[n]) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolI2[n]-interpolI1[n])+(interpolI1[n]));
+                outLine += "," + to_string(currentVector[n]);		
+            }
+        
+            interpolX1 = newX;
+            interpolT1 = printTime;
+            interpolI1 = currentVector;
+            printTime += printTimeStep;
+        }while(printTime<interpolT2);    		
+    }
    
- float currentVoltage{}, currentCurrent{};
+    float currentVoltage{}, currentCurrent{};
     for(const auto &up : vcUpdatables){
         auto nodes = up->getNodes();
 
@@ -219,8 +166,6 @@ if(printTime<interpolT2){outLine += "\n"; cerr << "Got to here" << endl;}
     }
     c.setPrevTime(t);
     
-   // cerr << "Just before return dynTimeStep: " << dynamicTimeStep << endl;
-//cerr << "Component" << endl;
     return outLine;
     
 }

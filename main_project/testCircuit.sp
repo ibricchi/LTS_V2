@@ -1,7 +1,6 @@
 Inverting Op-Amp from EE1 Term 2 Labs
 V1 N001 0 SINE(0 5 10)
-D1 N001 N002 D
-C1 N002 0 1m
+D1 N002 N001 D
 R1 N002 0 10k
 .model NPN NPN
 .model PNP PNP

@@ -76,24 +76,22 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         initializeDcBias(c);
 
         nonLinearSetup(c);
-       // for(float t = 0; t<=simulationTime; t += c.getTimeStep()){// could replace with a while loop if we ever do dynamic time steps
-cerr << "SimTime: " << simulationTime << endl;        
-	while(c.getCurrentTime() < simulationTime){
-	cerr << "Time: " << c.getCurrentTime() << endl;
+       
+        while(c.getCurrentTime() < simulationTime){
+        
             outLine = runNonLinearTransience(c, c.getCurrentTime(),interpolX1,interpolX2,interpolT1,interpolT2,printTime,interpolI1,interpolI2);
-             if(outLine!= ""){outputFile << outLine << endl;}
-		c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
-            // cerr << "Output Cycle" << endl;
-            //cerr << "Time: " << c.getCurrentTime() << endl;//+c.getTimeStep() << "Simulation Time: " << simulationTime << endl;	    
+            if(outLine!= ""){outputFile << outLine << endl;}
+            c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
+                
             if(c.getCurrentTime() > simulationTime){
                 c.setCurrentTime(simulationTime);
-                // cerr << "Time: " << simulationTime << endl;
+                
                 c.setTimeStep(simulationTime - c.getPrevTime());			
                 outLine = runNonLinearTransience(c,simulationTime,interpolX1,interpolX2,interpolT1,interpolT2,printTime,interpolI1,interpolI2);
-                if(outLine!= ""){outputFile << outLine << endl;}
-		c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
-                
-                //return;
+                if(outLine!= ""){
+                    outputFile << outLine << endl;
+                }
+                c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
             }
         }
     }
