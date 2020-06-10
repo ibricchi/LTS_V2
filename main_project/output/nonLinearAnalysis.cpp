@@ -9,13 +9,14 @@
 #include <component/capacitor.hpp>
 #include <component/bjt.hpp>
 #include "nonLinearAnalysis.hpp"
+#include <component/mosfet.cpp>
 
 void nonLinearSetup(Circuit& c, bool isDc){
     c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
     c.nlSetup(isDc);
 }
 
-string runNonLinearTransience(Circuit& c, float t, VectorXd& interpolX1, VectorXd& interpolX2, double& interpolT1, double& interpolT2,double& printTime,vector<float>& interpolI1, vector<float>& interpolI2){
+string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, VectorXd& interpolX2, double& interpolT1, double& interpolT2,double& printTime,vector<float>& interpolI1, vector<float>& interpolI2){
     //get references to the components stored inside the circuit
     vector<Component*> components = c.getComponentsRef();
     vector<Component*> voltageSources = c.getVoltageSourcesRef();
@@ -42,10 +43,10 @@ string runNonLinearTransience(Circuit& c, float t, VectorXd& interpolX1, VectorX
     int dynamicTimeStepMaxCount = 3;
     int dynamicTimeStepMinCount = 2;
     int dynamicTimeStepFactor = 8;
-    float dynamicTimeStepAbsoluteDeltaA = c.getAbstol()*10.0f; //Absolute delta in x values that triggers a decrease in timestep
+    float dynamicTimeStepAbsoluteDeltaA = c.getAbstol()*5.0f; //Absolute delta in x values that triggers a decrease in timestep
     float dynamicTimeStepAbsoluteDeltaB = c.getAbstol()*10.0f; //Absolute delta in x values that triggers an increase in timestep
-    float prevTime = c.getPrevTime();    
-    double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
+    double prevTime = c.getPrevTime();    
+    double dynamicTimeStep = (abs(prevTime)<0.00000001 ? c.getTimeStep() : t-c.getPrevTime());
     
     if(dynamicTimeStep == 0){
         cerr << "Dynamic time step reaches 0, convergence cannot be found at all" << endl;
@@ -121,7 +122,17 @@ string runNonLinearTransience(Circuit& c, float t, VectorXd& interpolX1, VectorX
         interpolT1 = t;	
         interpolI1.clear();
         for(const auto &comp : components){
-            interpolI1.push_back(stof(comp->getTotalCurrentString(newX, highestNodeNumber)));
+		if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
+		string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
+		interpolI1.push_back(stof(res1));
+		if(typeid(*comp)==typeid(Capacitor)){cerr << "Capcurrent: "<<res1<< endl;}}
+		else{string res= comp->getTotalCurrentString(newX,highestNodeNumber);
+		int firstComma = res.find_first_of(',');
+		int secondComma = res.find_last_of(',');			
+		interpolI1.push_back(stof(res.substr(0,firstComma)));
+		interpolI1.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
+		interpolI1.push_back(stof(res.substr(secondComma+1)));
+}
         }
     }
     if(t>=printTime){
@@ -144,12 +155,14 @@ string runNonLinearTransience(Circuit& c, float t, VectorXd& interpolX1, VectorX
             	
             currentVector.push_back((interpolT1==interpolT2) ? (interpolI1[n]) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolI2[n]-interpolI1[n])+(interpolI1[n]));
                 outLine += "," + to_string(currentVector[n]);		
-            }
-        
+		cerr << n << ": " << currentVector[n] << endl;            
+	}
+        cerr<< endl;
             interpolX1 = newX;
             interpolT1 = printTime;
             interpolI1 = currentVector;
             printTime += printTimeStep;
+	if(printTime<interpolT2){outLine+= "\n";}
         }while(printTime<interpolT2);    		
     }
    
@@ -165,7 +178,7 @@ string runNonLinearTransience(Circuit& c, float t, VectorXd& interpolX1, VectorX
         up->updateVals(currentVoltage, 0, 1);
     }
     c.setPrevTime(t);
-    
+    cerr<< printTime << endl;
     return outLine;
     
 }

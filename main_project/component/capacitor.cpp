@@ -53,6 +53,7 @@ string Capacitor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber
 
 	if(order == 1){ //companion model from Trapezoidal numerical integration method
 		float res= voltage*compConductance - compConductance*compVoltage - prevTotalCurrent;
+		//cerr<< "CapVoltage: "<<voltage<<"CompConductance: "<<compConductance<<"PrevCurrent: "<<prevTotalCurrent<<endl;		
 		prevTotalCurrent = res;
 		
 		return to_string(res);	
