@@ -8,8 +8,9 @@
 #include <component/inductor.hpp>
 #include <component/capacitor.hpp>
 #include <component/bjt.hpp>
-#include "nonLinearAnalysis.hpp"
-#include <component/mosfet.cpp>
+#include <component/mosfet.hpp>
+
+#include <output/nonLinearAnalysis.hpp>
 
 void nonLinearSetup(Circuit& c, bool isDc){
     c.setupCurrentControlledSources(c); //add idx of the controlling voltage source (must come prior to setting up A)
