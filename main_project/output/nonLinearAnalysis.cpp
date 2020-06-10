@@ -28,7 +28,7 @@ string runNonLinearTransience(Circuit& c, float t, VectorXd& interpolX1, VectorX
     vector<float> currentVector;
     //forms a row in the csv file
     string outLine{};
-    const float threshold = .001;
+    const float threshold = c.getAbstol();
     double printTimeStep = c.getTStep();
     bool interpolReady = false;
     VectorXd startX = c.getX();
@@ -42,8 +42,8 @@ string runNonLinearTransience(Circuit& c, float t, VectorXd& interpolX1, VectorX
     int dynamicTimeStepMaxCount = 3;
     int dynamicTimeStepMinCount = 2;
     int dynamicTimeStepFactor = 8;
-    float dynamicTimeStepAbsoluteDeltaA = c.getAbstol(); //Absolute delta in x values that triggers a decrease in timestep
-    float dynamicTimeStepAbsoluteDeltaB = c.getAbstol(); //Absolute delta in x values that triggers an increase in timestep
+    float dynamicTimeStepAbsoluteDeltaA = c.getAbstol()*10.0f; //Absolute delta in x values that triggers a decrease in timestep
+    float dynamicTimeStepAbsoluteDeltaB = c.getAbstol()*10.0f; //Absolute delta in x values that triggers an increase in timestep
     float prevTime = c.getPrevTime();    
     double dynamicTimeStep = (prevTime==0 ? c.getTimeStep() : t-c.getPrevTime());
     

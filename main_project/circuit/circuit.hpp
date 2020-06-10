@@ -68,7 +68,7 @@ protected:
     int maxNewtonRaphsonCount = 500; // set's a maximum itteration cap to newton raphson to detect divergence
 
     //absolute Newton-Raphson error tolerance
-    float abstol = 0.1;
+    float abstol = 0.01;
 
     // used to store all component node pairs to itterate through
     // each of these will be asked for their IV and DIV functions
