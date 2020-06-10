@@ -22,7 +22,6 @@ Circuit::Circuit()
     // all times in seconds
     currentTime = 0;
     timeStep = 0.001;
-    //prevTime = -timeStep;
     highestNodeNumber = 0;
     inductorNumber = 0;
     hasNonLinear = false;
@@ -155,7 +154,7 @@ void Circuit::incrementInductorNumber(){
 }
 
 int Circuit::getInductorNumber()const{
-return inductorNumber;
+    return inductorNumber;
 }
 
 vector<Component*>& Circuit::getComponentsRef(){
@@ -414,12 +413,11 @@ void Circuit::nonLinearA(bool isDc){
         // nodes are already checked not to be 0 on creation of ncp
         conductance = ncp.DIV(n); // runs DIV in relation to main component
         A(n-1, n-1) += conductance;
+
         for(int en : extraNodes){ // runs DIV in relation to remainin components
             conductance = ncp.DIV(en);
             A(n-1, en-1) += conductance;
         }
-        // IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
-        // cout << A.format(CleanFmt) << endl << endl;
     }
 
     // After this point linear and non linear creation of A matrix is identical

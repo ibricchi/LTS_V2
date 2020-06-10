@@ -1,10 +1,21 @@
 Inverting Op-Amp from EE1 Term 2 Labs
-V1 N001 0 SINE(0 1 10)
-D1 N001 N002 D
-C1 N002 0 1m
-R1 N002 0 10k
+R1 N003 N008 10k
+XU1 N009 N003 N001 opamp Aol=100K GBW=10Meg
+R3 N009 0 1k
+R4 N009 N001 3k
+R5 N001 0 1k
+G1 N002 N003 N003 N008 10
+R6 N002 N008 2k
+R7 N004 0 10k
+V1 N008 0 PWL(0 5 .1 3 .2 6 .4 10)
+R8 N004 N001 1.5k
+H1 N006 N005 V1 2.5
+R9 N007 0 5k
+R10 N007 N006 1k
+C1 N003 0 1n
+L1 N005 N004 1m
 .model NPN NPN
 .model PNP PNP
-.tran 1m 1
-*.options gmin=1p abstol=0.1 imax=1000
+.tran 1m .5
+.options gmin=1p abstol=0.01 imax=1000
 .END
