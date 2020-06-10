@@ -11,7 +11,10 @@ Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
 {
     nodes = processNodes({args[0], args[1]});
 
-    nodalVoltages = {0,0};
+    setNodalVoltages({0,0});
+
+    // get's minimum pn conductnace from extrainfo
+    minPNConductance = extraInfo[3];
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
@@ -31,26 +34,28 @@ void Diode::addParam(int paramId, float paramValue){
     }
 }
 
-double Diode::ivAtNode(int n){
-    double v = nodalVoltages[0] - nodalVoltages[1];
-    double current = (double)IS * (exp(v/N/VT) - 1) * (1-v/VT);
-    lastIeq = current;
+void Diode::setNodalVoltages(vector<float> nv){
+    nodalVoltages = nv;
 
-    if(n == nodes[1]){
-        current*=-1;
-    }
-    return current;
+    v = nodalVoltages[0] - nodalVoltages[1];
+    current = IS * (exp(v/N/VT) - 1) * (1-v/VT);
+    lastIeq = current;
+    
+    conductance = (IS / N / VT) * exp(v/N/VT);
+    if(conductance < minPNConductance) conductance = minPNConductance;
+    lastConductance = conductance;
+}
+
+double Diode::ivAtNode(int n){
+    return current * (n==nodes[0]?1:-1);
 }
 
 double Diode::divAtNode(int n, int dn){
-    double v = nodalVoltages[0] - nodalVoltages[1];
-    double conductance = (double)(IS / N / VT) * exp(v/N/VT);
-    lastConductance = conductance;
+    return conductance * (n!=dn?-1:1);
+}
 
-    if(n != dn){
-        conductance *= -1;
-    }
-    return conductance;
+void Diode::setMinPNConductance(float con){
+    minPNConductance = con;
 }
 
 string Diode::getModelName() const{
@@ -58,8 +63,5 @@ string Diode::getModelName() const{
 }
 
 string Diode::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
-    //current through current source and current through resistor
-    double v = nodalVoltages[0] - nodalVoltages[1];
-
     return to_string(v*lastConductance + lastIeq);
 }

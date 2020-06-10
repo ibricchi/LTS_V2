@@ -60,7 +60,7 @@ double VoltageSource::divAtNode(int n, int dn){
 	return 1;
 }
 
-string VoltageSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, bool overwrite, float voltage, int order) {
+string VoltageSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     return to_string(x(highestNodeNumber+voltageSourcesIdx));
 }
 

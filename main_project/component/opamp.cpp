@@ -13,7 +13,13 @@ OpAmp::OpAmp(string name, vector<string> args, vector<float> extraInfo)
 
     nodalVoltages = {0, 0, 0};
 
-    modelName = args[3]; //Not used for now => Assumed to be ideal
+    try{
+        modelName = args.at(3); //Not used for now => Assumed to be ideal
+    }catch(...){
+        cerr << "An op-amp is missing a model name. For an ideal op-amp, this can be any word." <<endl;
+        exit(1);
+    }
+    
 
     //Ideal opamp behaves similar to voltage source
 	types.push_back(componentType::voltageSource);

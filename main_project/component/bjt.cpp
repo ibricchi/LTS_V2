@@ -26,6 +26,9 @@ BJT::BJT(string name, vector<string> args, vector<float> extraInfo)
         exit(1);
     }
     
+    // get's minimum pn conductnace from extrainfo
+    minPNConductance = extraInfo[3];
+
     // Order: C, B, E
     nodes = processNodes({args[n::C], args[n::B], args[n::E]});
 
@@ -78,10 +81,14 @@ void BJT::setNodalVoltages(vector<float> v){
 
     GPF = IFS/BF*exp(VBE/VT)/VT;
     GPR = IRS/BR*exp(VBC/VT)/VT;
+    GO = 0; //temporary
+
+    if(GPF < minPNConductance) GPF = minPNConductance;
+    if(GPR < minPNConductance) GPR = minPNConductance;
+    if(GO < minPNConductance) GO = minPNConductance;
 
     GMF = BF*GPF;
     GMR = BR*GPR;
-    GO = 0; //temporary
 
     IBFEQ = IBF - GPF*VBE;
     IBREQ = IBR - GPR*VBC;
@@ -163,6 +170,10 @@ double BJT::divAtNode(int nin, int dnin){
 
     // cout << "n: " << n << " dn: " << dn << " conductance: " << conductance << endl << endl;
     return conductance;
+}
+
+void BJT::setMinPNConductance(float con){
+    minPNConductance = con;
 }
 
 string BJT::getModelName() const{

@@ -20,6 +20,8 @@ private:
     // used for calculations
     double VBE, VBC, VCE, IBF, IBR, IC1, GPF, GPR, GMF, GMR, GO, IC, IB, IE, IBFEQ, IBREQ, ICEQ;
 
+    double minPNConductance; // minimum allowed conductance
+
     // don't know if I could replace with enum
     enum n{
         C = 0,
@@ -37,6 +39,7 @@ public:
     void addParam(int paramId, float paramValue) override;
 
     void setNodalVoltages(vector<float> v) override;
+    void setMinPNConductance(float con) override;
 
     string getModelName() const override;
 

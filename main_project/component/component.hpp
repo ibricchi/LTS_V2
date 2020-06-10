@@ -40,7 +40,7 @@ public:
     //get the total current that flows through a component
     //this will be the current that is written to the csv file
     //the current x vector must be passed as an argument (needed to get the current through voltage sources)
-    virtual string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, bool overwrite=1, float voltage = 0, int order = 1)  = 0;
+    virtual string getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage = 0, int order = 1)  = 0;
     
     virtual float getGain() const;
     virtual string getVsName() const;
@@ -62,6 +62,9 @@ public:
     virtual double ivAtNode(int n1) =0;
     // get the derivative of the IV charateristic of a component given two nodes and the node the derivative is based on
     virtual double divAtNode(int n, int dn) =0;
+
+    // set minimum PN conductance for non-linear components
+    virtual void setMinPNConductance(float con);
 
     // this should be used to update the value of the voltage and current accross a component after an iteration
     virtual void updateVals(float newVoltage, float newCurrent, int order);

@@ -1,23 +1,10 @@
-TEST CIRCUIT
-*
-V1 N003 0 SINE(0 5 10)
-R1 N004 0 2k
-R2 N001 N002 2k
-V2 N001 0 10
-M1 N002 N003 N004 0 PMOS
-*
-*Q1 N001 N003 N004 0 NPN
-*R1 N002 N001 4.7k
-*R2 N004 0 1k
-*C1 N004 0 20µ
-*R3 N003 0 1k
-*R4 N002 N003 4.7k
-*V2 N002 0 9
-*V1 N003 0 Sin(0 2 10)
-*
-.model PNP PNP
+Inverting Op-Amp from EE1 Term 2 Labs
+V1 N001 0 SINE(0 5 10)
+D1 N001 N002 D
+C1 N002 0 1m
+R1 N002 0 10k
 .model NPN NPN
-.model NMOS NMOS
-.model PMOS PMOS
-.tran 0.00001 1 0
-.end
+.model PNP PNP
+.tran 10u 1
+*.options gmin=1p abstol=0.1 imax=1000
+.END

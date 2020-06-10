@@ -62,7 +62,7 @@ double CurrentSource::divAtNode(int n, int dn){
 	return 0;
 }
 
-string CurrentSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber,bool overwrite, float voltage, int order){
+string CurrentSource::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order){
     return to_string(current);
 }
 

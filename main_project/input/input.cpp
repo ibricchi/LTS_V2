@@ -21,8 +21,13 @@
 #include "input.hpp"
 
 ModelStatement::ModelStatement(vector<string> args){
-    componentId = args.at(0);
-    string componentStr = args.at(1);
+    if(args.size() < 2){
+        cerr << "Invalid model statement: A model statement must at least contain a name and a component type." << endl;
+        exit(1);
+    }
+
+    componentId = args[0];
+    string componentStr = args[1];
 
     //convert componentStr to uppercase (as netlist case insensitive)
     for_each(componentStr.begin(), componentStr.end(), [](char &c){
@@ -48,7 +53,7 @@ ModelStatement::ModelStatement(vector<string> args){
     }
 
     for(int i{2}; i<args.size(); i++){
-        param = args.at(i);
+        param = args[i];
 
         //remove opening and closing parentheses
         if(i == 2){
@@ -175,6 +180,8 @@ void readSpice(Circuit& c, istream& file){
             }else if(name == "END"){
                 containsEnd = true;
                 break; //ignore anything that comes after a .end statement
+            }else if(name == "OPTIONS"){
+                setupOptions(c, args);
             }else{
                 cerr << "Unsuported netlist statement. Statement: " << compTypeC + name <<endl;
                 exit(1);
@@ -261,4 +268,41 @@ void readSpice(Circuit& c, istream& file){
     }
 
     c.setHighestNodeNumber(maxNode);
+}
+
+void setupOptions(Circuit& c, vector<string>& args){
+    if(args.size() == 0){
+        cerr << "Invalid options statement. An options statement must have at least one parameter." <<endl;
+        exit(1);
+    }
+
+    const string delimiter = "="; //separates paramName and paramValue
+
+    string paramName{}, paramValueStr{};
+    float paramValue{};
+
+    for(auto arg : args){
+        paramName = arg.substr(0, arg.find(delimiter));
+        paramValueStr = arg.substr(arg.find(delimiter)+1);
+
+        //convert paramName to uppercase (as netlist case insensitive)
+        for_each(paramName.begin(), paramName.end(), [](char &c){
+	        c = toupper(c);
+        });
+
+        //convert value to float
+        paramValue = Component::getValue(paramValueStr);
+
+        //add any new option here
+        if(paramName == "GMIN"){
+            c.setMinPNConductance(paramValue);
+        }else if(paramName == "ABSTOL"){
+            c.setAbstol(paramValue);
+        }else if(paramName == "IMAX"){
+            c.setMaxNewtonRaphsonCount(paramValue);
+        }else{
+            cerr << "Invalid OPTIONS command. Unsupported option: " << paramName << endl;
+            exit(1);
+        }
+    }
 }

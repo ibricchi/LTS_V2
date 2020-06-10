@@ -63,9 +63,10 @@ main_project/LTS_V2
 # Test executables
 Tests/performanceTests/linearTransientTest
 Tests/performanceTests/CSVTester
-Tests/performanceTests/output/
+Tests/performanceTests/output/*.csv
 main_project/gprof_out.txt
 main_project/LTS_V2_GPROF
 
 # File produced when linux excel is opened without closing it first
 main_project/.~lock.out.csv#
+waveformTest.txt

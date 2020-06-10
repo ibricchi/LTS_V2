@@ -8,11 +8,13 @@
 
 class Mosfet: public Component{
 private:
-    float K = 2e-5;
+    float K = 1e-5;
     float VT = 0;
     float VA = 1; // really should be infinite but won't be used unless hasVA is true
     bool hasVA = false;
     bool NMOS = true;
+
+    double minPNConductance; // minimum allowed conductance
 
     // used for caluations
     float VGS, VDS, IS, IDEQ, GM, GO;
@@ -36,6 +38,7 @@ public:
     string getModelName() const override;
 
     void setNodalVoltages(vector<float> v) override;
+    void setMinPNConductance(float con) override;
 
     double ivAtNode(int n1) override;
     double divAtNode(int n, int dn) override;

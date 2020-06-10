@@ -26,10 +26,13 @@ Mosfet::Mosfet(string name, vector<string> args, vector<float> extraInfo)
         exit(1);
     }
 
+    // sets minimum conductance
+    minPNConductance = extraInfo[3];
+
     // Order: C, B, E
     nodes = processNodes({args[n::D], args[n::G], args[n::S]});
 
-    nodalVoltages = {0,0,0};
+    setNodalVoltages({0,0,0});
 
 	types.push_back(componentType::nonVoltageSource);
 	types.push_back(componentType::nonLinear);
@@ -59,8 +62,8 @@ void Mosfet::setNodalVoltages(vector<float> v){
     VDS = (nodalVoltages[n::D] - nodalVoltages[n::S]) * (NMOS ? 1:-1);
 
     if(VGS-VT<0){
-        GM = 0;
-        GO = 0;
+        GM = 1e-10;
+        GO = 1e-10;
         IS = 0;
         IDEQ = 0;
     }else if(NMOS ? (VGS-VT<VDS) : (0<VDS+VGS+VT)){
@@ -77,6 +80,9 @@ void Mosfet::setNodalVoltages(vector<float> v){
         cerr << "mosfet in a non supported state" << endl;
         exit(1);
     }
+
+    if(GM < minPNConductance) GM = minPNConductance;
+    if(GO < minPNConductance) GO = minPNConductance;
 }
 
 double Mosfet::ivAtNode(int nin){  
@@ -153,6 +159,10 @@ double Mosfet::divAtNode(int nin, int dnin){
             break;
     }
     return conductance;
+}
+
+void Mosfet::setMinPNConductance(float con){
+    minPNConductance = con;
 }
 
 string Mosfet::getModelName() const{

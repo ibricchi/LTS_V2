@@ -17,11 +17,22 @@ void readSpice(Circuit& c, string file);
 void readSpice(Circuit& c, istream& file);
 
 /*
+    Used for .options statements.
+    Syntax example => '.options GMIN=0.001p ABSTOL=1m'
+    The .options statement and the param names are case insensitive.
+    The spaces are important (Cannot remove or add extra spaces).
+    Any new option must be added to the if else statement inside the setupOptions definition.
+    Currently supported options = ABSTOL, GMIN, IMAX (max Newton-Raphson count).
+*/
+void setupOptions(Circuit& c, vector<string>& args);
+
+/*
     Used for .model statements.
     .model statement syntax example => '.model D1N4148 D (is=1n N=1.2)'
     The .model statement, param names (is, n) and the componentName (D) are case insensitive.
     The componentId (D1N4148) must correspond exactly to the modelName of a component (case sensitive).
     The spaces are important (Cannot remove or add extra spaces).
+    Any new parameter must be added both to enums.hpp and to a table inside ModelStatement.
 */
 struct ModelStatement{
     component componentName;
@@ -53,7 +64,7 @@ struct ModelStatement{
         {"BR", bjtParamType::BR},
         {"IFS", bjtParamType::IFS},
         {"IRS", bjtParamType::IRS},
-        {"VA", bjtParamType::VAF},
+        {"VAF", bjtParamType::VAF},
         {"VTO", bjtParamType::VT}
     };
 };
