@@ -16,17 +16,20 @@
 using namespace std;
 using namespace Eigen;
 
+// basic circuit contructor with default parameters
 Circuit::Circuit()
 {
+    // all times in seconds
     currentTime = 0;
-    timeStep = 0.001; // in seconds
+    timeStep = 0.001;
     //prevTime = -timeStep;
     highestNodeNumber = 0;
     inductorNumber = 0;
     hasNonLinear = false;
 }
 
-//dealocate raw pointers
+// dealocate raw pointers
+// all components are dynamically created using new, so must be deleted manually
 Circuit::~Circuit()
 {
     for(auto comp : components){
@@ -34,6 +37,7 @@ Circuit::~Circuit()
     }
 }
 
+// simple getters and setters for circuit parameters
 string Circuit::getTitle() const{
     return title;
 }
@@ -46,21 +50,20 @@ vector<float>& Circuit::getTimePoints(){
 return timePoints;
 }
 void Circuit:: setTimePoints(){
-	for(auto src : voltageSources){
-		if(typeid(*src) == typeid(VoltageSource)){				
-			auto res = src->getTimePoints();		
-			timePoints.insert(timePoints.end(),res.begin(),res.end());
+	for(auto src : voltageSources){ // looks through all voltage sources
+		if(typeid(*src) == typeid(VoltageSource)){ // checks if the type is an actuall votlage source
+			auto res = src->getTimePoints(); // get's time points
+			timePoints.insert(timePoints.end(),res.begin(),res.end()); // adds timep oints to circuit vector
 		}	
 	}
-	for(auto src : currentSources){
+	for(auto src : currentSources){ // repeats process for current sources
 		if(typeid(*src) == typeid(CurrentSource)){	
 			auto res = src->getTimePoints();		
 			timePoints.insert(timePoints.end(),res.begin(),res.end());
 		}	
 	}
-	sort(timePoints.begin(),timePoints.end());
+	sort(timePoints.begin(),timePoints.end()); // sorts list by time, only called once at the beggining of simulation so time complexity is fine
 } 
-
 
 int Circuit::getHighestNodeNumber() const{
     return highestNodeNumber;
@@ -182,37 +185,37 @@ vector<Component*>& Circuit::getNonLinearsRef(){
     return nonLinears;
 }
 
-// setup for non linear
+// setup for non linear circuits
 void Circuit::nlSetup(bool isDc){
-    int nvc = nonVoltageSources.size();
-    int vsc = voltageSources.size();
-    int extraZeroVSNumber = isDc ? inductorNumber : 0;
+    int nvc = nonVoltageSources.size(); // get's non voltage source size
+    int vsc = voltageSources.size(); // get's voltage sources size
+    int extraZeroVSNumber = isDc ? inductorNumber : 0; // if running DC bias analyis also get's inductor count
 
-    x = VectorXd::Zero(highestNodeNumber + vsc + extraZeroVSNumber);
+    x = VectorXd::Zero(highestNodeNumber + vsc + extraZeroVSNumber); // setup x vector to appropriate size with initial guess of 0 at all points
 
     // sets up nodalFunctions vector
-    // very similar to the setup of A in linear analysis
+    // creates an instance of nodeCompPair for each non ground node of a component
     vector<int> nodes;
     vector<int> extraNodes;
-    for(Component* comp : nonVoltageSources){
-        nodes = comp->getNodes();
-        for(int n1 : nodes){
-            extraNodes.resize(0);
-            if(n1 == 0) continue;
-            for(int n2 : nodes){
-                if(n1 == n2 || n2 == 0) continue;
-                extraNodes.push_back(n2);
+    for(Component* comp : nonVoltageSources){ // loops trhough all non voltage sources
+        nodes = comp->getNodes(); // get's components nodes
+        for(int n1 : nodes){ // loops through nodes, n1 is the main node being considered
+            extraNodes.resize(0); // resets extraNodes size
+            if(n1 == 0) continue; // if node is ground skip
+            for(int n2 : nodes){ // loops trhough all nodes
+                if(n1 == n2 || n2 == 0) continue; // if node is ground or main node skip
+                extraNodes.push_back(n2); // otherwise add node to extra nodes
             }
-            nodalFunctions.push_back(nodeCompPair{n1, extraNodes, comp});
+            nodalFunctions.push_back(nodeCompPair{n1, extraNodes, comp}); // add node component pair to nodalFUnctions vector
         }            
     }
 }
 
-// setupA definition
+// setupA for linear circuits
 void Circuit::setupA(bool isDc)
 {
-    //cerr <<"Inductor number: "<< inductorNumber << endl;
-    int extraZeroVSNumber = isDc ? inductorNumber : 0;
+    int extraZeroVSNumber = isDc ? inductorNumber : 0; // if dc-bias is being calculated get indcutror count (they are being modeled as voltage sources)
+    // setup a to the appropriate size and initialize all values to 0
     A = MatrixXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber, highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
     vector<int> nodes{};
 
@@ -229,16 +232,18 @@ void Circuit::setupA(bool isDc)
         float conductance = comp->getConductance();
         nodes = comp->getNodes();
 
+        // for each node add conductance to appropriate part of circuit
         for (int i = 0; i < nodes.size(); i++)
         {
-            if (nodes[i] == 0)
+            if (nodes[i] == 0){ // if node is 0 skip node
                 continue;
-            A(nodes[i] - 1, nodes[i] - 1) += conductance;
+            }
+            A(nodes[i] - 1, nodes[i] - 1) += conductance; // adds conductance to main position in diagpnal
             for (int j = 0; j < nodes.size(); j++)
             {
                 if (i == j || nodes[j] == 0)
                     continue;
-                A(nodes[i] - 1, nodes[j] - 1) -= conductance;
+                A(nodes[i] - 1, nodes[j] - 1) -= conductance; // subtracts conducance from all other appropriate locations in row
             }
         }
     }
@@ -255,6 +260,7 @@ void Circuit::setupA(bool isDc)
             int node2 = nodes.at(1); //Nin-
             int node3 = nodes.at(2); //Nout
 
+            // places 1's and -1's in appropreate location in conductance matrix
             if (node1 != 0)
             {
                 A(highestNodeNumber + i, node1 - 1) = 1;
@@ -273,10 +279,11 @@ void Circuit::setupA(bool isDc)
             continue; //Rest doesn't apply to ideal opamps
         }
 
+        // normal voltage sources only have 2 nodes
         nodes = vs->getNodes();
         int node1 = nodes.at(0);
         int node2 = nodes.at(1);
-
+        // sets approprtate 1's and -1's in conductance matrix
         if (node1 != 0)
         {
             A(node1 - 1, highestNodeNumber + i) = 1;
@@ -313,6 +320,7 @@ void Circuit::setupA(bool isDc)
     }
 
     //Important that the following loop comes after all normal voltage sources have already been added!
+    //Sets up extra DC voltage sources created by inductors during DC analysis
     if(isDc){
         int i = voltageSources.size(); //Add zero voltage sources after normal voltage sources
         for(const auto& comp : vcUpdatables){
@@ -341,6 +349,7 @@ void Circuit::setupA(bool isDc)
     //dependent current sources
     for(const auto& cs : currentSources){
         if(typeid(*cs) == typeid(VoltageControlledCurrentSource)){
+            // these act like conductance sources through two nodes which do not include the main node
             nodes = cs->getNodes();
             int node1 = nodes.at(0);
             int node2 = nodes.at(1);
@@ -379,16 +388,18 @@ void Circuit::setupA(bool isDc)
     }
 }
 
+// setting up non linear conducntance matrix
 void Circuit::nonLinearA(bool isDc){
-    int extraZeroVSNumber = isDc ? inductorNumber : 0;
+    int extraZeroVSNumber = isDc ? inductorNumber : 0; // if DC bias anlysis inductors count is needed as they are treated like voltage sources
 
+    // set's up conductnace matrix to appropriate size with 0's as all values
     A = MatrixXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber, highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
 
     // setup currents from non voltage source components
     int n{};
     vector<int> extraNodes{};
     double conductance{};
-    for(const nodeCompPair ncp : nodalFunctions){
+    for(const nodeCompPair ncp : nodalFunctions){ // loops through all node component pairs
         //Replace capacitors/inductors with open circuit for DC operating point analysis
         if(isDc && (typeid(*ncp.comp) == typeid(Capacitor) || typeid(*ncp.comp) == typeid(Inductor))){
             //Capacitor is open circuit at DC => don't contribute conductance
@@ -396,13 +407,14 @@ void Circuit::nonLinearA(bool isDc){
             continue; 
         }
 
-        n = ncp.n;
-        extraNodes = ncp.extraNodes;
+        n = ncp.n; // get's main node of node component pair
+        extraNodes = ncp.extraNodes; // get's the remaining non 0 nodes of node component pairs
 
+        // sets up conducntance matrix appropriately
         // nodes are already checked not to be 0 on creation of ncp
-        conductance = ncp.DIV(n);
+        conductance = ncp.DIV(n); // runs DIV in relation to main component
         A(n-1, n-1) += conductance;
-        for(int en : extraNodes){
+        for(int en : extraNodes){ // runs DIV in relation to remainin components
             conductance = ncp.DIV(en);
             A(n-1, en-1) += conductance;
         }
@@ -410,7 +422,8 @@ void Circuit::nonLinearA(bool isDc){
         // cout << A.format(CleanFmt) << endl << endl;
     }
 
-    // same as linear for VS
+    // After this point linear and non linear creation of A matrix is identical
+    
     vector<int> nodes;
     for (int i{}; i < voltageSources.size(); i++)
     {
@@ -547,15 +560,15 @@ void Circuit::nonLinearA(bool isDc){
     }
 }
 
+// simple getter for conductance matrix
 MatrixXd Circuit::getA() const
 {
     return A;
 }
-
+// calculates A invers
 void Circuit::computeA_inv(){
     A_inv = A.inverse();
 }
-
 MatrixXd Circuit::getA_inv() const{
     return A_inv;
 }
@@ -563,7 +576,7 @@ MatrixXd Circuit::getA_inv() const{
 // setupB definition
 void Circuit::adjustB(bool isDc)
 {
-    int extraZeroVSNumber = isDc ? inductorNumber : 0;
+    int extraZeroVSNumber = isDc ? inductorNumber : 0; // if DC bias anlysis inductors count is needed as they are treated like voltage sources
     
     b = VectorXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
     
@@ -609,8 +622,10 @@ void Circuit::adjustB(bool isDc)
 }
 
 void Circuit::nonLinearB(bool isDc, float alpha){
+    // if DC bias anlysis inductors count is needed as they are treated like voltage sources
     int extraZeroVSNumber = isDc ? inductorNumber : 0;
 
+    // setup b matrix to appropreate size with all values at 0
     b = VectorXd::Zero(highestNodeNumber + voltageSources.size() + extraZeroVSNumber);
 
     int n, n1, n2;
@@ -618,14 +633,16 @@ void Circuit::nonLinearB(bool isDc, float alpha){
 
     double current;
     // setup currents from non voltage source components
-    for(const nodeCompPair ncp : nodalFunctions){
+    for(const nodeCompPair ncp : nodalFunctions){ // loops trhough node component pairs
+
+        // exclusion during DC biasing
          if(isDc && (typeid(*ncp.comp) == typeid(Capacitor) || typeid(*ncp.comp) == typeid(Inductor))){
             continue; // Open/short circuit at DC => Don't contribute currents
         }
 
-        n = ncp.n;
-        extraNodes = ncp.extraNodes;
-        current = ncp.IV();
+        n = ncp.n; // get main node for node component pair
+        extraNodes = ncp.extraNodes; // get the extra non ground nodes for the pair
+        current = ncp.IV(); // get the current source at the main node
 
         //for source stepping (multiply all sources by alpha)
         if(isDc && typeid(*ncp.comp) == typeid(CurrentSource)){
@@ -636,7 +653,7 @@ void Circuit::nonLinearB(bool isDc, float alpha){
     }
 
     //adding voltages
-    for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++)
+    for (int i{highestNodeNumber}, j{}; i < highestNodeNumber + voltageSources.size(); i++, j++) // loop through voltage sources
     {
         const auto &vs = voltageSources.at(j);
 
@@ -653,13 +670,16 @@ VectorXd Circuit::getB() const
     return b;
 }
 
+// setting up the meaning at each node in x for the output
 void Circuit::setupXMeaning(){
-    xMeaning.clear();
+    xMeaning.clear(); // reset x meaning
 
+    // sets up node voltage outputs
     for(int i{1}; i<=highestNodeNumber; i++){
         xMeaning.push_back("v_" + to_string(i));
     }
 
+    // sets up voltage source current outputs
     for(const auto &vs : voltageSources){
         if(typeid(*vs) == typeid(VoltageControlledVoltageSource)){
             xMeaning.push_back("I_E" + vs->getName());
@@ -690,6 +710,7 @@ VectorXd Circuit::getX() const{
 }
 
 // update nodal voltages
+// calls update voltage source on all components
 void Circuit::updateNodalVoltages(){
     vector<int> nodes;
     vector<float> newNodalVoltages;
