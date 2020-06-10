@@ -124,17 +124,18 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
         interpolT1 = t;	
         interpolI1.clear();
         for(const auto &comp : components){
-		if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
-			string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
-			interpolI1.push_back(stof(res1));
-    		}else{
-        		string res= comp->getTotalCurrentString(newX,highestNodeNumber);
-			int firstComma = res.find_first_of(',');
-			int secondComma = res.find_last_of(',');			
-			interpolI1.push_back(stof(res.substr(0,firstComma)));
-			interpolI1.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
-			interpolI1.push_back(stof(res.substr(secondComma+1)));
-		}
+            if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
+                string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
+                interpolI1.push_back(stof(res1));
+            }
+            else{
+                string res= comp->getTotalCurrentString(newX,highestNodeNumber);
+                int firstComma = res.find_first_of(',');
+                int secondComma = res.find_last_of(',');			
+                interpolI1.push_back(stof(res.substr(0,firstComma)));
+                interpolI1.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
+                interpolI1.push_back(stof(res.substr(secondComma+1)));
+            }
         }
     }
     if(t>=printTime){
@@ -143,17 +144,19 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
         interpolI2.clear();
        if(t!=printTime){
 		for(const auto &comp : components){
-            		if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
+            if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
 				string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
-				interpolI2.push_back(stof(res1));}
-			else{string res= comp->getTotalCurrentString(newX,highestNodeNumber);
+				interpolI2.push_back(stof(res1));
+            }
+			else{
+                string res= comp->getTotalCurrentString(newX,highestNodeNumber);
 				int firstComma = res.find_first_of(',');
 				int secondComma = res.find_last_of(',');			
 				interpolI2.push_back(stof(res.substr(0,firstComma)));
 				interpolI2.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
 				interpolI2.push_back(stof(res.substr(secondComma+1)));
-        		}
-    		}
+            }
+        }
 	}else{
 		interpolI2 = interpolI1;
 	}

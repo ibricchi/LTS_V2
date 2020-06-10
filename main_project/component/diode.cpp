@@ -11,6 +11,9 @@ Diode::Diode(string name, vector<string> args, vector<float> extraInfo)
 {
     nodes = processNodes({args[0], args[1]});
 
+    //initialize .model name if one exists
+    modelName = (args.size()>2) ? args[2] : "";
+
     setNodalVoltages({0,0});
 
     // get's minimum pn conductnace from extrainfo
