@@ -59,7 +59,7 @@ protected:
     int maxNewtonRaphsonCount = 500;
 
     //absolute Newton-Raphson error tolerance
-    float abstol = 0.1;
+    float abstol = 0.01;
 
     // non-linear analysis vectors;
     vector<nodeCompPair> nodalFunctions{};
