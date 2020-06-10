@@ -104,7 +104,7 @@ void Circuit::setMaxTimeStep(float _maxTimeStep){
 float Circuit::getTStep() const{
     return tStep;
 }
-float Circuit::setTStep(float _tStep){
+void Circuit::setTStep(float _tStep){
     tStep = _tStep;
 }
 

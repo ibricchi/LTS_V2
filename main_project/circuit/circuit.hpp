@@ -107,7 +107,7 @@ public:
     void setMaxTimeStep(float _maxTimeStep);
 
     float getTStep() const;
-    float setTStep(float _tStep);
+    void setTStep(float _tStep);
 
     float getSimulationTime() const;
     void setSimulationTime(float _simulationTime);
