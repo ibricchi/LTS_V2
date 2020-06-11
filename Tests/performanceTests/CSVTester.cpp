@@ -256,7 +256,7 @@ void seriesNMos(stringstream& buffer, u_int count){
     buffer << ".MODEL NMOS NMOS" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "M" << i << " n" << i << " n" << i << "0 NMOS" <<endl;
+        buffer << "M" << i << " n" << i << " n" << i+1 << "0 0 NMOS" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
@@ -271,7 +271,7 @@ void seriesPMos(stringstream& buffer, u_int count){
     buffer << ".MODEL PMOS PMOS" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "M" << i << " n" << i << " n" << i << "0 PMOS" <<endl;
+        buffer << "M" << i << " n" << i << " n" << i+1 << "0 0 PMOS" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
@@ -285,7 +285,7 @@ void seriesNPN(stringstream& buffer, u_int count){
     buffer << ".MODEL NPN NPN" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "Q" << i << " n" << i << " n" << i << "0 NPN" <<endl;
+        buffer << "Q" << i << " n" << i << " n" << i+1 << "0 0 NPN" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
@@ -300,7 +300,7 @@ void seriesPNP(stringstream& buffer, u_int count){
     buffer << ".MODEL PNP PNP" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "Q" << i << " n" << i << " n" << i << "0 PNP" <<endl;
+        buffer << "Q" << i << " n" << i << " n" << i+1 << "0 0 PNP" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
