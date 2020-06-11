@@ -38,11 +38,7 @@
 using namespace std;
 using namespace std::chrono; 
 
-<<<<<<< HEAD
 int maxCompPerSim = 20;
-=======
-int maxCompPerSim = 5;
->>>>>>> 55264784922c2bbb82e74bcab802fa94757fd753
 float maxSimTime = 6e+8;
 
 //simple test circuit that is used for dynamic timestep/ dynamic simulation time test
