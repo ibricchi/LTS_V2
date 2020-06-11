@@ -134,13 +134,13 @@ void seriesVCVS(stringstream& buffer, u_int count){
         if(i == 1){
             buffer << "E" << i << " n" << i << " n" << i+1 << " " << 0 << " n" << i << " 2" <<endl;
         }else{
-            buffer << "E" << i << " n" << i << " n" << i+1 << " " << i-1 << " n" << i << " 2" <<endl;
+            buffer << "E" << i << " n" << i << " n" << i+1 << " n" << i-1 << " n" << i << " 2" <<endl;
         }
     }
     if(count == 1){
         buffer << "E" << count << " n" << count << " 0 " << 0 << " n" << count << " 2" <<endl;
     }else{
-        buffer << "E" << count << " n" << count << " 0 " << 0 << " n" << count << " 2" <<endl;
+        buffer << "E" << count << " n" << count << " 0 n" << count-1 << " n" << count << " 2" <<endl;
     }
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
@@ -161,7 +161,7 @@ void seriesVCCS(stringstream& buffer, u_int count){
     if(count == 1){
         buffer << "G" << count << " n" << count << " 0 " << 0 << " n" << count << " 2" <<endl;
     }else{
-        buffer << "G" << count << " n" << count << " 0 " << 0 << " n" << count << " 2" <<endl;
+        buffer << "G" << count << " n" << count << " 0 n" << count-1 << " n" << count << " 2" <<endl;
     }
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
