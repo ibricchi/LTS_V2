@@ -124,9 +124,11 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
         interpolT1 = t;	
         interpolI1.clear();
         for(const auto &comp : components){
-            if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
-                string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
-                interpolI1.push_back(stof(res1));
+            if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){     
+                string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);
+                
+                interpolI1.push_back((float)stod(res1)); //This line is only required for the CSVTester (Use the commented out one above for normal simulations!)
+                // interpolI1.push_back(stof(res1));
             }
             else{
                 string res= comp->getTotalCurrentString(newX,highestNodeNumber);
@@ -138,28 +140,32 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
             }
         }
     }
+
     if(t>=printTime){
         interpolX2 = newX;
         interpolT2 = t;
         interpolI2.clear();
-       if(t!=printTime){
-		for(const auto &comp : components){
-            if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
-				string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
-				interpolI2.push_back(stof(res1));
+        if(t!=printTime){
+            for(const auto &comp : components){
+                if(typeid(*comp)!=typeid(Mosfet) && typeid(*comp) !=typeid(BJT)){            
+                    string res1 = comp->getTotalCurrentString(newX, highestNodeNumber);		
+                    
+                    interpolI2.push_back((float)stod(res1)); //This line is only required for the CSVTester (Use the commented out one above for normal simulations!)
+                    // interpolI2.push_back(stof(res1));
+                }
+                else{
+                    string res= comp->getTotalCurrentString(newX,highestNodeNumber);
+                    int firstComma = res.find_first_of(',');
+                    int secondComma = res.find_last_of(',');			
+                    interpolI2.push_back(stof(res.substr(0,firstComma)));
+                    interpolI2.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
+                    interpolI2.push_back(stof(res.substr(secondComma+1)));
+                }
             }
-			else{
-                string res= comp->getTotalCurrentString(newX,highestNodeNumber);
-				int firstComma = res.find_first_of(',');
-				int secondComma = res.find_last_of(',');			
-				interpolI2.push_back(stof(res.substr(0,firstComma)));
-				interpolI2.push_back(stof(res.substr(firstComma+1,secondComma-firstComma-1)));
-				interpolI2.push_back(stof(res.substr(secondComma+1)));
-            }
-        }
-	}else{
-		interpolI2 = interpolI1;
-	}
+	    }else{
+		    interpolI2 = interpolI1;
+	    }
+
         do{
             currentVector.clear();
             newX = (interpolT1==interpolT2) ? (interpolX1) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolX2-interpolX1)+(interpolX1);
@@ -168,16 +174,22 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
             for(int i{}; i<highestNodeNumber; i++){
                 outLine += "," + to_string(newX(i));
             }	
+
             for(int n =0;n<interpolI1.size();n++){	
             	
-            currentVector.push_back((interpolT1==interpolT2) ? (interpolI1[n]) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolI2[n]-interpolI1[n])+(interpolI1[n]));
+                currentVector.push_back((interpolT1==interpolT2) ? (interpolI1[n]) : ((printTime-interpolT1)/(interpolT2-interpolT1))*(interpolI2[n]-interpolI1[n])+(interpolI1[n]));
                 outLine += "," + to_string(currentVector[n]);		    
-	}
+            }
+
             interpolX1 = newX;
             interpolT1 = printTime;
             interpolI1 = currentVector;
             printTime += printTimeStep;
-	if(printTime<interpolT2){outLine+= "\n";}
+
+            if(printTime<interpolT2){
+                outLine+= "\n";
+            }
+
         }while(printTime<interpolT2);    		
     }
    
@@ -193,6 +205,7 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
         up->updateVals(currentVoltage, 0, 1);
     }
     c.setPrevTime(t);
+
     return outLine;
     
 }
