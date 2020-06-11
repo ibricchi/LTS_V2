@@ -197,11 +197,19 @@ void seriesCCCS(stringstream& buffer, u_int count){
 void seriesAcDiode(stringstream& buffer, u_int count){
     buffer.clear();
     buffer << "seriesAcDiode" <<endl;
+    buffer << "D1 N001 0 D" <<endl;
+    buffer << "D2 N001 0 D" <<endl;
+    buffer << "D3 N001 0 D" <<endl;
+    buffer << "V1 N001 0 SINE(0 10 10)" << endl;
+    buffer << ".tran 1m 0.5" <<endl;
+    buffer << ".options gmin=1p abstol=0.01 imax=1000" <<endl;
+    buffer << ".end" <<endl;
+
+    
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
-    for(u_int i{1}; i<count; i++){
-        buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
+    for(u_int i{0}; i<count; i++){
+        buffer << "D" << i << " n1 0 D" <<endl;
     }
-    buffer << "D" << count << " n" << count << " 0 D" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
@@ -760,17 +768,18 @@ int main(int argc, char **argv){
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series ac diode scaling test
-    c = new Circuit{};
 
     outputFile.open("output/AcDiodeTest.csv");
     outputFile << "AcDiode count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
+    // how many diodes to use
     int minAcDiode = 1;
     int maxAcDiode = maxCompPerSim;
     int deltaAcDiode = 1;
 
     for(int AcDiodeCount = minAcDiode; AcDiodeCount < maxAcDiode; AcDiodeCount += deltaAcDiode){
+        c = new Circuit{};
+
         seriesAcDiode(buffer, AcDiodeCount);
         cout << "diode " << AcDiodeCount << endl;
         
@@ -780,6 +789,8 @@ int main(int argc, char **argv){
         outputCSV(*c, "output/ignore.csv");
         
         auto stop = high_resolution_clock::now();
+        delete c;
+
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
         outputFile << AcDiodeCount << "," << timeTaken/1e6f << endl;
@@ -791,7 +802,6 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
