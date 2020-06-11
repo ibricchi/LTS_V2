@@ -38,7 +38,11 @@
 using namespace std;
 using namespace std::chrono; 
 
+<<<<<<< HEAD
 int maxCompPerSim = 20;
+=======
+int maxCompPerSim = 5;
+>>>>>>> 55264784922c2bbb82e74bcab802fa94757fd753
 float maxSimTime = 6e+8;
 
 //simple test circuit that is used for dynamic timestep/ dynamic simulation time test
@@ -285,7 +289,7 @@ void seriesNPN(stringstream& buffer, u_int count){
     buffer << ".MODEL NPN NPN" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "Q" << i << " n" << i << " n" << i+1 << "0 0 NPN" <<endl;
+        buffer << "Q" << i << " n" << i << " n" << i << "0 0 NPN" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
@@ -300,7 +304,7 @@ void seriesPNP(stringstream& buffer, u_int count){
     buffer << ".MODEL PNP PNP" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     for(u_int i{1}; i<count; i++){
-        buffer << "Q" << i << " n" << i << " n" << i+1 << "0 0 PNP" <<endl;
+        buffer << "Q" << i << " n" << i << " n" << i << "0 0 PNP" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
