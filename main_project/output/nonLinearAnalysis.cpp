@@ -55,7 +55,7 @@ string runNonLinearTransience(Circuit& c, double t, VectorXd& interpolX1, Vector
     }
     
     double minDynamicTimeStep = (c.getTStep()/100.0<0.0000000001) ? c.getSimulationTime()/500000000 : c.getTStep()/100.0;
-    double maxDynamicTimeStep = (c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1;
+    double maxDynamicTimeStep = c.getMaxTimeStep();
     
     bool nearPWL = false;
     c.setTimePoints();
