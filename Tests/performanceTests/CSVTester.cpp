@@ -8,37 +8,37 @@
 #include <output/output.hpp>
 
 // for debugging only
-#include <circuit/circuit.cpp>
+// #include <circuit/circuit.cpp>
 
-#include <component/bjt.cpp>
-#include <component/capacitor.cpp>
-#include <component/component.cpp>
-#include <component/currentControlledCurrentSource.cpp>
-#include <component/currentControlledSource.cpp>
-#include <component/currentControlledVoltageSource.cpp>
-#include <component/currentSource.cpp>
-#include <component/diode.cpp>
-#include <component/exampleInputDiode.hpp>
-#include <component/inductor.cpp>
-#include <component/mosfet.cpp>
-#include <component/opamp.cpp>
-#include <component/resistor.cpp>
-#include <component/voltageControlledCurrentSource.cpp>
-#include <component/voltageControlledSource.cpp>
-#include <component/voltageControlledVoltageSource.cpp>
-#include <component/voltageSource.cpp>
-#include <component/waveform.cpp>
+// #include <component/bjt.cpp>
+// #include <component/capacitor.cpp>
+// #include <component/component.cpp>
+// #include <component/currentControlledCurrentSource.cpp>
+// #include <component/currentControlledSource.cpp>
+// #include <component/currentControlledVoltageSource.cpp>
+// #include <component/currentSource.cpp>
+// #include <component/diode.cpp>
+// #include <component/exampleInputDiode.hpp>
+// #include <component/inductor.cpp>
+// #include <component/mosfet.cpp>
+// #include <component/opamp.cpp>
+// #include <component/resistor.cpp>
+// #include <component/voltageControlledCurrentSource.cpp>
+// #include <component/voltageControlledSource.cpp>
+// #include <component/voltageControlledVoltageSource.cpp>
+// #include <component/voltageSource.cpp>
+// #include <component/waveform.cpp>
 
-#include <input/input.cpp>
+// #include <input/input.cpp>
 
-#include <output/linearAnalysis.cpp>
-#include <output/nonLinearAnalysis.cpp>
-#include <output/output.cpp>
+// #include <output/linearAnalysis.cpp>
+// #include <output/nonLinearAnalysis.cpp>
+// #include <output/output.cpp>
 
 using namespace std;
 using namespace std::chrono; 
 
-int maxCompPerSim = 3;
+int maxCompPerSim = 20;
 float maxSimTime = 6e+8;
 
 //simple test circuit that is used for dynamic timestep/ dynamic simulation time test
@@ -183,7 +183,7 @@ void seriesVCCS(stringstream& buffer, u_int count){
         if(i == 1){
             buffer << "G" << i << " n" << i << " n" << i+1 << " " << 0 << " n" << i << " 2" <<endl;
         }else{
-            buffer << "G" << i << " n" << i << " n" << i+1 << " " << i-1 << " n" << i << " 2" <<endl;
+            buffer << "G" << i << " n" << i << " n" << i+1 << " n" << i-1 << " n" << i << " 2" <<endl;
         }
     }
     if(count == 1){
@@ -884,77 +884,77 @@ int main(int argc, char **argv){
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-    //series NMos scaling test
+    // //series NMos scaling test
 
-    outputFile.open("output/NMosTest.csv");
-    outputFile << "NMos count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/NMosTest.csv");
+    // outputFile << "NMos count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minNMos = 1;
-    int maxNMos = maxCompPerSim;
-    int deltaNMos = 1;
+    // // how many CS to use
+    // int minNMos = 1;
+    // int maxNMos = maxCompPerSim;
+    // int deltaNMos = 1;
 
-    for(int NMosCount = minNMos; NMosCount < maxNMos; NMosCount += deltaNMos){
-        c = new Circuit{};
+    // for(int NMosCount = minNMos; NMosCount < maxNMos; NMosCount += deltaNMos){
+    //     c = new Circuit{};
         
-        seriesNMos(buffer, NMosCount);
+    //     seriesNMos(buffer, NMosCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << NMosCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << NMosCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "NMOS maxed out time";
-            NMosCount = maxNMos;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "NMOS maxed out time";
+    //         NMosCount = maxNMos;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
-    ////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    //series PMos scaling test
+    // //series PMos scaling test
 
-    outputFile.open("output/PMosTest.csv");
-    outputFile << "PMos count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/PMosTest.csv");
+    // outputFile << "PMos count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minPMos = 1;
-    int maxPMos = maxCompPerSim;
-    int deltaPMos = 1;
+    // // how many CS to use
+    // int minPMos = 1;
+    // int maxPMos = maxCompPerSim;
+    // int deltaPMos = 1;
 
-    for(int PMosCount = minPMos; PMosCount < maxPMos; PMosCount += deltaPMos){
-        c = new Circuit{};
+    // for(int PMosCount = minPMos; PMosCount < maxPMos; PMosCount += deltaPMos){
+    //     c = new Circuit{};
         
-        seriesPMos(buffer, PMosCount);
+    //     seriesPMos(buffer, PMosCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << PMosCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << PMosCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "PMOS maxed out time";
-            PMosCount = maxPMos;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "PMOS maxed out time";
+    //         PMosCount = maxPMos;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
