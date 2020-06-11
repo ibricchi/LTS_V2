@@ -19,10 +19,15 @@ using namespace Eigen;
 // basic circuit contructor with default parameters
 Circuit::Circuit()
 {
+    minPNConductance = 1e-12;
+    maxNewtonRaphsonCount = 500;
+    abstol = 0.001;
+
     // all times in seconds
     currentTime = 0;
     timeStep = 0.001;
     highestNodeNumber = 0;
+    prevTime = 0;
     inductorNumber = 0;
     hasNonLinear = false;
 }

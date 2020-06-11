@@ -63,12 +63,12 @@ protected:
     VectorXd x; // node voltage, and VS current matrixes
     vector<string> xMeaning; // indicates what the values in x mean (need to know when outputing result)
 
-    double minPNConductance = 1e-12; // minimum conductance at PN juctions
+    double minPNConductance; // minimum conductance at PN juctions
 
-    int maxNewtonRaphsonCount = 500; // set's a maximum itteration cap to newton raphson to detect divergence
+    int maxNewtonRaphsonCount; // set's a maximum itteration cap to newton raphson to detect divergence
 
     //absolute Newton-Raphson error tolerance
-    float abstol = 0.01;
+    float abstol;
 
     // used to store all component node pairs to itterate through
     // each of these will be asked for their IV and DIV functions

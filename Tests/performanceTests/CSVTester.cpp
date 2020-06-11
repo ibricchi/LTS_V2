@@ -7,6 +7,34 @@
 #include <input/input.hpp>
 #include <output/output.hpp>
 
+// for debugging only
+#include <circuit/circuit.cpp>
+
+#include <component/bjt.cpp>
+#include <component/capacitor.cpp>
+#include <component/component.cpp>
+#include <component/currentControlledCurrentSource.cpp>
+#include <component/currentControlledSource.cpp>
+#include <component/currentControlledVoltageSource.cpp>
+#include <component/currentSource.cpp>
+#include <component/diode.cpp>
+#include <component/exampleInputDiode.hpp>
+#include <component/inductor.cpp>
+#include <component/mosfet.cpp>
+#include <component/opamp.cpp>
+#include <component/resistor.cpp>
+#include <component/voltageControlledCurrentSource.cpp>
+#include <component/voltageControlledSource.cpp>
+#include <component/voltageControlledVoltageSource.cpp>
+#include <component/voltageSource.cpp>
+#include <component/waveform.cpp>
+
+#include <input/input.cpp>
+
+#include <output/linearAnalysis.cpp>
+#include <output/nonLinearAnalysis.cpp>
+#include <output/output.cpp>
+
 using namespace std;
 using namespace std::chrono; 
 
@@ -196,20 +224,13 @@ void seriesCCCS(stringstream& buffer, u_int count){
 //circuit containing variable number of diodes (with AC source)
 void seriesAcDiode(stringstream& buffer, u_int count){
     buffer.clear();
-    buffer << "seriesAcDiode" <<endl;
-    buffer << "D1 N001 0 D" <<endl;
-    buffer << "D2 N001 0 D" <<endl;
-    buffer << "D3 N001 0 D" <<endl;
-    buffer << "V1 N001 0 SINE(0 10 10)" << endl;
-    buffer << ".tran 1m 0.5" <<endl;
-    buffer << ".options gmin=1p abstol=0.01 imax=1000" <<endl;
-    buffer << ".end" <<endl;
-
-    
+    buffer << "seriesAcDiode" << endl;
+    buffer << ".model D D" << endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
-    for(u_int i{0}; i<count; i++){
-        buffer << "D" << i << " n1 0 D" <<endl;
+    for(u_int i{1}; i < count; i++){
+        buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
     }
+    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
@@ -218,11 +239,12 @@ void seriesAcDiode(stringstream& buffer, u_int count){
 void seriesDcDiode(stringstream& buffer, u_int count){
     buffer.clear();
     buffer << "seriesDcDiode" <<endl;
+    buffer << ".model D D" << endl;
     buffer << "V1 n1 0 5" <<endl;
     for(u_int i{1}; i<count; i++){
         buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
     }
-    buffer << "D" << count << " n" << count << " 0 D" <<endl;
+    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
@@ -236,7 +258,7 @@ void seriesNMos(stringstream& buffer, u_int count){
     for(u_int i{1}; i<count; i++){
         buffer << "M" << i << " n" << i << " n" << i << "0 NMOS" <<endl;
     }
-    buffer << "M" << count << " n" << count << " n" << count << " 0 NMOS" <<endl;
+    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
@@ -251,7 +273,7 @@ void seriesPMos(stringstream& buffer, u_int count){
     for(u_int i{1}; i<count; i++){
         buffer << "M" << i << " n" << i << " n" << i << "0 PMOS" <<endl;
     }
-    buffer << "M" << count << " n" << count << " n" << count << " 0 PMOS" <<endl;
+    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
@@ -265,7 +287,7 @@ void seriesNPN(stringstream& buffer, u_int count){
     for(u_int i{1}; i<count; i++){
         buffer << "Q" << i << " n" << i << " n" << i << "0 NPN" <<endl;
     }
-    buffer << "Q" << count << " n" << count << " n" << count << " 0 NPN" <<endl;
+    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
@@ -280,7 +302,7 @@ void seriesPNP(stringstream& buffer, u_int count){
     for(u_int i{1}; i<count; i++){
         buffer << "Q" << i << " n" << i << " n" << i << "0 PNP" <<endl;
     }
-    buffer << "Q" << count << " n" << count << " n" << count << " 0 PNP" <<endl;
+    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
@@ -419,7 +441,6 @@ int main(int argc, char **argv){
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series resistor scaling test
-    c = new Circuit{};
 
     outputFile.open("output/resistorsTest.csv");
     outputFile << "Resistor count, Simulation Time (seconds)" << endl;
@@ -430,6 +451,8 @@ int main(int argc, char **argv){
     int deltaResistors = 1;
 
     for(int resistorCount = minResistors; resistorCount < maxResistors; resistorCount += deltaResistors){
+        c = new Circuit{};
+        
         seriesResistors(buffer, resistorCount);
         
         auto start = high_resolution_clock::now();
@@ -445,15 +468,15 @@ int main(int argc, char **argv){
             cerr << "Resistors maxed out time";
             resistorCount = maxResistors;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series capacitor scaling test
-    c = new Circuit{};
 
     outputFile.open("output/capacitorsTest.csv");
     outputFile << "Capacitor count, Simulation Time (seconds)" << endl;
@@ -464,6 +487,8 @@ int main(int argc, char **argv){
     int deltaCapacitors = 1;
 
     for(int capacitorCount = minCapacitors; capacitorCount < maxCapacitors; capacitorCount += deltaCapacitors){
+        c = new Circuit{};
+
         seriesCapacitors(buffer, capacitorCount);
         
         auto start = high_resolution_clock::now();
@@ -479,15 +504,15 @@ int main(int argc, char **argv){
             cerr << "Capacitors maxed out time";
             capacitorCount = maxCapacitors;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series inductor scaling test
-    c = new Circuit{};
 
     outputFile.open("output/inductorsTest.csv");
     outputFile << "Inductor count, Simulation Time (seconds)" << endl;
@@ -498,6 +523,8 @@ int main(int argc, char **argv){
     int deltaInductors = 1;
 
     for(int inductorCount = minInductors; inductorCount < maxInductors; inductorCount += deltaInductors){
+        c = new Circuit{};
+        
         seriesInductors(buffer, inductorCount);
         
         auto start = high_resolution_clock::now();
@@ -514,15 +541,15 @@ int main(int argc, char **argv){
             cerr << "Inductors maxed out time";
             inductorCount = maxInductors;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series vs scaling test
-    c = new Circuit{};
 
     outputFile.open("output/VSTest.csv");
     outputFile << "VS count, Simulation Time (seconds)" << endl;
@@ -533,6 +560,8 @@ int main(int argc, char **argv){
     int deltaVS = 1;
 
     for(int VSCount = minVS; VSCount < maxVS; VSCount += deltaVS){
+        c = new Circuit{};
+        
         seriesVS(buffer, VSCount);
         
         auto start = high_resolution_clock::now();
@@ -549,15 +578,15 @@ int main(int argc, char **argv){
             cerr << "VS maxed out time";
             VSCount = maxVS;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series cs scaling test
-    c = new Circuit{};
 
     outputFile.open("output/CSTest.csv");
     outputFile << "CS count, Simulation Time (seconds)" << endl;
@@ -568,6 +597,8 @@ int main(int argc, char **argv){
     int deltaCS = 1;
 
     for(int CSCount = minCS; CSCount < maxCS; CSCount += deltaCS){
+        c = new Circuit{};
+        
         seriesCS(buffer, CSCount);
         
         auto start = high_resolution_clock::now();
@@ -584,16 +615,15 @@ int main(int argc, char **argv){
             cerr << "CS maxed out time";
             CSCount = maxCS;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
-
     //series op-amp scaling test
-    c = new Circuit{};
 
     outputFile.open("output/OpAmpTest.csv");
     outputFile << "OpAmp count, Simulation Time (seconds)" << endl;
@@ -604,6 +634,8 @@ int main(int argc, char **argv){
     int deltaOpAmp = 1;
 
     for(int OpAmpCount = minOpAmp; OpAmpCount < maxOpAmp; OpAmpCount += deltaOpAmp){
+        c = new Circuit{};
+        
         seriesOpAmps(buffer, OpAmpCount);
         
         auto start = high_resolution_clock::now();
@@ -620,15 +652,15 @@ int main(int argc, char **argv){
             cerr << "OpAmp maxed out time";
             OpAmpCount = maxOpAmp;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series VCVS scaling test
-    c = new Circuit{};
 
     outputFile.open("output/VCVSTest.csv");
     outputFile << "VCVS count, Simulation Time (seconds)" << endl;
@@ -639,6 +671,8 @@ int main(int argc, char **argv){
     int deltaVCVS = 1;
 
     for(int VCVSCount = minVCVS; VCVSCount < maxVCVS; VCVSCount += deltaVCVS){
+        c = new Circuit{};
+        
         seriesVCVS(buffer, VCVSCount);
         
         auto start = high_resolution_clock::now();
@@ -655,15 +689,15 @@ int main(int argc, char **argv){
             cerr << "VCVS maxed out time";
             VCVSCount = maxVCVS;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series VCCS scaling test
-    c = new Circuit{};
 
     outputFile.open("output/VCCSTest.csv");
     outputFile << "VCCS count, Simulation Time (seconds)" << endl;
@@ -674,6 +708,8 @@ int main(int argc, char **argv){
     int deltaVCCS = 1;
 
     for(int VCCSCount = minVCCS; VCCSCount < maxVCCS; VCCSCount += deltaVCCS){
+        c = new Circuit{};
+        
         seriesVCCS(buffer, VCCSCount);
         
         auto start = high_resolution_clock::now();
@@ -690,15 +726,15 @@ int main(int argc, char **argv){
             cerr << "VCCS maxed out time";
             VCCSCount = maxVCCS;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series CCVS scaling test
-    c = new Circuit{};
 
     outputFile.open("output/CCVSTest.csv");
     outputFile << "CCVS count, Simulation Time (seconds)" << endl;
@@ -709,6 +745,8 @@ int main(int argc, char **argv){
     int deltaCCVS = 1;
 
     for(int CCVSCount = minCCVS; CCVSCount < maxCCVS; CCVSCount += deltaCCVS){
+        c = new Circuit{};
+        
         seriesCCVS(buffer, CCVSCount);
         
         auto start = high_resolution_clock::now();
@@ -725,15 +763,15 @@ int main(int argc, char **argv){
             cerr << "CCVS maxed out time";
             CCVSCount = maxCCVS;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series CCCS scaling test
-    c = new Circuit{};
 
     outputFile.open("output/CCCSTest.csv");
     outputFile << "CCCS count, Simulation Time (seconds)" << endl;
@@ -744,6 +782,8 @@ int main(int argc, char **argv){
     int deltaCCCS = 1;
 
     for(int CCCSCount = minCCCS; CCCSCount < maxCCCS; CCCSCount += deltaCCCS){
+        c = new Circuit{};
+        
         seriesCCCS(buffer, CCCSCount);
         
         auto start = high_resolution_clock::now();
@@ -760,10 +800,11 @@ int main(int argc, char **argv){
             cerr << "CCCS maxed out time";
             CCCSCount = maxCCCS;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -781,7 +822,6 @@ int main(int argc, char **argv){
         c = new Circuit{};
 
         seriesAcDiode(buffer, AcDiodeCount);
-        cout << "diode " << AcDiodeCount << endl;
         
         auto start = high_resolution_clock::now();
 
@@ -789,7 +829,6 @@ int main(int argc, char **argv){
         outputCSV(*c, "output/ignore.csv");
         
         auto stop = high_resolution_clock::now();
-        delete c;
 
         auto duration = duration_cast<microseconds>(stop - start);
         auto timeTaken = duration.count();
@@ -799,6 +838,8 @@ int main(int argc, char **argv){
             cerr << "AcDiode maxed out time";
             AcDiodeCount = maxAcDiode;
         }
+
+        delete c;
     }
 
     outputFile.close();
@@ -806,7 +847,7 @@ int main(int argc, char **argv){
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series dc diode scaling test
-    c = new Circuit{};
+    
 
     outputFile.open("output/DcDiodeTest.csv");
     outputFile << "DcDiode count, Simulation Time (seconds)" << endl;
@@ -817,6 +858,8 @@ int main(int argc, char **argv){
     int deltaDcDiode = 1;
 
     for(int DcDiodeCount = minDcDiode; DcDiodeCount < maxDcDiode; DcDiodeCount += deltaDcDiode){
+        c = new Circuit{};
+        
         seriesDcDiode(buffer, DcDiodeCount);
         
         auto start = high_resolution_clock::now();
@@ -833,15 +876,15 @@ int main(int argc, char **argv){
             cerr << "DcDiode maxed out time";
             DcDiodeCount = maxAcDiode;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series NMos scaling test
-    c = new Circuit{};
 
     outputFile.open("output/NMosTest.csv");
     outputFile << "NMos count, Simulation Time (seconds)" << endl;
@@ -852,6 +895,8 @@ int main(int argc, char **argv){
     int deltaNMos = 1;
 
     for(int NMosCount = minNMos; NMosCount < maxNMos; NMosCount += deltaNMos){
+        c = new Circuit{};
+        
         seriesNMos(buffer, NMosCount);
         
         auto start = high_resolution_clock::now();
@@ -868,15 +913,15 @@ int main(int argc, char **argv){
             cerr << "NMOS maxed out time";
             NMosCount = maxNMos;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series PMos scaling test
-    c = new Circuit{};
 
     outputFile.open("output/PMosTest.csv");
     outputFile << "PMos count, Simulation Time (seconds)" << endl;
@@ -887,6 +932,8 @@ int main(int argc, char **argv){
     int deltaPMos = 1;
 
     for(int PMosCount = minPMos; PMosCount < maxPMos; PMosCount += deltaPMos){
+        c = new Circuit{};
+        
         seriesPMos(buffer, PMosCount);
         
         auto start = high_resolution_clock::now();
@@ -903,15 +950,15 @@ int main(int argc, char **argv){
             cerr << "PMOS maxed out time";
             PMosCount = maxPMos;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series NPN scaling test
-    c = new Circuit{};
 
     outputFile.open("output/NPNTest.csv");
     outputFile << "NPN count, Simulation Time (seconds)" << endl;
@@ -922,6 +969,8 @@ int main(int argc, char **argv){
     int deltaNPN = 1;
 
     for(int NPNCount = minNPN; NPNCount < maxNPN; NPNCount += deltaNPN){
+        c = new Circuit{};
+        
         seriesNPN(buffer, NPNCount);
         
         auto start = high_resolution_clock::now();
@@ -938,15 +987,15 @@ int main(int argc, char **argv){
             cerr << "NPN maxed out time";
             NPNCount = maxNPN;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series PNP scaling test
-    c = new Circuit{};
 
     outputFile.open("output/PNPTest.csv");
     outputFile << "PNP count, Simulation Time (seconds)" << endl;
@@ -957,6 +1006,8 @@ int main(int argc, char **argv){
     int deltaPNP = 1;
 
     for(int PNPCount = minPNP; PNPCount < maxPNP; PNPCount += deltaPNP){
+        c = new Circuit{};
+        
         seriesPNP(buffer, PNPCount);
         
         auto start = high_resolution_clock::now();
@@ -973,10 +1024,11 @@ int main(int argc, char **argv){
             cerr << "PNP maxed out time";
             PNPCount = maxPNP;
         }
+
+        delete c;
     }
 
     outputFile.close();
-    delete c;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 }
