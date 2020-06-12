@@ -41,6 +41,26 @@ cp -rf output output19
 ./CSVTester
 cp -rf output output20
 ./CSVTester
+cp -rf output output21
+./CSVTester
+cp -rf output output22
+./CSVTester
+cp -rf output output23
+./CSVTester
+cp -rf output output24
+./CSVTester
+cp -rf output output25
+./CSVTester
+cp -rf output output26
+./CSVTester
+cp -rf output output27
+./CSVTester
+cp -rf output output28
+./CSVTester
+cp -rf output output29
+./CSVTester
+cp -rf output output30
+./CSVTester
 cp -rf output output31
 ./CSVTester
 cp -rf output output32
