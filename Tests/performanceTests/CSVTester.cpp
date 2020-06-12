@@ -38,8 +38,8 @@
 using namespace std;
 using namespace std::chrono; 
 
-int maxCompPerSim = 20;
-float maxSimTime = 6e+8;
+int maxCompPerSim = 50;
+float maxSimTime = 1.8E+09;
 
 //simple test circuit that is used for dynamic timestep/ dynamic simulation time test
 void timestep1(stringstream& buffer){
@@ -231,7 +231,7 @@ void seriesAcDiode(stringstream& buffer, u_int count){
         buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
-    buffer << ".tran 0.0001 0.5 0" <<endl;
+    buffer << ".tran 0.001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
@@ -245,7 +245,7 @@ void seriesDcDiode(stringstream& buffer, u_int count){
         buffer << "D" << i << " n" << i << " n" << i+1 << " D" <<endl;
     }
     buffer << "R" << count << " n" << count << " 0 1k" <<endl;
-    buffer << ".tran 0.0001 0.5 0" <<endl;
+    buffer << ".tran 0.001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
 
