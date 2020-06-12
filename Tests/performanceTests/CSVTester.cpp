@@ -38,7 +38,7 @@
 using namespace std;
 using namespace std::chrono; 
 
-int maxCompPerSim = 50;
+int maxCompPerSim = 2;
 float maxSimTime = 1.8E+09;
 
 //simple test circuit that is used for dynamic timestep/ dynamic simulation time test
@@ -281,17 +281,19 @@ void seriesPMos(stringstream& buffer, u_int count){
 //NPN BJT
 void seriesNPN(stringstream& buffer, u_int count){
     buffer.clear();
-    buffer << "seriesNPN" <<endl;
-    buffer << ".MODEL NPN NPN" <<endl;
-    buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
-    for(u_int i{1}; i<count; i++){
-        buffer << "Q" << i << " n" << i << " n" << i << "0 0 NPN" <<endl;
+    count++;
+    cout << "seriesNPN" <<endl;
+    cout << ".MODEL NPN NPN" <<endl;
+    cout << "V1 n1 0 SIN(0 10 10)" <<endl;
+    cout << "R2 n1 n2 10k" << endl;
+    // count = 3
+    for(u_int i{1}; i<count+1; i++){
+        cout << "Q" << i << " 0 n" << i+1 << " n" << i+2 << " 0 NPN" << endl;
     }
-    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
-    buffer << ".tran 0.0001 0.5 0" <<endl;
-    buffer << ".end" <<endl;
+    cout << "R" << count+2 << " n" << count+1 << " 0 10k" <<endl;
+    cout << ".tran 0.0001 0.5 0" <<endl;
+    cout << ".end" <<endl;
 }
-
 
 //PNP BJT
 void seriesPNP(stringstream& buffer, u_int count){
@@ -442,445 +444,444 @@ int main(int argc, char **argv){
 
     //series resistor scaling test
 
-    outputFile.open("output/resistorsTest.csv");
-    outputFile << "Resistor count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/resistorsTest.csv");
+    // outputFile << "Resistor count, Simulation Time (seconds)" << endl;
 
-    // how many resistors to use
-    int minResistors = 1;
-    int maxResistors = maxCompPerSim;
-    int deltaResistors = 1;
+    // // how many resistors to use
+    // int minResistors = 1;
+    // int maxResistors = maxCompPerSim;
+    // int deltaResistors = 1;
 
-    for(int resistorCount = minResistors; resistorCount < maxResistors; resistorCount += deltaResistors){
-        c = new Circuit{};
+    // for(int resistorCount = minResistors; resistorCount < maxResistors; resistorCount += deltaResistors){
+    //     c = new Circuit{};
         
-        seriesResistors(buffer, resistorCount);
+    //     seriesResistors(buffer, resistorCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << resistorCount << "," << timeTaken/1e6f << endl;
-        if(timeTaken > maxSimTime){
-            cerr << "Resistors maxed out time";
-            resistorCount = maxResistors;
-        }
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << resistorCount << "," << timeTaken/1e6f << endl;
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "Resistors maxed out time";
+    //         resistorCount = maxResistors;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series capacitor scaling test
 
-    outputFile.open("output/capacitorsTest.csv");
-    outputFile << "Capacitor count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/capacitorsTest.csv");
+    // outputFile << "Capacitor count, Simulation Time (seconds)" << endl;
 
-    // how many capacitor to use
-    int minCapacitors = 1;
-    int maxCapacitors = maxCompPerSim;
-    int deltaCapacitors = 1;
+    // // how many capacitor to use
+    // int minCapacitors = 1;
+    // int maxCapacitors = maxCompPerSim;
+    // int deltaCapacitors = 1;
 
-    for(int capacitorCount = minCapacitors; capacitorCount < maxCapacitors; capacitorCount += deltaCapacitors){
-        c = new Circuit{};
+    // for(int capacitorCount = minCapacitors; capacitorCount < maxCapacitors; capacitorCount += deltaCapacitors){
+    //     c = new Circuit{};
 
-        seriesCapacitors(buffer, capacitorCount);
+    //     seriesCapacitors(buffer, capacitorCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << capacitorCount << "," << timeTaken/1e6f << endl;
-        if(timeTaken > maxSimTime){
-            cerr << "Capacitors maxed out time";
-            capacitorCount = maxCapacitors;
-        }
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << capacitorCount << "," << timeTaken/1e6f << endl;
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "Capacitors maxed out time";
+    //         capacitorCount = maxCapacitors;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series inductor scaling test
 
-    outputFile.open("output/inductorsTest.csv");
-    outputFile << "Inductor count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/inductorsTest.csv");
+    // outputFile << "Inductor count, Simulation Time (seconds)" << endl;
 
-    // how many inductors to use
-    int minInductors = 1;
-    int maxInductors = maxCompPerSim;
-    int deltaInductors = 1;
+    // // how many inductors to use
+    // int minInductors = 1;
+    // int maxInductors = maxCompPerSim;
+    // int deltaInductors = 1;
 
-    for(int inductorCount = minInductors; inductorCount < maxInductors; inductorCount += deltaInductors){
-        c = new Circuit{};
+    // for(int inductorCount = minInductors; inductorCount < maxInductors; inductorCount += deltaInductors){
+    //     c = new Circuit{};
         
-        seriesInductors(buffer, inductorCount);
+    //     seriesInductors(buffer, inductorCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << inductorCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << inductorCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "Inductors maxed out time";
-            inductorCount = maxInductors;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "Inductors maxed out time";
+    //         inductorCount = maxInductors;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series vs scaling test
 
-    outputFile.open("output/VSTest.csv");
-    outputFile << "VS count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/VSTest.csv");
+    // outputFile << "VS count, Simulation Time (seconds)" << endl;
 
-    // how many VS to use
-    int minVS = 1;
-    int maxVS = maxCompPerSim;
-    int deltaVS = 1;
+    // // how many VS to use
+    // int minVS = 1;
+    // int maxVS = maxCompPerSim;
+    // int deltaVS = 1;
 
-    for(int VSCount = minVS; VSCount < maxVS; VSCount += deltaVS){
-        c = new Circuit{};
+    // for(int VSCount = minVS; VSCount < maxVS; VSCount += deltaVS){
+    //     c = new Circuit{};
         
-        seriesVS(buffer, VSCount);
+    //     seriesVS(buffer, VSCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << VSCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << VSCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "VS maxed out time";
-            VSCount = maxVS;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "VS maxed out time";
+    //         VSCount = maxVS;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series cs scaling test
 
-    outputFile.open("output/CSTest.csv");
-    outputFile << "CS count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/CSTest.csv");
+    // outputFile << "CS count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minCS = 1;
-    int maxCS = maxCompPerSim;
-    int deltaCS = 1;
+    // // how many CS to use
+    // int minCS = 1;
+    // int maxCS = maxCompPerSim;
+    // int deltaCS = 1;
 
-    for(int CSCount = minCS; CSCount < maxCS; CSCount += deltaCS){
-        c = new Circuit{};
+    // for(int CSCount = minCS; CSCount < maxCS; CSCount += deltaCS){
+    //     c = new Circuit{};
         
-        seriesCS(buffer, CSCount);
+    //     seriesCS(buffer, CSCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << CSCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << CSCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "CS maxed out time";
-            CSCount = maxCS;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "CS maxed out time";
+    //         CSCount = maxCS;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series op-amp scaling test
 
-    outputFile.open("output/OpAmpTest.csv");
-    outputFile << "OpAmp count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/OpAmpTest.csv");
+    // outputFile << "OpAmp count, Simulation Time (seconds)" << endl;
 
-    // how many op-amps to use
-    int minOpAmp = 1;
-    int maxOpAmp = maxCompPerSim;
-    int deltaOpAmp = 1;
+    // // how many op-amps to use
+    // int minOpAmp = 1;
+    // int maxOpAmp = maxCompPerSim;
+    // int deltaOpAmp = 1;
 
-    for(int OpAmpCount = minOpAmp; OpAmpCount < maxOpAmp; OpAmpCount += deltaOpAmp){
-        c = new Circuit{};
+    // for(int OpAmpCount = minOpAmp; OpAmpCount < maxOpAmp; OpAmpCount += deltaOpAmp){
+    //     c = new Circuit{};
         
-        seriesOpAmps(buffer, OpAmpCount);
+    //     seriesOpAmps(buffer, OpAmpCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << OpAmpCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << OpAmpCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "OpAmp maxed out time";
-            OpAmpCount = maxOpAmp;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "OpAmp maxed out time";
+    //         OpAmpCount = maxOpAmp;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series VCVS scaling test
 
-    outputFile.open("output/VCVSTest.csv");
-    outputFile << "VCVS count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/VCVSTest.csv");
+    // outputFile << "VCVS count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minVCVS = 1;
-    int maxVCVS = maxCompPerSim;
-    int deltaVCVS = 1;
+    // // how many CS to use
+    // int minVCVS = 1;
+    // int maxVCVS = maxCompPerSim;
+    // int deltaVCVS = 1;
 
-    for(int VCVSCount = minVCVS; VCVSCount < maxVCVS; VCVSCount += deltaVCVS){
-        c = new Circuit{};
+    // for(int VCVSCount = minVCVS; VCVSCount < maxVCVS; VCVSCount += deltaVCVS){
+    //     c = new Circuit{};
         
-        seriesVCVS(buffer, VCVSCount);
+    //     seriesVCVS(buffer, VCVSCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << VCVSCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << VCVSCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "VCVS maxed out time";
-            VCVSCount = maxVCVS;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "VCVS maxed out time";
+    //         VCVSCount = maxVCVS;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series VCCS scaling test
 
-    outputFile.open("output/VCCSTest.csv");
-    outputFile << "VCCS count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/VCCSTest.csv");
+    // outputFile << "VCCS count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minVCCS = 1;
-    int maxVCCS = maxCompPerSim;
-    int deltaVCCS = 1;
+    // // how many CS to use
+    // int minVCCS = 1;
+    // int maxVCCS = maxCompPerSim;
+    // int deltaVCCS = 1;
 
-    for(int VCCSCount = minVCCS; VCCSCount < maxVCCS; VCCSCount += deltaVCCS){
-        c = new Circuit{};
+    // for(int VCCSCount = minVCCS; VCCSCount < maxVCCS; VCCSCount += deltaVCCS){
+    //     c = new Circuit{};
         
-        seriesVCCS(buffer, VCCSCount);
+    //     seriesVCCS(buffer, VCCSCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << VCCSCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << VCCSCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "VCCS maxed out time";
-            VCCSCount = maxVCCS;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "VCCS maxed out time";
+    //         VCCSCount = maxVCCS;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series CCVS scaling test
 
-    outputFile.open("output/CCVSTest.csv");
-    outputFile << "CCVS count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/CCVSTest.csv");
+    // outputFile << "CCVS count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minCCVS = 1;
-    int maxCCVS = maxCompPerSim;
-    int deltaCCVS = 1;
+    // // how many CS to use
+    // int minCCVS = 1;
+    // int maxCCVS = maxCompPerSim;
+    // int deltaCCVS = 1;
 
-    for(int CCVSCount = minCCVS; CCVSCount < maxCCVS; CCVSCount += deltaCCVS){
-        c = new Circuit{};
+    // for(int CCVSCount = minCCVS; CCVSCount < maxCCVS; CCVSCount += deltaCCVS){
+    //     c = new Circuit{};
         
-        seriesCCVS(buffer, CCVSCount);
+    //     seriesCCVS(buffer, CCVSCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << CCVSCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << CCVSCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "CCVS maxed out time";
-            CCVSCount = maxCCVS;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "CCVS maxed out time";
+    //         CCVSCount = maxCCVS;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series CCCS scaling test
 
-    outputFile.open("output/CCCSTest.csv");
-    outputFile << "CCCS count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/CCCSTest.csv");
+    // outputFile << "CCCS count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minCCCS = 1;
-    int maxCCCS = maxCompPerSim;
-    int deltaCCCS = 1;
+    // // how many CS to use
+    // int minCCCS = 1;
+    // int maxCCCS = maxCompPerSim;
+    // int deltaCCCS = 1;
 
-    for(int CCCSCount = minCCCS; CCCSCount < maxCCCS; CCCSCount += deltaCCCS){
-        c = new Circuit{};
+    // for(int CCCSCount = minCCCS; CCCSCount < maxCCCS; CCCSCount += deltaCCCS){
+    //     c = new Circuit{};
         
-        seriesCCCS(buffer, CCCSCount);
+    //     seriesCCCS(buffer, CCCSCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << CCCSCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << CCCSCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "CCCS maxed out time";
-            CCCSCount = maxCCCS;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "CCCS maxed out time";
+    //         CCCSCount = maxCCCS;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series ac diode scaling test
 
-    outputFile.open("output/AcDiodeTest.csv");
-    outputFile << "AcDiode count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/AcDiodeTest.csv");
+    // outputFile << "AcDiode count, Simulation Time (seconds)" << endl;
 
-    // how many diodes to use
-    int minAcDiode = 1;
-    int maxAcDiode = maxCompPerSim;
-    int deltaAcDiode = 1;
+    // // how many diodes to use
+    // int minAcDiode = 1;
+    // int maxAcDiode = maxCompPerSim;
+    // int deltaAcDiode = 1;
 
-    for(int AcDiodeCount = minAcDiode; AcDiodeCount < maxAcDiode; AcDiodeCount += deltaAcDiode){
-        c = new Circuit{};
+    // for(int AcDiodeCount = minAcDiode; AcDiodeCount < maxAcDiode; AcDiodeCount += deltaAcDiode){
+    //     c = new Circuit{};
 
-        seriesAcDiode(buffer, AcDiodeCount);
+    //     seriesAcDiode(buffer, AcDiodeCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
+    //     auto stop = high_resolution_clock::now();
 
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << AcDiodeCount << "," << timeTaken/1e6f << endl;
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << AcDiodeCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "AcDiode maxed out time";
-            AcDiodeCount = maxAcDiode;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "AcDiode maxed out time";
+    //         AcDiodeCount = maxAcDiode;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series dc diode scaling test
-    
 
-    outputFile.open("output/DcDiodeTest.csv");
-    outputFile << "DcDiode count, Simulation Time (seconds)" << endl;
+    // outputFile.open("output/DcDiodeTest.csv");
+    // outputFile << "DcDiode count, Simulation Time (seconds)" << endl;
 
-    // how many CS to use
-    int minDcDiode = 1;
-    int maxDcDiode = maxCompPerSim;
-    int deltaDcDiode = 1;
+    // // how many CS to use
+    // int minDcDiode = 1;
+    // int maxDcDiode = maxCompPerSim;
+    // int deltaDcDiode = 1;
 
-    for(int DcDiodeCount = minDcDiode; DcDiodeCount < maxDcDiode; DcDiodeCount += deltaDcDiode){
-        c = new Circuit{};
+    // for(int DcDiodeCount = minDcDiode; DcDiodeCount < maxDcDiode; DcDiodeCount += deltaDcDiode){
+    //     c = new Circuit{};
         
-        seriesDcDiode(buffer, DcDiodeCount);
+    //     seriesDcDiode(buffer, DcDiodeCount);
         
-        auto start = high_resolution_clock::now();
+    //     auto start = high_resolution_clock::now();
 
-        readSpice(*c, buffer);
-        outputCSV(*c, "output/ignore.csv");
+    //     readSpice(*c, buffer);
+    //     outputCSV(*c, "output/ignore.csv");
         
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        auto timeTaken = duration.count();
-        outputFile << DcDiodeCount << "," << timeTaken/1e6f << endl;
+    //     auto stop = high_resolution_clock::now();
+    //     auto duration = duration_cast<microseconds>(stop - start);
+    //     auto timeTaken = duration.count();
+    //     outputFile << DcDiodeCount << "," << timeTaken/1e6f << endl;
         
-        if(timeTaken > maxSimTime){
-            cerr << "DcDiode maxed out time";
-            DcDiodeCount = maxAcDiode;
-        }
+    //     if(timeTaken > maxSimTime){
+    //         cerr << "DcDiode maxed out time";
+    //         DcDiodeCount = maxAcDiode;
+    //     }
 
-        delete c;
-    }
+    //     delete c;
+    // }
 
-    outputFile.close();
+    // outputFile.close();
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
