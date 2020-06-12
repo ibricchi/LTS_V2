@@ -38,7 +38,7 @@
 using namespace std;
 using namespace std::chrono; 
 
-int maxCompPerSim = 2;
+int maxCompPerSim = 3;
 float maxSimTime = 1.8E+09;
 
 //simple test circuit that is used for dynamic timestep/ dynamic simulation time test
@@ -80,8 +80,6 @@ void seriesResistors(stringstream& buffer, u_int count){
     buffer << ".end" <<endl;
 }
 
-
-
 //circuit containing variable number of series capacitors
 void seriesCapacitors(stringstream& buffer, u_int count){
     buffer.clear();
@@ -94,8 +92,6 @@ void seriesCapacitors(stringstream& buffer, u_int count){
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
-
-
 
 //circuit containing variable number of series inductors
 void seriesInductors(stringstream& buffer, u_int count){
@@ -110,8 +106,6 @@ void seriesInductors(stringstream& buffer, u_int count){
     buffer << ".end" <<endl;
 }
 
-
-
 //circuit containing variable number of constant voltage sources
 void seriesVS(stringstream& buffer, u_int count){
     buffer.clear();
@@ -125,7 +119,6 @@ void seriesVS(stringstream& buffer, u_int count){
     buffer << ".end" <<endl;
 }
 
-
 //circuit containing variable number of constant current sources
 void seriesCS(stringstream& buffer, u_int count){
     buffer.clear();
@@ -138,7 +131,6 @@ void seriesCS(stringstream& buffer, u_int count){
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
-
 
 //circuit containing variable number of op-amps
 //negative terminal connected with output + positive terminal connected to ground
@@ -255,14 +247,14 @@ void seriesNMos(stringstream& buffer, u_int count){
     buffer << "seriesNMos" <<endl;
     buffer << ".MODEL NMOS NMOS" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    buffer << "R2 n1 n2 10k" << endl;
     for(u_int i{1}; i<count + 1; i++){
-        buffer << "M" << i << " n" << i << " n" << i+1 << "0 0 NMOS" <<endl;
+        buffer << "M" << i << " 0 n" << i+1 << " n" << i+2 << " 0 NMOS" << endl;
     }
-    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
+    buffer << "R1" << " n" << count+2 << " 0 10k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
-
 
 //P-channel mosfets
 void seriesPMos(stringstream& buffer, u_int count){
@@ -270,10 +262,11 @@ void seriesPMos(stringstream& buffer, u_int count){
     buffer << "seriesPMos" <<endl;
     buffer << ".MODEL PMOS PMOS" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
+    buffer << "R2 n1 n2 10k" << endl;
     for(u_int i{1}; i<count + 1; i++){
-        buffer << "M" << i << " n" << i << " n" << i+1 << "0 0 PMOS" <<endl;
+        buffer << "M" << i << " 0 n" << i+1 << " n" << i+2 << " 0 PMOS" << endl;
     }
-    buffer << "R" << count << " n" << count << " 0 1k" <<endl;
+    buffer << "R1" << " n" << count+2 << " 0 10k" <<endl;
     buffer << ".tran 0.0001 0.5 0" <<endl;
     buffer << ".end" <<endl;
 }
@@ -285,7 +278,6 @@ void seriesNPN(stringstream& buffer, u_int count){
     buffer << ".MODEL NPN NPN" <<endl;
     buffer << "V1 n1 0 SIN(0 10 10)" <<endl;
     buffer << "R2 n1 n2 10k" << endl;
-    // count = 3
     for(u_int i{1}; i<count+1; i++){
         buffer << "Q" << i << " 0 n" << i+1 << " n" << i+2 << " 0 NPN" << endl;
     }
@@ -318,8 +310,8 @@ int main(int argc, char **argv){
     Circuit* c;
     stringstream buffer;
     ofstream outputFile;
-
-
+{}
+{
     //////////////////////////////////////////////////////////////////////////////////////////
     // // timestep scaling test (simple circuit)
     // c = new Circuit{};
@@ -439,11 +431,13 @@ int main(int argc, char **argv){
 
     // delete c;
     // outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series resistor scaling test
-
+{}
+{
     outputFile.open("output/resistorsTest.csv");
     outputFile << "Resistor count, Simulation Time (seconds)" << endl;
 
@@ -475,11 +469,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series capacitor scaling test
-
+{
     outputFile.open("output/capacitorsTest.csv");
     outputFile << "Capacitor count, Simulation Time (seconds)" << endl;
 
@@ -511,11 +506,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series inductor scaling test
-
+{
     outputFile.open("output/inductorsTest.csv");
     outputFile << "Inductor count, Simulation Time (seconds)" << endl;
 
@@ -548,11 +544,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     //series vs scaling test
-
+{
     outputFile.open("output/VSTest.csv");
     outputFile << "VS count, Simulation Time (seconds)" << endl;
 
@@ -585,11 +582,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series cs scaling test
-
+{
     outputFile.open("output/CSTest.csv");
     outputFile << "CS count, Simulation Time (seconds)" << endl;
 
@@ -622,11 +620,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series op-amp scaling test
-
+{
     outputFile.open("output/OpAmpTest.csv");
     outputFile << "OpAmp count, Simulation Time (seconds)" << endl;
 
@@ -659,11 +658,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series VCVS scaling test
-
+{
     outputFile.open("output/VCVSTest.csv");
     outputFile << "VCVS count, Simulation Time (seconds)" << endl;
 
@@ -696,11 +696,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series VCCS scaling test
-
+{
     outputFile.open("output/VCCSTest.csv");
     outputFile << "VCCS count, Simulation Time (seconds)" << endl;
 
@@ -733,11 +734,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series CCVS scaling test
-
+{
     outputFile.open("output/CCVSTest.csv");
     outputFile << "CCVS count, Simulation Time (seconds)" << endl;
 
@@ -770,11 +772,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series CCCS scaling test
-
+{
     outputFile.open("output/CCCSTest.csv");
     outputFile << "CCCS count, Simulation Time (seconds)" << endl;
 
@@ -807,11 +810,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series ac diode scaling test
-
+{
     outputFile.open("output/AcDiodeTest.csv");
     outputFile << "AcDiode count, Simulation Time (seconds)" << endl;
 
@@ -845,11 +849,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series dc diode scaling test
-
+{
     outputFile.open("output/DcDiodeTest.csv");
     outputFile << "DcDiode count, Simulation Time (seconds)" << endl;
 
@@ -882,85 +887,88 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     // //series NMos scaling test
+{
+    outputFile.open("output/NMosTest.csv");
+    outputFile << "NMos count, Simulation Time (seconds)" << endl;
 
-    // outputFile.open("output/NMosTest.csv");
-    // outputFile << "NMos count, Simulation Time (seconds)" << endl;
+    // how many CS to use
+    int minNMos = 1;
+    int maxNMos = maxCompPerSim;
+    int deltaNMos = 1;
 
-    // // how many CS to use
-    // int minNMos = 1;
-    // int maxNMos = maxCompPerSim;
-    // int deltaNMos = 1;
-
-    // for(int NMosCount = minNMos; NMosCount < maxNMos; NMosCount += deltaNMos){
-    //     c = new Circuit{};
+    for(int NMosCount = minNMos; NMosCount < maxNMos; NMosCount += deltaNMos){
+        c = new Circuit{};
         
-    //     seriesNMos(buffer, NMosCount);
+        seriesNMos(buffer, NMosCount);
         
-    //     auto start = high_resolution_clock::now();
+        auto start = high_resolution_clock::now();
 
-    //     readSpice(*c, buffer);
-    //     outputCSV(*c, "output/ignore.csv");
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
         
-    //     auto stop = high_resolution_clock::now();
-    //     auto duration = duration_cast<microseconds>(stop - start);
-    //     auto timeTaken = duration.count();
-    //     outputFile << NMosCount << "," << timeTaken/1e6f << endl;
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << NMosCount << "," << timeTaken/1e6f << endl;
         
-    //     if(timeTaken > maxSimTime){
-    //         cerr << "NMOS maxed out time";
-    //         NMosCount = maxNMos;
-    //     }
+        if(timeTaken > maxSimTime){
+            cerr << "NMOS maxed out time";
+            NMosCount = maxNMos;
+        }
 
-    //     delete c;
-    // }
+        delete c;
+    }
 
-    // outputFile.close();
+    outputFile.close();
+}
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    // //series PMos scaling test
+    // series PMos scaling test
+{
+    outputFile.open("output/PMosTest.csv");
+    outputFile << "PMos count, Simulation Time (seconds)" << endl;
 
-    // outputFile.open("output/PMosTest.csv");
-    // outputFile << "PMos count, Simulation Time (seconds)" << endl;
+    // how many CS to use
+    int minPMos = 1;
+    int maxPMos = maxCompPerSim;
+    int deltaPMos = 1;
 
-    // // how many CS to use
-    // int minPMos = 1;
-    // int maxPMos = maxCompPerSim;
-    // int deltaPMos = 1;
-
-    // for(int PMosCount = minPMos; PMosCount < maxPMos; PMosCount += deltaPMos){
-    //     c = new Circuit{};
+    for(int PMosCount = minPMos; PMosCount < maxPMos; PMosCount += deltaPMos){
+        c = new Circuit{};
         
-    //     seriesPMos(buffer, PMosCount);
+        seriesPMos(buffer, PMosCount);
         
-    //     auto start = high_resolution_clock::now();
+        auto start = high_resolution_clock::now();
 
-    //     readSpice(*c, buffer);
-    //     outputCSV(*c, "output/ignore.csv");
+        readSpice(*c, buffer);
+        outputCSV(*c, "output/ignore.csv");
         
-    //     auto stop = high_resolution_clock::now();
-    //     auto duration = duration_cast<microseconds>(stop - start);
-    //     auto timeTaken = duration.count();
-    //     outputFile << PMosCount << "," << timeTaken/1e6f << endl;
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto timeTaken = duration.count();
+        outputFile << PMosCount << "," << timeTaken/1e6f << endl;
         
-    //     if(timeTaken > maxSimTime){
-    //         cerr << "PMOS maxed out time";
-    //         PMosCount = maxPMos;
-    //     }
+        if(timeTaken > maxSimTime){
+            cerr << "PMOS maxed out time";
+            PMosCount = maxPMos;
+        }
 
-    //     delete c;
-    // }
+        delete c;
+    }
 
-    // outputFile.close();
+    outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series NPN scaling test
-
+{
     outputFile.open("output/NPNTest.csv");
     outputFile << "NPN count, Simulation Time (seconds)" << endl;
 
@@ -993,11 +1001,12 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     //series PNP scaling test
-
+{
     outputFile.open("output/PNPTest.csv");
     outputFile << "PNP count, Simulation Time (seconds)" << endl;
 
@@ -1030,6 +1039,7 @@ int main(int argc, char **argv){
     }
 
     outputFile.close();
+}
 
     ////////////////////////////////////////////////////////////////////////////////////////////
 }
