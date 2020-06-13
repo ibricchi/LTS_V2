@@ -3,23 +3,24 @@
 All the code for LTS_V2 can be found in the main_project folder. Other folders were used to share reaserch, and testing scripts.
 
 ## Dependancies
-To run the program EIGEN library and CMake must available.
+To run the program, the Eigen3 library and CMake must be installed.
 
-If Eigen is not set up on the system, to set up untar eigen tar from dependancies folder and copy "Eigen" sub-folder into main_project folder
+To set up Eigen3, untar eigen-3.3.7.tar.bz2 from the dependancies folder and copy the "Eigen" sub-folder into main_project folder.
 
-Also need to install CMake: sudo apt-get install cmake
+Installalling CMake: sudo apt-get install cmake
 
 ## Execution
 
-To compile simply run buildMain.sh. This will create an executable called LTS_V2
+To compile simply run ./buildMain.sh inside main_project. This will create an executable called LTS_V2
 
 To simulate a netlist run: ./LTS_V2 < (path to file)
 
 This will create a csv file out.csv with results.
+The output file name can be changed by passing the new name as an argument to the program.
 
 ## Netlist support
 
-Netlist support is available as per official spice format.
+Netlist support is available as per official SPICE format.
 
 Components that can be simulated:
 
@@ -37,17 +38,17 @@ Components that can be simulated:
 * BJT (Q)
 * Mosfet (M)
 
-For non-linear components (Diode BJT Mosfet) .model statments can be used to change parameters
+For non-linear components (Diode BJT Mosfet) .model statments can be used to adjust parameters
 
-.option command is available and has support for ABSTOL, GMIN, and IMAX
+The .options command is available and has support for ABSTOL, GMIN, and IMAX
 
 Currently only transienct analysis is supported .tran (print step) (stop time) (start time) (max time step)
 
 \* can be used for comments
 
-Firt line of netlist indicates circuit title
+The firt netlist line indicates the circuit title and is ignored by the program
 
-All netslist require the presence of a .END command to siginal the end of the file
+All netslists require the presence of a .END command to siginal the end of the netlist
 
 ## example netlist
 
@@ -91,7 +92,7 @@ L1 N005 N004 1m
 
 .model PNP PNP
 
-.tran 1m .5
+.tran 1m 0.5
 
 .options gmin=1p abstol=0.01 imax=1000
 
