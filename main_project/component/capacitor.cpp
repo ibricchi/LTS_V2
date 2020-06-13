@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
-#include <CustomExceptionClasses/unsupportedIntegrationMethodOrderException.hpp>
-
+#include <iostream>
 #include "capacitor.hpp"
 
 
@@ -31,7 +30,8 @@ Capacitor::Capacitor(string name, vector<string> args, vector<float> extraInfo)
 		compConductance = (2.0f*capacitance)/timeStep;
 
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/constructor");
+		cerr << "Unsupported integration method order" <<endl;
+		exit(1);
 	}
 
 	types.push_back(componentType::conductanceSource);
@@ -58,7 +58,8 @@ string Capacitor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber
 		
 		return to_string(res);	
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/getTotalCurrentString");
+		cerr << "Unsupported integration method order" <<endl;
+		exit(1);
 	}
 }
 
@@ -68,7 +69,8 @@ void Capacitor::updateVals(float newVoltage, float newCurrent, int order){
 			
 		compVoltage = newVoltage;
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("capacitor.cpp/updateVals");
+		cerr << "Unsupported integration method order" <<endl;
+		exit(1);
 	}	
 }
 

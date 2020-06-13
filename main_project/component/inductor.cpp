@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
-#include <CustomExceptionClasses/unsupportedIntegrationMethodOrderException.hpp>
-#include <iostream> //testing
+#include <iostream>
 #include "inductor.hpp"
 
 Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
@@ -22,9 +21,9 @@ Inductor::Inductor(string name, vector<string> args, vector<float> extraInfo)
 
 	if(order==1){ //Conductance of the inductor will be the same as the companion model even at T=0 
 		compConductance = timeStep/(2.0*inductance);
-		//compCurrent = 
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/constructor");
+		cerr << "Unsupported integration method order" <<endl;
+		exit(1);
 	}
 
 	types.push_back(componentType::conductanceSource);
@@ -49,7 +48,8 @@ string Inductor::getTotalCurrentString(const VectorXd &x, int highestNodeNumber,
 		prevTotalCurrent = res;
 		return to_string(res); //negative as current flows from n1 to n2 of inductor
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/getTotalCurrentString");
+		cerr << "Unsupported integration method order" <<endl;
+		exit(1);
 	}
 }
 
@@ -59,7 +59,8 @@ void Inductor::updateVals(float newVoltage, float newCurrent, int order){
 
 		compVoltage = newVoltage;
 	}else{
-		throw UnsupportedIntegrationMethodOrderException("inductor.cpp/updateVals");
+		cerr << "Unsupported integration method order" <<endl;
+		exit(1);
 	}
 }
 
