@@ -145,15 +145,12 @@ double Mosfet::divAtNode(int nin, int dnin){
             switch(dn){
                 case n::D:
                     conductance = -GO;
-                    lastGd = conductance;
                     break;
                 case n::G:
                     conductance = -GM;
-                    lastGg = conductance;
                     break;
                 case n::S:
                     conductance = GO+GM;
-                    lastGs = conductance;
                     break;
             }
             break;
@@ -176,8 +173,8 @@ string Mosfet::getCurrentHeadingName() const{
 string Mosfet::getTotalCurrentString(const VectorXd &x, int highestNodeNumber, float voltage, int order) {
     // total current = current through current source, through resistor, through dependent current source
     if(NMOS){
-        return to_string(lastId + VDS*lastGo + lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs - VDS*lastGo - lastGm*VGS);
+        return to_string(lastId + VDS*GO + GM*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs - VDS*GO - GM*VGS);
     }else{
-        return to_string(lastId - VDS*lastGo - lastGm*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs + VDS*lastGo + lastGm*VGS);
+        return to_string(lastId - VDS*GO - GM*VGS) + "," + to_string(lastIg) + "," + to_string(lastIs + VDS*GO + GM*VGS);
     }
 }
