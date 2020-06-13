@@ -149,17 +149,21 @@ void readSpice(Circuit& c, istream& file){
                 if(args.size() < 2){
                     cerr << "Not enough arguments supplied for .tran" <<endl;
                     exit(1);
-                }else if(Component::getValue(args[0]) <= 0 || Component::getValue(args[1]) <= 0){
-                    cerr << "TSPEP and TSTOP must be greater than 0" <<endl;
+                }else if(Component::getValue(args[1]) <= 0){
+                    cerr << "TSTOP must be greater than 0" <<endl;
                     exit(1);
                 }else if(args.size() == 2){
-                    c.setTStep(Component::getValue(args[0])); //TSTEP
-                    c.setSimulationTime(Component::getValue(args[1])); //TSTOP
+                    if(Component::getValue(args[0]) <= 0){
+			cerr<<"TSTEP must be greater than 0" << endl;
+			exit(1);
+		    }
+		    c.setTStep(Component::getValue(args[0])); //TSTEP
+		    c.setSimulationTime(Component::getValue(args[1])); //TSTOP
                     c.setTStart(0); //TSTART
                     c.setMaxTimeStep((c.getSimulationTime()/50 < 1) ? c.getSimulationTime()/50 : 1); //TMAX
                 }else if(args.size() == 3){
-                    if(Component::getValue(args[2]) < 0){
-                        cerr << "TSTART cannot be smaller than zero" <<endl;
+                    if(Component::getValue(args[2]) < 0 || Component::getValue(args[0]) <= 0){
+                        cerr << "TSTART cannot be smaller than zero and TSTEP must be greater than zero" <<endl;
                         exit(1);
                     }
                     c.setTStep(Component::getValue(args[0])); //TSTEP
@@ -171,7 +175,19 @@ void readSpice(Circuit& c, istream& file){
                         cerr << "START cannot be smaller than zero and TMAX must be greater than zero" <<endl;
                         exit(1);
                     }
-                    c.setTStep(Component::getValue(args[0])); //TSTEP
+                    if(Component::getValue(args[0]) <= 0){
+			cerr << "TSTEP less than zero.";
+			if(Component::getValue(args[3]) <= 0){
+			    cerr << " TMAX less than zero" << endl;
+			    exit(1);
+			}
+			else{
+			    cerr << " TSTEP set to TMAX" << endl;
+			    args[0] = args[3]; 
+			}
+		    }
+	             
+		    c.setTStep(Component::getValue(args[0])); //TSTEP
                     c.setSimulationTime(Component::getValue(args[1])); //TSTOP
                     c.setTStart(Component::getValue(args[2])); //TSTART
                     c.setMaxTimeStep(Component::getValue(args[3])); //TMAX
