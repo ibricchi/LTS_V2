@@ -78,18 +78,16 @@ void runAnalysis(Circuit& c, ofstream& outputFile, float timeStep, float simulat
         nonLinearSetup(c);
        
         while(c.getCurrentTime() < simulationTime){
-        
-            outLine = runNonLinearTransience(c, c.getCurrentTime(),interpolX1,interpolX2,interpolT1,interpolT2,printTime,interpolI1,interpolI2);
+	    outLine = runNonLinearTransience(c, c.getCurrentTime(),interpolX1,interpolX2,interpolT1,interpolT2,printTime,interpolI1,interpolI2);
             if(outLine!= ""){outputFile << outLine << endl;}
             c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
                 
-            if(c.getCurrentTime() > simulationTime){
+            if(c.getCurrentTime() >= simulationTime){
                 c.setCurrentTime(simulationTime);
-                
                 c.setTimeStep(simulationTime - c.getPrevTime());			
                 outLine = runNonLinearTransience(c,simulationTime,interpolX1,interpolX2,interpolT1,interpolT2,printTime,interpolI1,interpolI2);
                 if(outLine!= ""){
-                    outputFile << outLine << endl;
+		    outputFile << outLine << endl;
                 }
                 c.setCurrentTime(c.getCurrentTime() + c.getTimeStep());
             }
