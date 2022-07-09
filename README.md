@@ -2,6 +2,8 @@
 
 All the code for LTS_V2 can be found in the main_project folder. Other folders were used to share reaserch, and testing scripts.
 
+See [here](https://youtu.be/TpEHNERGBSc) for the project video and [here](https://github.com/IBricchi/LTS_V2/blob/master/report.pdf) for the report.
+
 ## Example Simulation
 
 Circuit diagram:
