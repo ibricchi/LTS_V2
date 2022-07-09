@@ -1,22 +1,22 @@
 # LTS_V2
 
-All the code for LTS_V2 can be found in the main_project folder. Other folders were used to share reaserch, and testing scripts.
+All the code for LTS_V2 can be found in the main_project folder. Other folders were used to share reaserch, and testing scripts. 
 
 ## Dependancies
-To run the program, the Eigen3 library and CMake must be installed.
+To run LTS_V2, the Eigen3 C++ library and CMake must be installed.
 
-To set up Eigen3, untar eigen-3.3.7.tar.bz2 from the dependancies folder and copy the "Eigen" sub-folder into main_project folder.
+To set up Eigen3, untar eigen-3.3.7.tar.bz2 from the dependancies folder and copy the "Eigen" sub-folder into the main_project folder.
 
-Installalling CMake: sudo apt-get install cmake
+Installalling CMake (Ubuntu): sudo apt-get install cmake
 
 ## Execution
 
-To compile simply run ./buildMain.sh inside main_project. This will create an executable called LTS_V2
+To compile, simply run ./buildMain.sh inside the main_project folder. This will create an executable called LTS_V2.
 
-To simulate a netlist run: ./LTS_V2 < (path to file)
+To simulate a netlist, run: ./LTS_V2 < (path to netlist file)
 
-This will create a csv file out.csv with results.
-The output file name can be changed by passing the new name as an argument to the program.
+By default, the simulation results will be written to a CSV file called out.csv.
+The output file name can be changed by passing the new file name as a command line argument to the program.
 
 ## Netlist support
 
@@ -33,22 +33,24 @@ Components that can be simulated:
 * Current dependant current source (F)
 * Votlage dependant current source (G)
 * Current dependant voltage source (H)
-* Op amp (X)
+* Ideal op-amp (X)
 * Diode (D)
 * BJT (Q)
-* Mosfet (M)
+* MOSFET (M)
 
-For non-linear components (Diode BJT Mosfet) .model statments can be used to adjust parameters
+The voltage and current source can be one of DC, SIN, PWL or Pulse
 
-The .options command is available and has support for ABSTOL, GMIN, and IMAX
+For non-linear components (Diode, BJT, MOSFET), .model statments can be used to adjust parameters
 
-Currently only transienct analysis is supported .tran (print step) (stop time) (start time) (max time step)
+The .options command is available and provides support for ABSTOL, GMIN, and IMAX
 
-\* can be used for comments
+Currently, only transienct analysis is supported: .tran (print step) (stop time) (start time) (max time step)
 
-The firt netlist line indicates the circuit title and is ignored by the program
+\* can be used for comment lines (They will be ignored by the netlist parser)
 
-All netslists require the presence of a .END command to siginal the end of the netlist
+The firt netlist line indicates the circuit title and is ignored by the netlist parser
+
+All netslists require the presence of a .END command to siginal the end of the netlist. All netlist lines after this statement will be ignored
 
 ## example netlist
 
