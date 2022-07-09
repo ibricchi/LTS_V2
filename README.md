@@ -1,6 +1,16 @@
 # LTS_V2
 
-All the code for LTS_V2 can be found in the main_project folder. Other folders were used to share reaserch, and testing scripts. 
+All the code for LTS_V2 can be found in the main_project folder. Other folders were used to share reaserch, and testing scripts.
+
+## Example Simulation
+
+Circuit diagram:
+
+![lts_v2_circuit](https://user-images.githubusercontent.com/53228351/178119791-153266aa-3dd0-43a2-adba-7695af10c053.png)
+
+Simulation output for voltage source `V2`:
+
+![lts_v2_simulation](https://user-images.githubusercontent.com/53228351/178119801-87275934-b4b9-499e-8bd1-46de29f5471a.png)
 
 ## Dependancies
 To run LTS_V2, the Eigen3 C++ library and CMake must be installed.
